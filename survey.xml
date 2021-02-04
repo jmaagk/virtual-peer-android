@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<survey>
+
+    <title>@string/lorem_ipsum_short</title>
+    <description>@string/lorem_ipsum_long</description>
+
+    <questions>
+
+        <textInputQuestion>
+
+            <question>@string/lorem_ipsum_short</question>
+
+        </textInputQuestion>
+
+        <sliderQuestion>
+
+            <question>@string/lorem_ipsum_short</question>
+            <slider min="1" max="10" />
+
+        </sliderQuestion>
+
+        <emojiQuestion>
+
+            <question>@string/lorem_ipsum_short</question>
+
+        </emojiQuestion>
+
+        <multipleChoiceQuestion>
+
+            <question>@string/lorem_ipsum_short</question>
+            <choices>
+                <choice>Choice 1</choice>
+                <choice>Choice 2</choice>
+                <choice>Choice 3</choice>
+                <choice>Choice 4</choice>
+            </choices>
+
+        </multipleChoiceQuestion>
+
+        <choosePictureQuestion>
+
+            <question>@string/lorem_ipsum_short</question>
+            <images>
+                <image src="1" />
+                <image src="2" />
+                <image src="3" />
+                <image src="4" />
+            </images>
+
+        </choosePictureQuestion>
+
+    </questions>
+
+</survey>

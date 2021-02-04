@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<survey>
+
+    <title>Lorem ipsum dolor sit amet, consectetur adipiscing elit</title>
+    <description>Morbi pretium libero ac eros aliquet vestibulum. Phasellus placerat lorem ante, sit amet interdum ipsum tincidunt at. Morbi commodo sit amet magna id rutrum. Aliquam erat volutpat. Integer in magna eu justo dapibus vulputate vitae sit amet neque. Vestibulum iaculis urna nec sapien pulvinar dapibus.</description>
+
+    <questions>
+
+        <textInputQuestion>
+
+            <question>Lorem ipsum dolor sit amet, consectetur adipiscing elit?</question>
+
+        </textInputQuestion>
+
+        <sliderQuestion>
+
+            <question>Nullam nec nisl purus. Praesent lectus odio?</question>
+            <slider min="1" max="10" />
+
+        </sliderQuestion>
+
+        <emojiQuestion>
+
+            <question>Praesent consequat, mi in mattis lacinia, mi nibh aliquam ipsum?</question>
+            <emojis>
+                <emoji>👎</emoji>
+                <emoji>👍</emoji>
+            </emojis>
+
+        </emojiQuestion>
+
+        <multipleChoiceQuestion>
+
+            <question>Phasellus non arcu congue?</question>
+            <choices>
+                <choice>Choice 1</choice>
+                <choice>Choice 2</choice>
+                <choice>Choice 3</choice>
+                <choice>Choice 4</choice>
+            </choices>
+
+        </multipleChoiceQuestion>
+
+        <choosePictureQuestion>
+
+            <question>Fusce sit amet vulputate dui, in luctus mauris?</question>
+            <images>
+                <image src="test_image_1" />
+                <image src="test_image_2" />
+                <image src="test_image_3" />
+                <image src="test_image_4" />
+            </images>
+
+        </choosePictureQuestion>
+
+    </questions>
+
+</survey>

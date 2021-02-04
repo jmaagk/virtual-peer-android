@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<surveyResults>
+
+    <questions>
+
+        <textInputQuestion>
+
+            <answer>Lorem ipsum</answer>
+
+        </textInputQuestion>
+
+        <sliderQuestion>
+
+            <answer>6</answer>
+
+        </sliderQuestion>
+
+        <emojiQuestion>
+
+            <!-- only two possible answers? make this clearer -->
+            <answer>1</answer>
+
+        </emojiQuestion>
+
+        <multipleChoiceQuestion>
+
+            <!-- choice index; maybe use something better? -->
+            <answer>0</answer>
+
+        </multipleChoiceQuestion>
+
+        <choosePictureQuestion>
+
+            <!-- image index; maybe use something better? -->
+            <answer>1</answer>
+
+        </choosePictureQuestion>
+
+    </questions>
+
+</surveyResults

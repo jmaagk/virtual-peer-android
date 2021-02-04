@@ -1,0 +1,69 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base theme -->
+    <style name="Theme.VirtualPeer.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Primary color -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
+        <!-- Secondary color -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- Attribute values -->
+        <item name="colorBackground">@color/colorBackground</item>
+        <item name="colorBackgroundDark">@color/colorBackgroundDark</item>
+        <item name="colorBackgroundCard">@color/colorBackgroundCard</item>
+        <item name="colorSelectedCard">@color/colorSelectedCard</item>
+        <item name="colorControlHighlight">@color/colorRipple</item>
+        <item name="colorRipple">@color/colorRipple</item>
+        <item name="colorIconTint">@color/colorIconTint</item>
+        <item name="colorListDivider">@color/colorListDivider</item>
+
+        <!-- Text colors (including attributes) -->
+        <item name="textColor">@color/colorText</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
+
+        <item name="subTextColor">@color/colorSubText</item>
+        <item name="android:textColorSecondary">@color/colorSubText</item>
+        <item name="android:textColorTertiary">@color/colorSubText</item>
+
+        <item name="buttonTextColor">@color/colorButtonText</item>
+
+        <!-- Preferences -->
+        <item name="preferenceTheme">@style/PreferenceTheme</item>
+
+    </style>
+
+    <!-- Light theme -->
+    <style name="Theme.VirtualPeer" parent="Theme.VirtualPeer.Base">
+
+        <!-- Not overriding anything here for now -->
+
+    </style>
+
+    <!-- Used for the AppCompat ActionBar -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:colorBackground">?attr/colorBackground</item>
+        <item name="colorControlHighlight">?attr/colorRipple</item>
+    </style>
+
+    <!-- NoActionBar theme, used for activities in the manifest -->
+    <style name="Theme.VirtualPeer.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Preference style (just used to have the icons colored correctly) -->
+    <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="android:tint">@color/colorIconTint</item>
+    </style>
+
+</resources>

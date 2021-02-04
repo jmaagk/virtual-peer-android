@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Dark theme -->
+    <style name="Theme.VirtualPeer" parent="Theme.VirtualPeer.Base">
+
+        <!-- Not overriding anything here for now -->
+
+    </style>
+
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="@string/pref_look_and_feel"
+        app:title="@string/pref_look_and_feel_title"
+        app:summary="@string/pref_look_and_feel_summary"
+        app:icon="@drawable/ic_look_and_feel" />
+
+    <Preference
+        app:key="@string/pref_notifications"
+        app:title="@string/pref_notifications_title"
+        app:summary="@string/lorem_ipsum_short"
+        app:icon="@drawable/ic_notifications" />
+
+    <Preference
+        app:key="@string/pref_about"
+        app:title="@string/pref_about_title"
+        app:summary="@string/lorem_ipsum_short"
+        app:icon="@drawable/ic_about" />
+
+</PreferenceScreen>

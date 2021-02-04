@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorBackground">#FF212121</color>
+    <color name="colorBackgroundDark">#FF121212</color>
+    <color name="colorBackgroundCard">#FF424242</color>
+    <color name="colorText">#FFFFFFFF</color>
+    <color name="colorSubText">#FFE0E0E0</color>
+    <color name="colorButtonText">#FF000000</color>
+    <color name="colorSelectedCard">#FFE64A19</color>
+    <color name="colorRipple">#28FFFFFF</color>
+    <color name="colorIconTint">#FFFFFFFF</color>
+    <color name="colorListDivider">#FF424242</color>
+    <color name="colorChartRemainingTime">#FF212121</color>
+
+</resources>

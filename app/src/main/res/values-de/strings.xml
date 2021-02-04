@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Virtual Peer</string>
+    <string name="nav_drawer_start">Start</string>
+    <string name="nav_drawer_graphs">Grafiken</string>
+    <string name="nav_drawer_help">Hilfe</string>
+    <string name="nav_drawer_settings">Einstellungen</string>
+    <string name="nav_drawer_open">Menü öffnen</string>
+    <string name="nav_drawer_close">Menü schließen</string>
+    <string name="pref_look_and_feel_title">Erscheinungsbild</string>
+    <string name="pref_look_and_feel_summary">Design, Sprache</string>
+    <string name="pref_notifications_title">Benachrichtigungen</string>
+    <string name="pref_about_title">Über Virtual Peer</string>
+    <string name="nav_drawer_survey">Umfrage</string>
+    <string name="survey_start">Starten</string>
+    <string name="survey_next">Weiter</string>
+    <string name="survey_answer_hint">Antwort</string>
+    <string name="survey_back">Zurück</string>
+    <string name="survey_finish">Fertig</string>
+    <string name="user_activity_current_display">Deine aktuelle Aktivität: %1$s</string>
+    <string name="user_activity_current_change">Ändern</string>
+    <string name="user_activity_current_not_set">Es ist keine Aktivität festgelegt</string>
+    <string name="user_activity_change_text">Wähle deine Aktivität</string>
+    <string name="user_activity_change_activity_1">Studieren</string>
+    <string name="user_activity_change_activity_2">Lebensnotwendiges</string>
+    <string name="user_activity_change_activity_3">Belohnung</string>
+    <string name="user_activity_current_work">Studieren</string>
+    <string name="user_activity_current_essential">Lebensnotwendiges</string>
+    <string name="user_activity_current_rewards">Belohnung</string>
+    <string name="nav_drawer_chat">Chat</string>
+</resources>
