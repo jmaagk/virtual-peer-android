@@ -28,4 +28,5 @@
     <string name="user_activity_current_essential">Lebensnotwendiges</string>
     <string name="user_activity_current_rewards">Belohnung</string>
     <string name="nav_drawer_chat">Chat</string>
+    <string name="chat_hint">Gib eine Nachricht ein</string>
 </resources>

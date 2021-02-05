@@ -12,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
+import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
 import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
 
@@ -104,6 +105,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.navDrawerSurvey -> {
                 val surveyFragment = SurveyFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, surveyFragment, null).commit()
+                drawerLayout.closeDrawer(GravityCompat.START)
+                true
+            }
+
+            R.id.navDrawerChat -> {
+                val chatFragment = ChatFragment()
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, chatFragment, null).commit()
                 drawerLayout.closeDrawer(GravityCompat.START)
                 true
             }
