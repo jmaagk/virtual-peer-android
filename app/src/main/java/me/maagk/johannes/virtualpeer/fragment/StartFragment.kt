@@ -30,7 +30,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
 
     class Formatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
-            return (round(value * 10) / 10).toString()
+            return if(value <= 0) "" else (round(value * 10) / 10).toString()
         }
     }
 
