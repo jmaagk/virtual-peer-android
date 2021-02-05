@@ -13,7 +13,7 @@
         android:hint="@string/survey_answer_hint">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/loopCountInput"
+            android:id="@+id/textInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
