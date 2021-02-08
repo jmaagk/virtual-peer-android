@@ -47,6 +47,12 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         userActivityManager = UserActivityManager(requireContext())
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        updateChartData()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -79,10 +85,11 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         }
 
         chart = view.findViewById(R.id.startChart)
-        setUpChart()
+
+        configureChart()
     }
 
-    private fun setUpChart() {
+    private fun configureChart() {
         chart.description.isEnabled = false
         chart.isDrawHoleEnabled = true
         chart.setHoleColor(Color.TRANSPARENT)
@@ -95,6 +102,50 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         chart.isRotationEnabled = false
         chart.setDrawEntryLabels(false)
 
+        chart.highlightValues(null)
+    }
+
+    private fun updateChartData() {
+        if(chart.data == null) {
+            val dataset = PieDataSet(getCurrentChartEntries(), getString(R.string.start_chart_dataset_label))
+            dataset.valueTextColor = Utils.getColor(requireContext(), R.color.colorText)
+            dataset.setDrawIcons(false)
+
+            val activityTypes = UserActivity.Type.values()
+            val colors = arrayListOf<Int>()
+            for(activityType in activityTypes)
+                colors.add(activityType.color)
+
+            colors.add(Utils.getColor(requireContext(), R.color.colorChartRemainingTime))
+
+            dataset.colors = colors
+
+            val data = PieData(dataset)
+            data.setValueFormatter(Formatter())
+            data.setValueTextSize(11f)
+            chart.data = data
+        } else {
+            chart.data.dataSet.clear()
+            for(entry in getCurrentChartEntries())
+                chart.data.dataSet.addEntry(entry)
+        }
+    }
+
+    private fun updateCurrentActivityText() {
+        val currentActivity = userActivityManager.getCurrentActivity()
+        if(currentActivity == null) {
+            currentActivityText.setText(R.string.user_activity_current_not_set)
+        } else {
+            val activityTextId = when(currentActivity.type) {
+                UserActivity.Type.POOL_WORK -> R.string.user_activity_current_work
+                UserActivity.Type.POOL_ESSENTIAL -> R.string.user_activity_current_essential
+                UserActivity.Type.POOL_REWARDS -> R.string.user_activity_current_rewards
+            }
+            currentActivityText.text = getString(R.string.user_activity_current_display, getString(activityTextId))
+        }
+    }
+
+    private fun getCurrentChartEntries(): ArrayList<PieEntry> {
         val todaysActivities = userActivityManager.getTodaysActivities()
         var workTotalMillis = 0L; var essentialTotalMillis = 0L; var rewardsTotalMillis = 0L
         for(activity in todaysActivities) {
@@ -122,45 +173,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         entries.add(PieEntry(rewardsHours))
         entries.add(PieEntry(hoursLeft))
 
-        val dataset = PieDataSet(entries, "Activities")
-        dataset.valueTextColor = Utils.getColor(requireContext(), R.color.colorText)
-        dataset.setDrawIcons(false)
-
-        val activityTypes = UserActivity.Type.values()
-        val colors = arrayListOf<Int>()
-        for(activityType in activityTypes)
-            colors.add(activityType.color)
-
-        colors.add(Utils.getColor(requireContext(), R.color.colorChartRemainingTime))
-
-        dataset.colors = colors
-
-        val data = PieData(dataset)
-        data.setValueFormatter(Formatter())
-        data.setValueTextSize(11f)
-        chart.data = data
-
-        chart.highlightValues(null)
-
-        chart.invalidate()
-    }
-
-    private fun updateChartData() {
-
-    }
-
-    private fun updateCurrentActivityText() {
-        val currentActivity = userActivityManager.getCurrentActivity()
-        if(currentActivity == null) {
-            currentActivityText.setText(R.string.user_activity_current_not_set)
-        } else {
-            val activityTextId = when(currentActivity.type) {
-                UserActivity.Type.POOL_WORK -> R.string.user_activity_current_work
-                UserActivity.Type.POOL_ESSENTIAL -> R.string.user_activity_current_essential
-                UserActivity.Type.POOL_REWARDS -> R.string.user_activity_current_rewards
-            }
-            currentActivityText.text = getString(R.string.user_activity_current_display, getString(activityTextId))
-        }
+        return entries
     }
 
 }
