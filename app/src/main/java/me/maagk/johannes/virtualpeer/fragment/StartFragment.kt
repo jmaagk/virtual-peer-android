@@ -87,6 +87,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         chart = view.findViewById(R.id.startChart)
 
         configureChart()
+        chart.invalidate()
     }
 
     private fun configureChart() {
@@ -129,6 +130,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
             for(entry in getCurrentChartEntries())
                 chart.data.dataSet.addEntry(entry)
         }
+
+        chart.notifyDataSetChanged()
     }
 
     private fun updateCurrentActivityText() {
