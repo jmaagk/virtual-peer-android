@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2.5dp"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/emoji1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7.5dp"
+            android:layout_marginEnd="2.5dp"
+            android:textSize="35sp"
+            android:focusable="true"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/emoji2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7.5dp"
+            android:layout_marginStart="2.5dp"
+            android:textSize="35sp"
+            android:focusable="true"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground" />
+
+    </LinearLayout>
+
+</RelativeLayout>
