@@ -19,7 +19,7 @@ class MultipleChoiceQuestionFragment(question: MultipleChoiceQuestion) : Questio
 
             val multipleChoiceQuestion = question as MultipleChoiceQuestion
             for(choice in multipleChoiceQuestion.choices) {
-                val radioButton = inflater.inflate(R.layout.single_radio_button, radioGroup, false) as RadioButton
+                val radioButton = inflater.inflate(R.layout.view_radio_button, radioGroup, false) as RadioButton
                 radioButton.text = choice
                 radioGroup.addView(radioButton)
             }

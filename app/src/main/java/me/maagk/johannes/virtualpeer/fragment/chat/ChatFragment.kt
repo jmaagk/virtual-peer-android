@@ -76,12 +76,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             return when(viewType) {
                 Message.INCOMING -> {
-                    val view = LayoutInflater.from(parent.context).inflate(R.layout.single_incoming_message, parent, false)
+                    val view = layoutInflater.inflate(R.layout.view_message_incoming, parent, false)
                     IncomingMessageViewHolder(view)
                 }
 
                 else -> {
-                    val view = LayoutInflater.from(parent.context).inflate(R.layout.single_outgoing_message, parent, false)
+                    val view = layoutInflater.inflate(R.layout.view_message_outgoing, parent, false)
                     OutgoingMessageViewHolder(view)
                 }
             }
