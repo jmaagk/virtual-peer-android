@@ -7,13 +7,6 @@
 
     <include layout="@layout/fragment_question_base" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- RadioButtons are added programmatically -->
-
-    </RadioGroup>
+    <include layout="@layout/view_question_multiple_choice" />
 
 </LinearLayout>

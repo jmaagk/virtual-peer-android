@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
+import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 import me.maagk.johannes.virtualpeer.survey.question.Question
 import me.maagk.johannes.virtualpeer.survey.question.SliderQuestion
 
@@ -35,6 +38,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             const val ANSWER = 2
             const val EMOJI_QUESTION = 3
             const val SLIDER_QUESTION = 4
+            const val MULTIPLE_CHOICE_QUESTION = 5
         }
 
     }
@@ -42,6 +46,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     abstract class QuestionMessage(type: Int, message: String, val question: Question) : Message(type, message)
     class EmojiQuestionMessage(message: String, val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, message, emojiQuestion)
     class SliderQuestionMessage(message: String, val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, message, sliderQuestion)
+    class MultipleChoiceQuestionMessage(message: String, val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, message, multipleChoiceQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,6 +98,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
                 "slider", "slide" -> {
                     SliderQuestionMessage(userInput, SliderQuestion("", 0, 10))
+                }
+
+                "multiplechoice", "choice", "mc" -> {
+                    val lorem = getString(R.string.lorem_ipsum_short)
+                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", lorem + " 2", lorem + " 3"))
+                    MultipleChoiceQuestionMessage(userInput, multipleChoiceQuestion)
                 }
 
                 else -> {
@@ -176,6 +187,32 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         }
 
+        class MultipleChoiceQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
+
+            val radioGroup: RadioGroup = itemView.findViewById(R.id.radioGroup)
+
+            init {
+                radioGroup.setOnCheckedChangeListener { group, id ->
+                    onClick(this, group)
+                }
+            }
+
+            override fun bind(message: Message) {
+                super.bind(message)
+
+                // TODO: improve this process by not inflating every time this binds to a message
+                val multipleChoiceQuestion = (message as MultipleChoiceQuestionMessage).multipleChoiceQuestion
+                radioGroup.removeAllViews()
+                val inflater = LayoutInflater.from(radioGroup.context)
+                for(choice in multipleChoiceQuestion.choices) {
+                    val radioButton = inflater.inflate(R.layout.view_radio_button, radioGroup, false) as RadioButton
+                    radioButton.text = choice
+                    radioGroup.addView(radioButton)
+                }
+            }
+
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
 
@@ -193,6 +230,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 Message.SLIDER_QUESTION -> {
                     val view = layoutInflater.inflate(R.layout.view_message_question_slider, parent, false)
                     SliderQuestionMessageViewHolder(view, onQuestionClick)
+                }
+
+                Message.MULTIPLE_CHOICE_QUESTION -> {
+                    val view = layoutInflater.inflate(R.layout.view_message_question_multiple_choice, parent, false)
+                    MultipleChoiceQuestionMessageViewHolder(view, onQuestionClick)
                 }
 
                 else -> {
