@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,6 +73,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     is ChatAdapter.SliderQuestionMessageViewHolder -> {
                         val sliderValue = (question as SliderQuestion).input
                         sendMessage(Message(Message.ANSWER, Utils.round(sliderValue, 1).toString()))
+                    }
+
+                    is ChatAdapter.MultipleChoiceQuestionMessageViewHolder -> {
+                        val radioGroup = clickedView as RadioGroup
+                        radioGroup.forEach start@ {
+                            if(it.id == radioGroup.checkedRadioButtonId) {
+                                val radioButton = it as RadioButton
+                                sendMessage(Message(Message.ANSWER, radioButton.text.toString()))
+                                return@start
+                            }
+                        }
                     }
                 }
             }
