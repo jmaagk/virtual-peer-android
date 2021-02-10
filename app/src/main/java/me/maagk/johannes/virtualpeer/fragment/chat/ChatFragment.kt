@@ -4,17 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
 import me.maagk.johannes.virtualpeer.survey.question.Question
+import me.maagk.johannes.virtualpeer.survey.question.SliderQuestion
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
@@ -31,12 +34,14 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             const val OUTGOING = 1
             const val ANSWER = 2
             const val EMOJI_QUESTION = 3
+            const val SLIDER_QUESTION = 4
         }
 
     }
 
     abstract class QuestionMessage(type: Int, message: String, val question: Question) : Message(type, message)
     class EmojiQuestionMessage(message: String, val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, message, emojiQuestion)
+    class SliderQuestionMessage(message: String, val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, message, sliderQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +62,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                         val emoji = clickedTextView.text.toString()
 
                         sendMessage(Message(Message.ANSWER, emoji))
+                    }
+
+                    is ChatAdapter.SliderQuestionMessageViewHolder -> {
+                        val sliderValue = (question as SliderQuestion).input
+                        sendMessage(Message(Message.ANSWER, Utils.round(sliderValue, 1).toString()))
                     }
                 }
             }
@@ -79,6 +89,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
                     val emojiQuestion = EmojiQuestion("", emojis)
                     EmojiQuestionMessage(userInput, emojiQuestion)
+                }
+
+                "slider", "slide" -> {
+                    SliderQuestionMessage(userInput, SliderQuestion("", 0, 10))
                 }
 
                 else -> {
@@ -138,6 +152,30 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         }
 
+        class SliderQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
+
+            val slider: Slider = itemView.findViewById(R.id.slider)
+            val submitButton: Button = itemView.findViewById(R.id.submit)
+            lateinit var sliderQuestion: SliderQuestion
+
+            init {
+                slider.addOnChangeListener { slider, value, fromUser ->
+                    sliderQuestion.input = value
+                }
+                submitButton.setOnClickListener {
+                    onClick(this, it)
+                }
+            }
+
+            override fun bind(message: Message) {
+                super.bind(message)
+
+                sliderQuestion = (message as SliderQuestionMessage).sliderQuestion
+                slider.value = sliderQuestion.input
+            }
+
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
 
@@ -150,6 +188,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 Message.EMOJI_QUESTION -> {
                     val view = layoutInflater.inflate(R.layout.view_message_question_emoji, parent, false)
                     EmojiQuestionMessageViewHolder(view, onQuestionClick)
+                }
+
+                Message.SLIDER_QUESTION -> {
+                    val view = layoutInflater.inflate(R.layout.view_message_question_slider, parent, false)
+                    SliderQuestionMessageViewHolder(view, onQuestionClick)
                 }
 
                 else -> {

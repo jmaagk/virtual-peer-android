@@ -7,8 +7,6 @@
     
     <include layout="@layout/fragment_question_base" />
 
-    <com.google.android.material.slider.Slider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/view_question_slider" />
 
 </LinearLayout>
