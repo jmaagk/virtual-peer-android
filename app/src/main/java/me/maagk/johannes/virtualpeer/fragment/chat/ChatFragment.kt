@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
 import me.maagk.johannes.virtualpeer.survey.question.Question
@@ -21,13 +22,15 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         get() = getString(R.string.nav_drawer_chat)
 
     private val messages = arrayListOf<Message>()
+    private lateinit var adapter: ChatAdapter
 
     open class Message(val type: Int, val message: String) {
 
         companion object {
             const val INCOMING = 0
             const val OUTGOING = 1
-            const val EMOJI_QUESTION = 2
+            const val ANSWER = 2
+            const val EMOJI_QUESTION = 3
         }
 
     }
@@ -43,46 +46,59 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
-        val adapter = ChatAdapter(messages)
+        val onQuestionClick = { holder: ChatAdapter.QuestionMessageViewHolder, clickedView: View ->
+            val questionMessage = holder.currentMessage as QuestionMessage
+            val question = questionMessage.question
+
+            if(!question.answered) {
+                when(holder) {
+                    is ChatAdapter.EmojiQuestionMessageViewHolder -> {
+                        val clickedTextView = clickedView as TextView
+                        val emoji = clickedTextView.text.toString()
+
+                        sendMessage(Message(Message.ANSWER, emoji))
+                    }
+                }
+            }
+
+            question.answered = true
+        }
+
+        adapter = ChatAdapter(messages, onQuestionClick)
         recyclerView.adapter = adapter
 
         val inputField: TextInputEditText = view.findViewById(R.id.chatInput)
 
         val sendButton: FloatingActionButton = view.findViewById(R.id.send)
         sendButton.setOnClickListener {
-            val prevMessageCount = messages.size
             val userInput = inputField.text.toString()
-            messages.add(Message(Message.OUTGOING, userInput))
+            val userMessage = Message(Message.OUTGOING, userInput)
 
-            when(userInput) {
+            val botMessage = when(userInput) {
                 "emoji" -> {
                     val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
                     val emojiQuestion = EmojiQuestion("", emojis)
-                    messages.add(EmojiQuestionMessage(userInput, emojiQuestion))
+                    EmojiQuestionMessage(userInput, emojiQuestion)
                 }
 
                 else -> {
-                    messages.add(Message(Message.INCOMING, inputField.text.toString()))
+                    Message(Message.INCOMING, inputField.text.toString())
                 }
             }
 
-            val newMessages = messages.size - prevMessageCount
-            if(newMessages == 1) {
-                adapter.notifyItemInserted(prevMessageCount)
-            } else {
-                adapter.notifyItemRangeInserted(prevMessageCount, prevMessageCount + newMessages - 1)
-            }
+            sendMessages(arrayOf(userMessage, botMessage))
         }
     }
 
-    private class ChatAdapter(val messages: ArrayList<Message>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
+    private class ChatAdapter(val messages: ArrayList<Message>, val onQuestionClick: (QuestionMessageViewHolder, View) -> Unit) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
 
         private abstract class MessageViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            protected val messageText: TextView = itemView.findViewById(R.id.message)
-            protected var currentMessage: Message? = null
+            val messageText: TextView = itemView.findViewById(R.id.message)
+            var currentMessage: Message? = null
 
             open fun bind(message: Message) {
+                currentMessage = message
                 messageText.text = message.message
             }
 
@@ -90,10 +106,22 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         private class IncomingMessageViewHolder(itemView: View) : MessageViewHolder(itemView)
         private class OutgoingMessageViewHolder(itemView: View) : MessageViewHolder(itemView)
-        private class EmojiQuestionMessageViewHolder(itemView: View) : MessageViewHolder(itemView) {
+
+        abstract class QuestionMessageViewHolder(itemView: View, val onClick: (QuestionMessageViewHolder, View) -> Unit) : MessageViewHolder(itemView)
+
+        class EmojiQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
 
             val emoji1: TextView = itemView.findViewById(R.id.emoji1)
             val emoji2: TextView = itemView.findViewById(R.id.emoji2)
+
+            init {
+                emoji1.setOnClickListener {
+                    onClick(this, it)
+                }
+                emoji2.setOnClickListener {
+                    onClick(this, it)
+                }
+            }
 
             override fun bind(message: Message) {
                 super.bind(message)
@@ -121,7 +149,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
                 Message.EMOJI_QUESTION -> {
                     val view = layoutInflater.inflate(R.layout.view_message_question_emoji, parent, false)
-                    EmojiQuestionMessageViewHolder(view)
+                    EmojiQuestionMessageViewHolder(view, onQuestionClick)
                 }
 
                 else -> {
@@ -144,6 +172,22 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             return messages[position].type
         }
 
+    }
+
+    private fun sendMessages(toSend: Array<Message>) {
+        val newMessages = toSend.size
+        if(newMessages == 1) {
+            sendMessage(toSend.first())
+        } else {
+            val prevMessageCount = messages.size
+            messages.addAll(toSend)
+            adapter.notifyItemRangeInserted(prevMessageCount, newMessages)
+        }
+    }
+
+    private fun sendMessage(toSend: Message) {
+        messages.add(toSend)
+        adapter.notifyItemInserted(messages.size - 1)
     }
 
 }
