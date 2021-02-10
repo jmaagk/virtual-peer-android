@@ -20,6 +20,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     override val actionBarTitle: String
         get() = getString(R.string.nav_drawer_chat)
 
+    private val messages = arrayListOf<Message>()
+
     open class Message(val type: Int, val message: String) {
 
         companion object {
@@ -41,7 +43,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
-        val messages = arrayListOf<Message>()
         val adapter = ChatAdapter(messages)
         recyclerView.adapter = adapter
 
