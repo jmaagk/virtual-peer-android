@@ -50,6 +50,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         val sendButton: FloatingActionButton = view.findViewById(R.id.send)
         sendButton.setOnClickListener {
+            val prevMessageCount = messages.size
             val userInput = inputField.text.toString()
             messages.add(Message(Message.OUTGOING, userInput))
 
@@ -65,7 +66,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 }
             }
 
-            adapter.notifyDataSetChanged()
+            val newMessages = messages.size - prevMessageCount
+            if(newMessages == 1) {
+                adapter.notifyItemInserted(prevMessageCount)
+            } else {
+                adapter.notifyItemRangeInserted(prevMessageCount, prevMessageCount + newMessages - 1)
+            }
         }
     }
 
