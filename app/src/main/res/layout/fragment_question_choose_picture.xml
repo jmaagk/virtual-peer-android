@@ -7,11 +7,10 @@
 
     <include layout="@layout/fragment_question_base" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:minHeight="450dp" />
+        android:columnCount="2" />
 
 </LinearLayout>
