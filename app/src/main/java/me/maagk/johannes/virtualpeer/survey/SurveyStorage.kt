@@ -111,8 +111,10 @@ class SurveyStorage(private val context: Context) {
                                         val drawableId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
                                         val drawable = ResourcesCompat.getDrawable(context.resources, drawableId, context.theme)
 
+                                        val label = imageTag.attributes.getNamedItem("label").nodeValue
+
                                         if(drawable != null) {
-                                            val image = ChoosePictureQuestion.Image(drawable)
+                                            val image = ChoosePictureQuestion.Image(drawable, label)
                                             images.add(image)
                                         }
                                     }

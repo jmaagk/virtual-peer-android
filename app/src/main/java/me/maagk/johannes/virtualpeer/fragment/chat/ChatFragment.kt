@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,6 +85,25 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                             }
                         }
                     }
+
+                    is ChatAdapter.ChoosePictureQuestionMessageViewHolder -> {
+                        val clickedImageButton = clickedView as ImageButton
+
+                        var clickedIndex = -1
+                        holder.choosePictureQuestionView.gridLayout.children.forEachIndexed start@ { index, view ->
+                            val imageButton: ImageButton = view.findViewById(R.id.imageButton)
+                            if(imageButton == clickedImageButton) {
+                                clickedIndex = index
+                                return@start
+                            }
+                        }
+
+                        if(clickedIndex != -1) {
+                            val choosePictureQuestion = (holder.currentMessage as ChoosePictureQuestionMessage).choosePictureQuestion
+                            val label = choosePictureQuestion.images[clickedIndex].label
+                            sendMessage(Message(Message.ANSWER, label))
+                        }
+                    }
                 }
             }
 
@@ -125,10 +142,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     val theme = requireContext().theme
 
                     val images = ArrayList<ChoosePictureQuestion.Image>()
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 1")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 2")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
 
                     val choosePictureQuestion = ChoosePictureQuestion("", images)
                     ChoosePictureQuestionMessage(userInput, choosePictureQuestion)
@@ -243,6 +260,14 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
                 val choosePictureQuestion = (message as ChoosePictureQuestionMessage).choosePictureQuestion
                 choosePictureQuestionView.question = choosePictureQuestion
+
+                choosePictureQuestionView.gridLayout.children.forEach { child ->
+                    // TODO: make this more efficient
+                    val imageButton: ImageButton = child.findViewById(R.id.imageButton)
+                    imageButton.setOnClickListener {
+                        onClick(this, it)
+                    }
+                }
             }
 
         }

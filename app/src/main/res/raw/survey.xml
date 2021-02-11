@@ -45,10 +45,10 @@
 
             <question>Fusce sit amet vulputate dui, in luctus mauris?</question>
             <images>
-                <image src="test_image_1" />
-                <image src="test_image_2" />
-                <image src="test_image_3" />
-                <image src="test_image_4" />
+                <image src="test_image_1" label="Lorem 1" />
+                <image src="test_image_2" label="Lorem 2" />
+                <image src="test_image_3" label="Lorem 3" />
+                <image src="test_image_4" label="Lorem 4" />
             </images>
 
         </choosePictureQuestion>
