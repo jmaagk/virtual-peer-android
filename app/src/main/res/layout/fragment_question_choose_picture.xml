@@ -7,10 +7,9 @@
 
     <include layout="@layout/fragment_question_base" />
 
-    <GridLayout
-        android:id="@+id/gridLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2" />
+    <me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
+        android:id="@+id/choosePictureQuestionView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

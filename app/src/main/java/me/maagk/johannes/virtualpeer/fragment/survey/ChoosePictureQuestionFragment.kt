@@ -6,6 +6,7 @@ import android.widget.GridLayout
 import android.widget.ImageButton
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.ChoosePictureQuestion
+import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 
 class ChoosePictureQuestionFragment(question: ChoosePictureQuestion) : QuestionFragment(R.layout.fragment_question_choose_picture, question) {
 
@@ -13,13 +14,8 @@ class ChoosePictureQuestionFragment(question: ChoosePictureQuestion) : QuestionF
         super.onViewCreated(view, savedInstanceState)
 
         val choosePictureQuestion = question as ChoosePictureQuestion
-        val gridLayout: GridLayout = view.findViewById(R.id.gridLayout)
-
-        for(image in choosePictureQuestion.images) {
-            val imageButton = ImageButton(requireContext())
-            imageButton.setImageDrawable(image.drawable)
-            gridLayout.addView(imageButton)
-        }
+        val choosePictureQuestionView: ChoosePictureQuestionView = view.findViewById(R.id.choosePictureQuestionView)
+        choosePictureQuestionView.question = choosePictureQuestion
     }
 
 }
