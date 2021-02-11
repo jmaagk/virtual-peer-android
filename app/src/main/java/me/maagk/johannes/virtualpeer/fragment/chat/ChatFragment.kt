@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.question.*
+import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
@@ -38,6 +40,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             const val EMOJI_QUESTION = 3
             const val SLIDER_QUESTION = 4
             const val MULTIPLE_CHOICE_QUESTION = 5
+            const val CHOOSE_PICTURE_QUESTION = 6
         }
 
     }
@@ -46,6 +49,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     class EmojiQuestionMessage(message: String, val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, message, emojiQuestion)
     class SliderQuestionMessage(message: String, val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, message, sliderQuestion)
     class MultipleChoiceQuestionMessage(message: String, val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, message, multipleChoiceQuestion)
+    class ChoosePictureQuestionMessage(message: String, val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, message, choosePictureQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -114,6 +118,20 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     val lorem = getString(R.string.lorem_ipsum_short)
                     val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", lorem + " 2", lorem + " 3"))
                     MultipleChoiceQuestionMessage(userInput, multipleChoiceQuestion)
+                }
+
+                "picture", "image" -> {
+                    val resources = requireContext().resources
+                    val theme = requireContext().theme
+
+                    val images = ArrayList<ChoosePictureQuestion.Image>()
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it)) }
+
+                    val choosePictureQuestion = ChoosePictureQuestion("", images)
+                    ChoosePictureQuestionMessage(userInput, choosePictureQuestion)
                 }
 
                 else -> {
@@ -216,6 +234,19 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         }
 
+        class ChoosePictureQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
+
+            val choosePictureQuestionView: ChoosePictureQuestionView = itemView.findViewById(R.id.choosePictureQuestionView)
+
+            override fun bind(message: Message) {
+                super.bind(message)
+
+                val choosePictureQuestion = (message as ChoosePictureQuestionMessage).choosePictureQuestion
+                choosePictureQuestionView.question = choosePictureQuestion
+            }
+
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
 
@@ -238,6 +269,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 Message.MULTIPLE_CHOICE_QUESTION -> {
                     val view = layoutInflater.inflate(R.layout.view_message_question_multiple_choice, parent, false)
                     MultipleChoiceQuestionMessageViewHolder(view, onQuestionClick)
+                }
+
+                Message.CHOOSE_PICTURE_QUESTION -> {
+                    val view = layoutInflater.inflate(R.layout.view_message_question_choose_picture, parent, false)
+                    ChoosePictureQuestionMessageViewHolder(view, onQuestionClick)
                 }
 
                 else -> {

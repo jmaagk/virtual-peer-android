@@ -28,6 +28,8 @@ class ChoosePictureQuestionView @JvmOverloads constructor(
     }
 
     fun update() {
+        gridLayout.removeAllViews()
+
         question?.images?.forEach { image ->
             val imageButton = ImageButton(context)
             imageButton.setImageDrawable(image.drawable)
