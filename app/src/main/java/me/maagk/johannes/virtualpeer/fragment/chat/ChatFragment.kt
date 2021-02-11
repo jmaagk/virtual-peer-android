@@ -116,7 +116,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
                 "multiplechoice", "choice", "mc" -> {
                     val lorem = getString(R.string.lorem_ipsum_short)
-                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", lorem + " 2", lorem + " 3"))
+                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
                     MultipleChoiceQuestionMessage(userInput, multipleChoiceQuestion)
                 }
 
