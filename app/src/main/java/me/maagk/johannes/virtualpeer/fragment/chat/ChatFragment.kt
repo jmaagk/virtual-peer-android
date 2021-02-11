@@ -18,10 +18,8 @@ import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
-import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
-import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
-import me.maagk.johannes.virtualpeer.survey.question.Question
-import me.maagk.johannes.virtualpeer.survey.question.SliderQuestion
+import me.maagk.johannes.virtualpeer.survey.question.*
+import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
@@ -148,14 +146,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         class EmojiQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
 
-            val emoji1: TextView = itemView.findViewById(R.id.emoji1)
-            val emoji2: TextView = itemView.findViewById(R.id.emoji2)
+            val emojiQuestionView: EmojiQuestionView = itemView.findViewById(R.id.emojiQuestionView)
 
             init {
-                emoji1.setOnClickListener {
+                emojiQuestionView.emoji1.setOnClickListener {
                     onClick(this, it)
                 }
-                emoji2.setOnClickListener {
+                emojiQuestionView.emoji2.setOnClickListener {
                     onClick(this, it)
                 }
             }
@@ -164,13 +161,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 super.bind(message)
 
                 val emojiQuestion = (message as EmojiQuestionMessage).emojiQuestion
-                emojiQuestion.emojis.forEachIndexed{index, emoji ->
-                    when(index) {
-                        0 -> emoji1.text = emoji
-                        1 -> emoji2.text = emoji
-                        else -> TODO("do something when more emojis are supplied")
-                    }
-                }
+                emojiQuestionView.question = emojiQuestion
             }
 
         }
