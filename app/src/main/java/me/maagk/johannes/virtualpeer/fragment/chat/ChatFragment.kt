@@ -27,6 +27,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         get() = getString(R.string.nav_drawer_chat)
 
     private val messages = arrayListOf<Message>()
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ChatAdapter
 
     open class Message(var type: Int, val message: String) {
@@ -54,7 +55,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.chatList)
+        recyclerView = view.findViewById(R.id.chatList)
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
@@ -375,6 +376,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
             sendMessage(botMessage)
         }
+
+        recyclerView.smoothScrollToPosition(messages.size - 1)
     }
 
 }
