@@ -29,7 +29,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     private val messages = arrayListOf<Message>()
     private lateinit var adapter: ChatAdapter
 
-    open class Message(val type: Int, val message: String) {
+    open class Message(var type: Int, val message: String) {
 
         companion object {
             const val INCOMING = 0
@@ -39,6 +39,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             const val SLIDER_QUESTION = 4
             const val MULTIPLE_CHOICE_QUESTION = 5
             const val CHOOSE_PICTURE_QUESTION = 6
+            const val TEXT_INPUT_QUESTION = 7
         }
 
     }
@@ -48,6 +49,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     class SliderQuestionMessage(message: String, val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, message, sliderQuestion)
     class MultipleChoiceQuestionMessage(message: String, val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, message, multipleChoiceQuestion)
     class ChoosePictureQuestionMessage(message: String, val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, message, choosePictureQuestion)
+    class TextInputQuestionMessage(message: String, val textInputQuestion: TextInputQuestion) : QuestionMessage(TEXT_INPUT_QUESTION, message, textInputQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,44 +121,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         sendButton.setOnClickListener {
             val userInput = inputField.text.toString()
             val userMessage = Message(Message.OUTGOING, userInput)
-
-            val botMessage = when(userInput) {
-                "emoji" -> {
-                    val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
-                    val emojiQuestion = EmojiQuestion("", emojis)
-                    EmojiQuestionMessage(userInput, emojiQuestion)
-                }
-
-                "slider", "slide" -> {
-                    SliderQuestionMessage(userInput, SliderQuestion("", 0, 10))
-                }
-
-                "multiplechoice", "choice", "mc" -> {
-                    val lorem = getString(R.string.lorem_ipsum_short)
-                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
-                    MultipleChoiceQuestionMessage(userInput, multipleChoiceQuestion)
-                }
-
-                "picture", "image" -> {
-                    val resources = requireContext().resources
-                    val theme = requireContext().theme
-
-                    val images = ArrayList<ChoosePictureQuestion.Image>()
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 1")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 2")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
-
-                    val choosePictureQuestion = ChoosePictureQuestion("", images)
-                    ChoosePictureQuestionMessage(userInput, choosePictureQuestion)
-                }
-
-                else -> {
-                    Message(Message.INCOMING, inputField.text.toString())
-                }
-            }
-
-            sendMessages(arrayOf(userMessage, botMessage))
+            sendMessage(userMessage)
         }
     }
 
@@ -272,6 +237,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         }
 
+        class TextInputQuestionMessageViewHolder(itemView: View) : QuestionMessageViewHolder(itemView, { _, _ -> })
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
 
@@ -299,6 +266,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 Message.CHOOSE_PICTURE_QUESTION -> {
                     val view = layoutInflater.inflate(R.layout.view_message_question_choose_picture, parent, false)
                     ChoosePictureQuestionMessageViewHolder(view, onQuestionClick)
+                }
+
+                Message.TEXT_INPUT_QUESTION -> {
+                    val view = layoutInflater.inflate(R.layout.view_message_incoming, parent, false)
+                    TextInputQuestionMessageViewHolder(view)
                 }
 
                 else -> {
@@ -330,13 +302,79 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         } else {
             val prevMessageCount = messages.size
             messages.addAll(toSend)
+            onSendMessages(toSend)
             adapter.notifyItemRangeInserted(prevMessageCount, newMessages)
         }
     }
 
     private fun sendMessage(toSend: Message) {
         messages.add(toSend)
+        onSendMessage(toSend)
         adapter.notifyItemInserted(messages.size - 1)
+    }
+
+    // these methods are separated from the ones above to isolate the listener-type behavior
+    // from the actual sending of messages
+    private fun onSendMessages(sent: Array<Message>) {
+        for(message in sent)
+            onSendMessage(message)
+    }
+
+    private fun onSendMessage(sent: Message) {
+        // checking if this message is an answer to a previously asked question
+        if(sent !is QuestionMessage && messages.size >= 2) {
+            val prevMessage = messages[messages.size - 2]
+            if(prevMessage is TextInputQuestionMessage && !prevMessage.question.answered) {
+                sent.type = Message.ANSWER
+                prevMessage.question.answered = true
+            }
+        }
+
+        // checking pre-defined "commands" (temporary)
+        if(sent.type == Message.OUTGOING) {
+            val botMessage = when(sent.message) {
+                "emoji" -> {
+                    val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
+                    val emojiQuestion = EmojiQuestion("", emojis)
+                    EmojiQuestionMessage(sent.message, emojiQuestion)
+                }
+
+                "slider", "slide" -> {
+                    SliderQuestionMessage(sent.message, SliderQuestion("", 0, 10))
+                }
+
+                "multiplechoice", "choice", "mc" -> {
+                    val lorem = getString(R.string.lorem_ipsum_short)
+                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
+                    MultipleChoiceQuestionMessage(sent.message, multipleChoiceQuestion)
+                }
+
+                "picture", "image" -> {
+                    val resources = requireContext().resources
+                    val theme = requireContext().theme
+
+                    val images = ArrayList<ChoosePictureQuestion.Image>()
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 1")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 2")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
+                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
+
+                    val choosePictureQuestion = ChoosePictureQuestion("", images)
+                    ChoosePictureQuestionMessage(sent.message, choosePictureQuestion)
+                }
+
+                "text", "textinput" -> {
+                    val textInputQuestion = TextInputQuestion("")
+                    TextInputQuestionMessage(getString(R.string.lorem_ipsum_medium), textInputQuestion)
+                }
+
+                else -> {
+                    Message(Message.INCOMING, sent.message)
+                }
+            }
+
+            sendMessage(botMessage)
+        }
     }
 
 }
