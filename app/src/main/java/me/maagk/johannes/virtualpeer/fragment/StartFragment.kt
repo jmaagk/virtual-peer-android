@@ -62,12 +62,13 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         val changeActivityButton: Button = view.findViewById(R.id.currentActivityChange)
         val currentActivityLayout: View = view.findViewById(R.id.currentActivityLayout)
         val changeActivityLayout: View = view.findViewById(R.id.changeActivityLayout)
+        val activityRadioGroup: RadioGroup = view.findViewById(R.id.radioGroup)
+
         changeActivityButton.setOnClickListener {
             currentActivityLayout.visibility = View.GONE
             changeActivityLayout.visibility = View.VISIBLE
         }
 
-        val activityRadioGroup: RadioGroup = view.findViewById(R.id.radioGroup)
         activityRadioGroup.setOnCheckedChangeListener { group, id ->
             changeActivityLayout.visibility = View.GONE
             currentActivityLayout.visibility = View.VISIBLE
@@ -82,6 +83,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
             userActivityManager.setCurrentActivity(newActivity)
 
             updateCurrentActivityText()
+            if(id != -1)
+                group.clearCheck()
         }
 
         chart = view.findViewById(R.id.startChart)
