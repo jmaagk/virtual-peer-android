@@ -46,11 +46,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     }
 
     abstract class QuestionMessage(type: Int, message: String, val question: Question) : Message(type, message)
-    class EmojiQuestionMessage(message: String, val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, message, emojiQuestion)
-    class SliderQuestionMessage(message: String, val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, message, sliderQuestion)
-    class MultipleChoiceQuestionMessage(message: String, val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, message, multipleChoiceQuestion)
-    class ChoosePictureQuestionMessage(message: String, val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, message, choosePictureQuestion)
-    class TextInputQuestionMessage(message: String, val textInputQuestion: TextInputQuestion) : QuestionMessage(TEXT_INPUT_QUESTION, message, textInputQuestion)
+    class EmojiQuestionMessage(val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, emojiQuestion.question, emojiQuestion)
+    class SliderQuestionMessage(val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, sliderQuestion.question, sliderQuestion)
+    class MultipleChoiceQuestionMessage(val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, multipleChoiceQuestion.question, multipleChoiceQuestion)
+    class ChoosePictureQuestionMessage(val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, choosePictureQuestion.question, choosePictureQuestion)
+    class TextInputQuestionMessage(val textInputQuestion: TextInputQuestion) : QuestionMessage(TEXT_INPUT_QUESTION, textInputQuestion.question, textInputQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -336,18 +336,18 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             val botMessage = when(sent.message) {
                 "emoji" -> {
                     val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
-                    val emojiQuestion = EmojiQuestion("", emojis)
-                    EmojiQuestionMessage(sent.message, emojiQuestion)
+                    val emojiQuestion = EmojiQuestion(sent.message, emojis)
+                    EmojiQuestionMessage(emojiQuestion)
                 }
 
                 "slider", "slide" -> {
-                    SliderQuestionMessage(sent.message, SliderQuestion("", 0, 10))
+                    SliderQuestionMessage(SliderQuestion(sent.message, 0, 10))
                 }
 
                 "multiplechoice", "choice", "mc" -> {
                     val lorem = getString(R.string.lorem_ipsum_short)
-                    val multipleChoiceQuestion = MultipleChoiceQuestion("", arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
-                    MultipleChoiceQuestionMessage(sent.message, multipleChoiceQuestion)
+                    val multipleChoiceQuestion = MultipleChoiceQuestion(sent.message, arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
+                    MultipleChoiceQuestionMessage(multipleChoiceQuestion)
                 }
 
                 "picture", "image" -> {
@@ -360,13 +360,13 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
                     ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
 
-                    val choosePictureQuestion = ChoosePictureQuestion("", images)
-                    ChoosePictureQuestionMessage(sent.message, choosePictureQuestion)
+                    val choosePictureQuestion = ChoosePictureQuestion(sent.message, images)
+                    ChoosePictureQuestionMessage(choosePictureQuestion)
                 }
 
                 "text", "textinput" -> {
-                    val textInputQuestion = TextInputQuestion("")
-                    TextInputQuestionMessage(getString(R.string.lorem_ipsum_medium), textInputQuestion)
+                    val textInputQuestion = TextInputQuestion(getString(R.string.lorem_ipsum_medium))
+                    TextInputQuestionMessage(textInputQuestion)
                 }
 
                 else -> {
