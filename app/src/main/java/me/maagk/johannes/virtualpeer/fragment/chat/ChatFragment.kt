@@ -20,6 +20,7 @@ import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
+import me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
@@ -193,10 +194,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         class MultipleChoiceQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
 
-            val radioGroup: RadioGroup = itemView.findViewById(R.id.radioGroup)
+            val multipleChoiceQuestionView: MultipleChoiceQuestionView = itemView.findViewById(R.id.multipleChoiceQuestionView)
 
             init {
-                radioGroup.setOnCheckedChangeListener { group, id ->
+                multipleChoiceQuestionView.radioGroup.setOnCheckedChangeListener { group, id ->
                     onClick(this, group)
                 }
             }
@@ -204,15 +205,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             override fun bind(message: Message) {
                 super.bind(message)
 
-                // TODO: improve this process by not inflating every time this binds to a message
                 val multipleChoiceQuestion = (message as MultipleChoiceQuestionMessage).multipleChoiceQuestion
-                radioGroup.removeAllViews()
-                val inflater = LayoutInflater.from(radioGroup.context)
-                for(choice in multipleChoiceQuestion.choices) {
-                    val radioButton = inflater.inflate(R.layout.view_radio_button, radioGroup, false) as RadioButton
-                    radioButton.text = choice
-                    radioGroup.addView(radioButton)
-                }
+                multipleChoiceQuestionView.question = multipleChoiceQuestion
             }
 
         }

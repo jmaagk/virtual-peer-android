@@ -26,10 +26,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lorem_ipsum_medium" />
 
-            <include android:layout_width="wrap_content"
+            <me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
+                android:id="@+id/multipleChoiceQuestionView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                layout="@layout/view_question_multiple_choice" />
+                android:layout_marginEnd="10dp" />
 
         </LinearLayout>
 
