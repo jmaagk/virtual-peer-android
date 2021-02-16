@@ -16,19 +16,21 @@ import me.maagk.johannes.virtualpeer.survey.question.*
 
 class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitle {
 
+    companion object {
+        const val TAG = "survey"
+    }
+
     override val actionBarTitle: String
         get() = getString(R.string.nav_drawer_survey)
 
     private lateinit var survey: Survey
     private lateinit var activity: MainActivity
 
-    private lateinit var surveyInfoLayout: LinearLayout
     private lateinit var surveyFragmentContainer: FragmentContainerView
     private lateinit var startNextButton: Button
     private lateinit var backButton: Button
 
     private var questionIndex: Int = -1
-    private var onInfoScreen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +43,7 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        surveyInfoLayout = view.findViewById(R.id.surveyInfoLayout)
         surveyFragmentContainer = view.findViewById(R.id.surveyFragmentContainer)
-
-        val titleText: TextView = surveyInfoLayout.findViewById(R.id.title)
-        val descriptionText: TextView = surveyInfoLayout.findViewById(R.id.description)
-
-        titleText.text = survey.title
-        descriptionText.text = survey.description
 
         startNextButton = view.findViewById(R.id.startAndNext)
         backButton = view.findViewById(R.id.back)
@@ -60,43 +55,50 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
         backButton.setOnClickListener {
             navigate(false)
         }
+
+        update()
+    }
+
+    private fun update() {
+        val onInfoScreen = isOnInfoScreen()
+
+        updateFragments()
+
+        when {
+            questionIndex == survey.questions.size - 1 -> startNextButton.setText(R.string.survey_finish)
+            isOnInfoScreen() -> startNextButton.setText(R.string.survey_start)
+            else -> startNextButton.setText(R.string.survey_next)
+        }
+
+        backButton.visibility = if(onInfoScreen) View.INVISIBLE else View.VISIBLE
     }
 
     private fun navigate(forward: Boolean) {
         if(forward) {
-            if(onInfoScreen)
-                updateInfoScreen(false)
-
-            if((questionIndex + 1) < survey.questions.size) {
+            if((questionIndex + 1) < survey.questions.size)
                 questionIndex++
-                updateQuestion()
-            }
         } else {
             questionIndex--
-
-            if(questionIndex == -1)
-                updateInfoScreen(true)
-            else
-                updateQuestion()
         }
 
-        if(questionIndex == survey.questions.size - 1)
-            startNextButton.setText(R.string.survey_finish)
-        else if(!onInfoScreen)
-            startNextButton.setText(R.string.survey_next)
+        update()
     }
 
-    private fun updateQuestion() {
-        val question = survey.questions[questionIndex]
-        var fragment: Fragment?
-
-        fragment = when(question) {
-            is TextInputQuestion -> TextInputQuestionFragment(question)
-            is SliderQuestion -> SliderQuestionFragment(question)
-            is EmojiQuestion -> EmojiQuestionFragment(question)
-            is MultipleChoiceQuestion -> MultipleChoiceQuestionFragment(question)
-            is ChoosePictureQuestion -> ChoosePictureQuestionFragment(question)
-            else -> null
+    private fun updateFragments() {
+        var fragment: Fragment? = if(isOnInfoScreen()) {
+            val returnValue = SurveyStartFragment()
+            returnValue.title = survey.title
+            returnValue.description = survey.description
+            returnValue
+        } else {
+            when(val question = survey.questions[questionIndex]) {
+                is TextInputQuestion -> TextInputQuestionFragment(question)
+                is SliderQuestion -> SliderQuestionFragment(question)
+                is EmojiQuestion -> EmojiQuestionFragment(question)
+                is MultipleChoiceQuestion -> MultipleChoiceQuestionFragment(question)
+                is ChoosePictureQuestion -> ChoosePictureQuestionFragment(question)
+                else -> null
+            }
         }
 
         if(fragment == null) {
@@ -107,14 +109,8 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
         activity.supportFragmentManager.beginTransaction().replace(R.id.surveyFragmentContainer, fragment, null).commit()
     }
 
-    private fun updateInfoScreen(show: Boolean) {
-        surveyInfoLayout.visibility = if(show) View.VISIBLE else View.GONE
-        surveyFragmentContainer.visibility = if(show) View.GONE else View.VISIBLE
-        startNextButton.setText(if(show) R.string.survey_start else R.string.survey_next)
-        backButton.visibility = if(show) View.INVISIBLE else View.VISIBLE
-        questionIndex = if(show) -1 else 0
-
-        onInfoScreen = show
+    private fun isOnInfoScreen() : Boolean {
+        return questionIndex == -1
     }
 
 }

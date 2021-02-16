@@ -9,6 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
@@ -77,7 +78,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, startFragment, StartFragment.TAG).commit()
             navigationView.setCheckedItem(R.id.navDrawerStart)
         } else {
-            // TODO: retrieve the fragment on top
+            // TODO: retrieve the fragment on top for later use
+            // val topFragment = getTopFragment()
         }
     }
 
@@ -87,37 +89,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return false
 
         // TODO: reuse fragment instances; add them to the back stack?
-        return when(item.itemId) {
-            R.id.navDrawerStart -> {
-                val startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) ?: StartFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, startFragment, StartFragment.TAG).commit()
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            R.id.navDrawerSettings -> {
-                val settingsFragment = supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, settingsFragment, SettingsFragment.TAG).commit()
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            R.id.navDrawerSurvey -> {
-                val surveyFragment = SurveyFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, surveyFragment, null).commit()
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            R.id.navDrawerChat -> {
-                val chatFragment = ChatFragment()
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, chatFragment, null).commit()
-                drawerLayout.closeDrawer(GravityCompat.START)
-                true
-            }
-
-            else -> false
+        val fragment: Fragment = when(item.itemId) {
+            R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
+            R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
+            R.id.navDrawerChat -> supportFragmentManager.findFragmentByTag(ChatFragment.TAG) ?: ChatFragment()
+            else -> supportFragmentManager.findFragmentByTag(StartFragment.TAG) ?: StartFragment()
         }
+
+        val tag = when(item.itemId) {
+            R.id.navDrawerSettings -> SettingsFragment.TAG
+            R.id.navDrawerSurvey -> SurveyFragment.TAG
+            R.id.navDrawerChat -> ChatFragment.TAG
+            else -> StartFragment.TAG
+        }
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment, tag).addToBackStack(tag).commit()
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun getTopFragment(): Fragment? {
+        val manager = supportFragmentManager
+        if (manager.backStackEntryCount == 0)
+            return manager.findFragmentByTag(StartFragment.TAG)
+
+        val backStackStateTag = manager.getBackStackEntryAt(manager.backStackEntryCount - 1).name
+        return manager.findFragmentByTag(backStackStateTag)
     }
 
 }

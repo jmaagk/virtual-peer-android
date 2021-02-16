@@ -3,29 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/surveyInfoLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/lorem_ipsum_short"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:layout_marginBottom="5dp" />
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/lorem_ipsum_long" />
-
-    </LinearLayout>
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/surveyFragmentContainer"
         android:layout_width="match_parent"

@@ -24,6 +24,10 @@ import me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
+    companion object {
+        const val TAG = "chat"
+    }
+
     override val actionBarTitle: String
         get() = getString(R.string.nav_drawer_chat)
 
