@@ -12,8 +12,11 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
+import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
 import java.time.ZonedDateTime
@@ -21,7 +24,7 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import kotlin.math.round
 
-class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle {
+class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle, ChatFragment.OnMessageSentListener {
 
     private lateinit var userActivityManager: UserActivityManager
 
@@ -69,7 +72,10 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
             changeActivityLayout.visibility = View.VISIBLE
         }
 
-        activityRadioGroup.setOnCheckedChangeListener { group, id ->
+        activityRadioGroup.setOnCheckedChangeListener start@ { group, id ->
+            if(id == -1)
+                return@start
+
             changeActivityLayout.visibility = View.GONE
             currentActivityLayout.visibility = View.VISIBLE
 
@@ -82,9 +88,23 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
             val newActivity = UserActivity(newActivityType, ZonedDateTime.now(), null)
             userActivityManager.setCurrentActivity(newActivity)
 
+            if(isAdded) {
+                val questionType = (0..4).random()
+                val questionMessage = when(questionType) {
+                    0 -> ChatFragment.TextInputQuestionMessage(Question.getExampleTextInputQuestion(requireContext()))
+                    1 -> ChatFragment.EmojiQuestionMessage(Question.getExampleEmojiQuestion(requireContext()))
+                    2 -> ChatFragment.SliderQuestionMessage(Question.getExampleSliderQuestion(requireContext()))
+                    3 -> ChatFragment.MultipleChoiceQuestionMessage(Question.getExampleMultipleChoiceQuestion(requireContext()))
+                    else -> ChatFragment.ChoosePictureQuestionMessage(Question.getExampleChoosePictureQuestion(requireContext()))
+                }
+                questionMessage.question.tag = "activity_rating"
+
+                val mainActivity = activity as MainActivity
+                mainActivity.queueMessage(questionMessage)
+            }
+
             updateCurrentActivityText()
-            if(id != -1)
-                group.clearCheck()
+            group.clearCheck()
         }
 
         chart = view.findViewById(R.id.startChart)
@@ -180,6 +200,28 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle 
         entries.add(PieEntry(hoursLeft))
 
         return entries
+    }
+
+    override fun onMessageSent(message: ChatFragment.Message) {
+        if(message is ChatFragment.AnswerMessage) {
+            val prevActivity = userActivityManager.getPreviousActivity() ?: return
+
+            prevActivity.userRating = message.question.answer
+            prevActivity.userRatingType = when(message.question) {
+                is TextInputQuestion -> UserActivity.RATING_TYPE_TEXT_INPUT
+                is EmojiQuestion -> UserActivity.RATING_TYPE_EMOJI
+                is SliderQuestion -> UserActivity.RATING_TYPE_SLIDER
+                is MultipleChoiceQuestion -> UserActivity.RATING_TYPE_MULTIPLE_CHOICE
+                is ChoosePictureQuestion -> UserActivity.RATING_TYPE_PICTURE
+                else -> UserActivity.RATING_TYPE_UNKNOWN
+            }
+
+            userActivityManager.save()
+
+            // TODO: return to start screen
+
+            (activity as MainActivity).removeOnMessageSentListener(this)
+        }
     }
 
 }

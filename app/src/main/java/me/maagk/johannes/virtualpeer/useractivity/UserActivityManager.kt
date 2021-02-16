@@ -31,6 +31,15 @@ class UserActivityManager(private val context: Context) {
         return storage.getNewestActivity()
     }
 
+    // TODO: does this always do the right thing? (compare it to storage.getNewestActivity())
+    fun getPreviousActivity(): UserActivity? {
+        val todaysActivities = storage.userActivities
+        if(todaysActivities.size >= 2)
+            return todaysActivities[todaysActivities.size - 2]
+
+        return null
+    }
+
     fun getTodaysActivities(): ArrayList<UserActivity> {
         val activities = arrayListOf<UserActivity>()
         val startOfToday = ZonedDateTime.now().toLocalDate().atStartOfDay()

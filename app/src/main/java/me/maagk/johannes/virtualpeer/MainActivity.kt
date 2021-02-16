@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
 
+    private var startFragment: StartFragment? = null
+    private var chatFragment: ChatFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,8 +78,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // showing either the start fragment or the one that was previously on top
         if(savedInstanceState == null) {
-            val startFragment = StartFragment()
-            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, startFragment, StartFragment.TAG).commit()
+            startFragment = StartFragment()
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, startFragment!!, StartFragment.TAG).commit()
             navigationView.setCheckedItem(R.id.navDrawerStart)
         } else {
             // TODO: retrieve the fragment on top for later use
@@ -94,8 +97,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragment: Fragment = when(item.itemId) {
             R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
             R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
-            R.id.navDrawerChat -> supportFragmentManager.findFragmentByTag(ChatFragment.TAG) ?: ChatFragment()
-            else -> supportFragmentManager.findFragmentByTag(StartFragment.TAG) ?: StartFragment()
+            R.id.navDrawerChat -> {
+                if(chatFragment == null)
+                    chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
+                chatFragment as Fragment
+            }
+            else -> {
+                if(startFragment == null)
+                    startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) as StartFragment? ?: StartFragment()
+                startFragment as Fragment
+            }
         }
 
         val tag = when(item.itemId) {
@@ -119,6 +130,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return manager.findFragmentByTag(backStackStateTag)
     }
 
+    fun queueMessage(message: ChatFragment.Message) {
+        if(chatFragment == null)
+            chatFragment = ChatFragment()
+
+        if(startFragment == null)
+            startFragment = StartFragment()
+
+        startFragment?.let {
+            chatFragment?.addOnMessageSentListener(it)
+        }
+        chatFragment?.queueMessage(message)
+        if(getTopFragment() !is ChatFragment) {
+            val chatItem = navigationView.menu.findItem(R.id.navDrawerChat)
+            onNavigationItemSelected(chatItem)
+            navigationView.setCheckedItem(chatItem)
+        }
+    }
+
     override fun onBackStackChanged() {
         // TODO: is there a better way to achieve this behavior?
         val itemToSelect = when(getTopFragment()) {
@@ -129,6 +158,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         navigationView.setCheckedItem(itemToSelect)
+    }
+
+    fun removeOnMessageSentListener(onMessageSentListener: ChatFragment.OnMessageSentListener) {
+        chatFragment?.removeOnMessageSentListener(onMessageSentListener)
     }
 
 }

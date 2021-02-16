@@ -7,11 +7,9 @@ import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.io.File
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoField
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
@@ -19,7 +17,6 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 class UserActivityStorage(private val context: Context, refresh: Boolean = true) {
 
@@ -86,7 +83,24 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
             ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTimeLong), ZoneId.systemDefault())
         }
 
-        return UserActivity(type, startTime, endTime)
+        val activity = UserActivity(type, startTime, endTime)
+
+        val userRatingTypeTag = activityTag.attributes.getNamedItem("userRatingType")
+        val userRatingTag = activityTag.attributes.getNamedItem("userRating")
+        if(userRatingTypeTag != null && userRatingTag != null) {
+            activity.userRatingType = userRatingTypeTag.nodeValue.toInt()
+            activity.userRating = when(activity.userRatingType) {
+                UserActivity.RATING_TYPE_EMOJI,
+                UserActivity.RATING_TYPE_MULTIPLE_CHOICE,
+                UserActivity.RATING_TYPE_PICTURE -> userRatingTag.nodeValue.toInt()
+
+                UserActivity.RATING_TYPE_SLIDER -> userRatingTag.nodeValue.toFloat()
+
+                else -> userRatingTag.nodeValue
+            }
+        }
+
+        return activity
     }
 
     fun save() {
@@ -120,6 +134,11 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
 
         val endTimeMillis = if(activity.endTime == null) -1 else activity.endTime!!.toInstant().toEpochMilli()
         activityRoot.setAttribute("endTime", endTimeMillis.toString())
+
+        if(activity.userRating != null) {
+            activityRoot.setAttribute("userRatingType", activity.userRatingType.toString())
+            activityRoot.setAttribute("userRating", activity.userRating.toString())
+        }
 
         return activityRoot
     }

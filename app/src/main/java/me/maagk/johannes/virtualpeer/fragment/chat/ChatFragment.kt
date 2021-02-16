@@ -24,6 +24,10 @@ import me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
+    interface OnMessageSentListener {
+        fun onMessageSent(message: Message)
+    }
+
     companion object {
         const val TAG = "chat"
     }
@@ -32,8 +36,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         get() = getString(R.string.nav_drawer_chat)
 
     private val messages = arrayListOf<Message>()
+    private val messageQueue = arrayListOf<Message>()
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ChatAdapter
+
+    private val onMessageSentListeners = arrayListOf<OnMessageSentListener>()
 
     open class Message(var type: Int, val message: String) {
 
@@ -56,6 +64,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     class MultipleChoiceQuestionMessage(val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, multipleChoiceQuestion.question, multipleChoiceQuestion)
     class ChoosePictureQuestionMessage(val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, choosePictureQuestion.question, choosePictureQuestion)
     class TextInputQuestionMessage(val textInputQuestion: TextInputQuestion) : QuestionMessage(TEXT_INPUT_QUESTION, textInputQuestion.question, textInputQuestion)
+    class AnswerMessage(message: String?, val answeredQuestion: Question) : QuestionMessage(ANSWER, message ?: answeredQuestion.question, answeredQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,6 +79,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             val question = questionMessage.question
 
             if(!question.answered) {
+                question.answered = true
+
                 when(holder) {
                     is ChatAdapter.EmojiQuestionMessageViewHolder -> {
                         val clickedTextView = clickedView as TextView
@@ -83,7 +94,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                             }
                         }
 
-                        sendMessage(Message(Message.ANSWER, clickedEmoji))
+                        sendMessage(AnswerMessage(clickedEmoji, emojiQuestion))
                     }
 
                     is ChatAdapter.SliderQuestionMessageViewHolder -> {
@@ -92,7 +103,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                         val roundedValue = Utils.round(sliderValue, 1)
                         sliderQuestion.answer = roundedValue.toFloat()
 
-                        sendMessage(Message(Message.ANSWER, roundedValue.toString()))
+                        sendMessage(AnswerMessage(roundedValue.toString(), sliderQuestion))
                     }
 
                     is ChatAdapter.MultipleChoiceQuestionMessageViewHolder -> {
@@ -100,8 +111,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                         radioGroup.forEachIndexed start@ { index, view ->
                             if(view.id == radioGroup.checkedRadioButtonId) {
                                 val radioButton = view as RadioButton
-                                sendMessage(Message(Message.ANSWER, radioButton.text.toString()))
                                 question.answer = index
+                                sendMessage(AnswerMessage(radioButton.text.toString(), question))
                                 return@start
                             }
                         }
@@ -123,13 +134,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                             val choosePictureQuestion = (holder.currentMessage as ChoosePictureQuestionMessage).choosePictureQuestion
                             val label = choosePictureQuestion.images[clickedIndex].label
                             choosePictureQuestion.answer = clickedIndex
-                            sendMessage(Message(Message.ANSWER, label))
+                            sendMessage(AnswerMessage(label, choosePictureQuestion))
                         }
                     }
                 }
             }
-
-            question.answered = true
         }
 
         adapter = ChatAdapter(messages, onQuestionClick)
@@ -140,9 +149,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         val sendButton: FloatingActionButton = view.findViewById(R.id.send)
         sendButton.setOnClickListener {
             val userInput = inputField.text.toString()
-            val userMessage = Message(Message.OUTGOING, userInput)
+            val userMessage = prepareUserMessage(userInput)
             sendMessage(userMessage)
         }
+
+        sendMessages(messageQueue.toTypedArray())
+        messageQueue.clear()
     }
 
     private class ChatAdapter(val messages: ArrayList<Message>, val onQuestionClick: (QuestionMessageViewHolder, View) -> Unit) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
@@ -251,6 +263,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         }
 
         class TextInputQuestionMessageViewHolder(itemView: View) : QuestionMessageViewHolder(itemView, { _, _ -> })
+        class AnswerMessageViewHolder(itemView: View) : QuestionMessageViewHolder(itemView, {_, _ -> })
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
@@ -286,6 +299,11 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     TextInputQuestionMessageViewHolder(view)
                 }
 
+                Message.ANSWER -> {
+                    val view = layoutInflater.inflate(R.layout.view_message_outgoing, parent, false)
+                    AnswerMessageViewHolder(view)
+                }
+
                 else -> {
                     val view = layoutInflater.inflate(R.layout.view_message_outgoing, parent, false)
                     OutgoingMessageViewHolder(view)
@@ -308,7 +326,20 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
     }
 
-    private fun sendMessages(toSend: Array<Message>) {
+    private fun prepareUserMessage(input: String): Message {
+        if(messages.size >= 1) {
+            val prevMessage = messages[messages.size - 1]
+            if(prevMessage is TextInputQuestionMessage) {
+                prevMessage.question.answer = input
+                prevMessage.question.answered = true
+                return AnswerMessage(input, prevMessage.question)
+            }
+        }
+
+        return Message(Message.OUTGOING, input)
+    }
+
+    fun sendMessages(toSend: Array<Message>) {
         val newMessages = toSend.size
         if(newMessages == 1) {
             sendMessage(toSend.first())
@@ -317,13 +348,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             messages.addAll(toSend)
             onSendMessages(toSend)
             adapter.notifyItemRangeInserted(prevMessageCount, newMessages)
+
+            for(message in toSend)
+                onMessageSent(message)
         }
     }
 
-    private fun sendMessage(toSend: Message) {
+    fun sendMessage(toSend: Message) {
         messages.add(toSend)
         onSendMessage(toSend)
         adapter.notifyItemInserted(messages.size - 1)
+        onMessageSent(toSend)
     }
 
     // these methods are separated from the ones above to isolate the listener-type behavior
@@ -334,51 +369,35 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     }
 
     private fun onSendMessage(sent: Message) {
-        // checking if this message is an answer to a previously asked question
-        if(sent !is QuestionMessage && messages.size >= 2) {
-            val prevMessage = messages[messages.size - 2]
-            if(prevMessage is TextInputQuestionMessage && !prevMessage.question.answered) {
-                sent.type = Message.ANSWER
-                prevMessage.question.answered = true
-                prevMessage.question.answer = sent.message
-            }
-        }
-
         // checking pre-defined "commands" (temporary)
         if(sent.type == Message.OUTGOING) {
             val botMessage = when(sent.message) {
                 "emoji" -> {
-                    val emojis = arrayListOf("\uD83D\uDC4E", "\uD83D\uDC4D")
-                    val emojiQuestion = EmojiQuestion(sent.message, emojis)
+                    val emojiQuestion = Question.getExampleEmojiQuestion(requireContext())
+                    emojiQuestion.question = sent.message
                     EmojiQuestionMessage(emojiQuestion)
                 }
 
                 "slider", "slide" -> {
-                    SliderQuestionMessage(SliderQuestion(sent.message, 0, 10))
+                    val sliderQuestion = Question.getExampleSliderQuestion(requireContext())
+                    sliderQuestion.question = sent.message
+                    SliderQuestionMessage(sliderQuestion)
                 }
 
                 "multiplechoice", "choice", "mc" -> {
-                    val lorem = getString(R.string.lorem_ipsum_short)
-                    val multipleChoiceQuestion = MultipleChoiceQuestion(sent.message, arrayListOf("$lorem 1", "$lorem 2", "$lorem 3"))
+                    val multipleChoiceQuestion = Question.getExampleMultipleChoiceQuestion(requireContext())
+                    multipleChoiceQuestion.question = sent.message
                     MultipleChoiceQuestionMessage(multipleChoiceQuestion)
                 }
 
                 "picture", "image" -> {
-                    val resources = requireContext().resources
-                    val theme = requireContext().theme
-
-                    val images = ArrayList<ChoosePictureQuestion.Image>()
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_1, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 1")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_2, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 2")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_3, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
-                    ResourcesCompat.getDrawable(resources, R.drawable.test_image_4, theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
-
-                    val choosePictureQuestion = ChoosePictureQuestion(sent.message, images)
+                    val choosePictureQuestion = Question.getExampleChoosePictureQuestion(requireContext())
+                    choosePictureQuestion.question = sent.message
                     ChoosePictureQuestionMessage(choosePictureQuestion)
                 }
 
                 "text", "textinput" -> {
-                    val textInputQuestion = TextInputQuestion(getString(R.string.lorem_ipsum_medium))
+                    val textInputQuestion = Question.getExampleTextInputQuestion(requireContext())
                     TextInputQuestionMessage(textInputQuestion)
                 }
 
@@ -391,6 +410,30 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         }
 
         recyclerView.smoothScrollToPosition(messages.size - 1)
+    }
+
+    fun queueMessage(message: Message) {
+        if(this::recyclerView.isInitialized && this::adapter.isInitialized)
+            sendMessage(message)
+        else
+            messageQueue.add(message)
+    }
+
+    private fun onMessageSent(message: Message) {
+        for(listener in onMessageSentListeners)
+            listener.onMessageSent(message)
+    }
+
+    fun addOnMessageSentListener(onMessageSentListener: OnMessageSentListener) {
+        // TODO: this is not the ideal solution to this problem
+        if(onMessageSentListeners.contains(onMessageSentListener))
+            return
+
+        onMessageSentListeners.add(onMessageSentListener)
+    }
+
+    fun removeOnMessageSentListener(onMessageSentListener: OnMessageSentListener) {
+        onMessageSentListeners.remove(onMessageSentListener)
     }
 
 }
