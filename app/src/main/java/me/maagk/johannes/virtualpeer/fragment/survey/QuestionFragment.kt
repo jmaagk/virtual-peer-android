@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.Question
 
-abstract class QuestionFragment(@LayoutRes layoutId: Int, val question: Question) : Fragment(layoutId) {
+abstract class QuestionFragment(@LayoutRes layoutId: Int, var question: Question) : Fragment(layoutId) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

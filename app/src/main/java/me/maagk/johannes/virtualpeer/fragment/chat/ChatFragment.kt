@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
-import androidx.core.view.forEach
+import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,22 +73,35 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 when(holder) {
                     is ChatAdapter.EmojiQuestionMessageViewHolder -> {
                         val clickedTextView = clickedView as TextView
-                        val emoji = clickedTextView.text.toString()
+                        val clickedEmoji = clickedTextView.text.toString()
 
-                        sendMessage(Message(Message.ANSWER, emoji))
+                        val emojiQuestion = question as EmojiQuestion
+                        emojiQuestion.emojis.forEachIndexed start@ { index, emoji ->
+                            if(emoji == clickedEmoji) {
+                                emojiQuestion.answer = index
+                                return@start
+                            }
+                        }
+
+                        sendMessage(Message(Message.ANSWER, clickedEmoji))
                     }
 
                     is ChatAdapter.SliderQuestionMessageViewHolder -> {
-                        val sliderValue = (question as SliderQuestion).input
-                        sendMessage(Message(Message.ANSWER, Utils.round(sliderValue, 1).toString()))
+                        val sliderQuestion = question as SliderQuestion
+                        val sliderValue = sliderQuestion.answer as Float
+                        val roundedValue = Utils.round(sliderValue, 1)
+                        sliderQuestion.answer = roundedValue.toFloat()
+
+                        sendMessage(Message(Message.ANSWER, roundedValue.toString()))
                     }
 
                     is ChatAdapter.MultipleChoiceQuestionMessageViewHolder -> {
                         val radioGroup = clickedView as RadioGroup
-                        radioGroup.forEach start@ {
-                            if(it.id == radioGroup.checkedRadioButtonId) {
-                                val radioButton = it as RadioButton
+                        radioGroup.forEachIndexed start@ { index, view ->
+                            if(view.id == radioGroup.checkedRadioButtonId) {
+                                val radioButton = view as RadioButton
                                 sendMessage(Message(Message.ANSWER, radioButton.text.toString()))
+                                question.answer = index
                                 return@start
                             }
                         }
@@ -109,6 +122,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                         if(clickedIndex != -1) {
                             val choosePictureQuestion = (holder.currentMessage as ChoosePictureQuestionMessage).choosePictureQuestion
                             val label = choosePictureQuestion.images[clickedIndex].label
+                            choosePictureQuestion.answer = clickedIndex
                             sendMessage(Message(Message.ANSWER, label))
                         }
                     }
@@ -180,7 +194,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
             init {
                 slider.addOnChangeListener { slider, value, fromUser ->
-                    sliderQuestion.input = value
+                    sliderQuestion.answer = value
                 }
                 submitButton.setOnClickListener {
                     onClick(this, it)
@@ -191,7 +205,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 super.bind(message)
 
                 sliderQuestion = (message as SliderQuestionMessage).sliderQuestion
-                slider.value = sliderQuestion.input
+                slider.value = sliderQuestion.answer as Float
             }
 
         }
@@ -326,6 +340,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             if(prevMessage is TextInputQuestionMessage && !prevMessage.question.answered) {
                 sent.type = Message.ANSWER
                 prevMessage.question.answered = true
+                prevMessage.question.answer = sent.message
             }
         }
 
