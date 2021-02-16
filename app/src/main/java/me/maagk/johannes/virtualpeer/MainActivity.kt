@@ -10,6 +10,7 @@ import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
@@ -17,7 +18,7 @@ import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
 import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -81,10 +82,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // TODO: retrieve the fragment on top for later use
             // val topFragment = getTopFragment()
         }
+
+        supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         if(navigationView.checkedItem?.itemId == item.itemId)
             return false
 
@@ -115,6 +117,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val backStackStateTag = manager.getBackStackEntryAt(manager.backStackEntryCount - 1).name
         return manager.findFragmentByTag(backStackStateTag)
+    }
+
+    override fun onBackStackChanged() {
+        // TODO: is there a better way to achieve this behavior?
+        val itemToSelect = when(getTopFragment()) {
+            is StartFragment -> R.id.navDrawerStart
+            is SettingsFragment -> R.id.navDrawerSettings
+            is SurveyFragment -> R.id.navDrawerSurvey
+            else -> R.id.navDrawerChat
+        }
+
+        navigationView.setCheckedItem(itemToSelect)
     }
 
 }
