@@ -7,6 +7,9 @@
     
     <include layout="@layout/fragment_question_base" />
 
-    <include layout="@layout/view_question_slider" />
+    <me.maagk.johannes.virtualpeer.view.SliderQuestionView
+        android:id="@+id/sliderQuestionView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

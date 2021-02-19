@@ -26,7 +26,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lorem_ipsum_medium" />
 
-            <include layout="@layout/view_question_slider" />
+            <me.maagk.johannes.virtualpeer.view.SliderQuestionView
+                android:id="@+id/sliderQuestionView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/submit"

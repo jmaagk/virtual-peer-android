@@ -21,6 +21,7 @@ import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
 import me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
+import me.maagk.johannes.virtualpeer.view.SliderQuestionView
 
 class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
@@ -200,24 +201,24 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
         class SliderQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
 
-            val slider: Slider = itemView.findViewById(R.id.slider)
+            val sliderQuestionView: SliderQuestionView = itemView.findViewById(R.id.sliderQuestionView)
             val submitButton: Button = itemView.findViewById(R.id.submit)
-            lateinit var sliderQuestion: SliderQuestion
 
             init {
-                slider.addOnChangeListener { slider, value, fromUser ->
-                    sliderQuestion.answer = value
-                }
                 submitButton.setOnClickListener {
                     onClick(this, it)
+                }
+
+                sliderQuestionView.slider.addOnChangeListener { _, value, _ ->
+                    (currentMessage as SliderQuestionMessage).sliderQuestion.answer = value
                 }
             }
 
             override fun bind(message: Message) {
                 super.bind(message)
 
-                sliderQuestion = (message as SliderQuestionMessage).sliderQuestion
-                slider.value = sliderQuestion.answer as Float
+                val sliderQuestion = (message as SliderQuestionMessage).sliderQuestion
+                sliderQuestionView.question = sliderQuestion
             }
 
         }

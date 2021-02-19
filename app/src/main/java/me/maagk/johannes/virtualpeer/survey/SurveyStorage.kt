@@ -3,7 +3,6 @@ package me.maagk.johannes.virtualpeer.survey
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
 import me.maagk.johannes.virtualpeer.R
-import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.survey.question.*
 import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
@@ -51,8 +50,8 @@ class SurveyStorage(private val context: Context) {
                         // working with null values here to make this more efficient
                         // (the variables will only receive a value when they're actually read)
                         var questionString: String? = null
-                        var sliderMin = -1
-                        var sliderMax = -1
+                        var sliderMin = -1f
+                        var sliderMax = -1f
                         var emojis: ArrayList<String>? = null
                         var choices: ArrayList<String>? = null
                         var images: ArrayList<ChoosePictureQuestion.Image>? = null
@@ -69,8 +68,8 @@ class SurveyStorage(private val context: Context) {
                                 }
 
                                 "slider" -> {
-                                    sliderMin = questionChild.attributes.getNamedItem("min").nodeValue.toInt()
-                                    sliderMax = questionChild.attributes.getNamedItem("max").nodeValue.toInt()
+                                    sliderMin = questionChild.attributes.getNamedItem("min").nodeValue.toFloat()
+                                    sliderMax = questionChild.attributes.getNamedItem("max").nodeValue.toFloat()
                                 }
 
                                 "emojis" -> {

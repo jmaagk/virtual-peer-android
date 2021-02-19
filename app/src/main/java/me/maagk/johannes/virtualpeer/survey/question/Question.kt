@@ -24,7 +24,7 @@ abstract class Question(var question: String) {
         }
 
         fun getExampleSliderQuestion(context: Context): SliderQuestion {
-            return SliderQuestion(context.getString(R.string.lorem_ipsum_medium), 0, 10)
+            return SliderQuestion(context.getString(R.string.lorem_ipsum_medium), 1f, 10f)
         }
 
         fun getExampleMultipleChoiceQuestion(context: Context): MultipleChoiceQuestion {
