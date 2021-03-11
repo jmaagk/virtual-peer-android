@@ -8,6 +8,6 @@ class ChoosePictureQuestion(question: String, val images: ArrayList<Image>) : Qu
     override var answer: Any? = -1
 
     // the internal representation of one image; this will probably change
-    class Image(val drawable: Drawable, val label: String)
+    class Image(var drawable: Drawable, var label: String)
 
 }
