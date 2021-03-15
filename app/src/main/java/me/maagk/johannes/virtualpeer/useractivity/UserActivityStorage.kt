@@ -24,6 +24,8 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
     private val VERSION = 1
 
     val userActivities = ArrayList<UserActivity>()
+    lateinit var timeZone: ZoneId
+
     private val formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy")
     private val activitiesFile = File(context.filesDir, FILE_NAME)
 
@@ -55,6 +57,8 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         }
 
         val fileVersion = activitiesTag.getAttribute("version").toInt()
+        timeZone = ZoneId.of(activitiesTag.getAttribute("timeZone"))
+
         val activityTags = activitiesTag.getElementsByTagName("activity")
         for(i in 0 until activityTags.length) {
             val activityTag = activityTags.item(i)
@@ -74,13 +78,13 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         val startTime = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(
                         activityTag.attributes.getNamedItem("startTime").nodeValue.toLong()),
-                ZoneId.systemDefault())
+                        timeZone)
 
         val endTimeLong = activityTag.attributes.getNamedItem("endTime").nodeValue.toLong()
         val endTime = if(endTimeLong == -1L) {
             null
         } else {
-            ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTimeLong), ZoneId.systemDefault())
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(endTimeLong), timeZone)
         }
 
         val activity = UserActivity(type, startTime, endTime)
@@ -109,6 +113,7 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
 
         val root = doc.createElement("activities")
         root.setAttribute("version", VERSION.toString())
+        root.setAttribute("timeZone", ZoneId.systemDefault().id)
 
         for(userActivity in userActivities)
             root.appendChild(convertActivityToXml(userActivity, doc))
@@ -147,12 +152,11 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         // just a quick move to a new variable as arguments can't be reassigned in Kotlin
         var updatedVersion = fromVersion
 
+        /* some code to update the version we're now on
+         * switch without break would usually be used here to "fall" through necessary
+         * updates consecutively but it doesn't exist in Kotlin and when doesn't do the same thing */
         if(updatedVersion == 1) {
             // future update code goes here
-
-            /* a statement to update the version we're now on
-             * switch without break would usually be used here to "fall" through necessary
-             * updates consecutively but it doesn't exist in Kotlin and when doesn't do the same thing */
             updatedVersion = 2
         }
 
@@ -161,7 +165,9 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
             updatedVersion = 3
         }*/
 
-        if(updatedVersion != VERSION)
+        if(updatedVersion == VERSION)
+            save() // saving user activities; this will make the changes made by the update persistent
+        else
             TODO("Add error handling for failed updates")
     }
 

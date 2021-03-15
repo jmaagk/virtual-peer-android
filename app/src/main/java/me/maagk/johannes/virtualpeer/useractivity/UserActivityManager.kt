@@ -1,16 +1,12 @@
 package me.maagk.johannes.virtualpeer.useractivity
 
 import android.content.Context
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class UserActivityManager(private val context: Context) {
 
     private val storage = UserActivityStorage(context)
-
-    init {
-
-    }
+    val timeZone = storage.timeZone
 
     fun addActivity(activity: UserActivity) {
         storage.userActivities.add(activity)
@@ -42,7 +38,7 @@ class UserActivityManager(private val context: Context) {
 
     fun getTodaysActivities(): ArrayList<UserActivity> {
         val activities = arrayListOf<UserActivity>()
-        val startOfToday = ZonedDateTime.now().toLocalDate().atStartOfDay()
+        val startOfToday = ZonedDateTime.now(timeZone).toLocalDate().atStartOfDay()
 
         for(activity in storage.userActivities) {
             var startTime = activity.startTime
@@ -54,7 +50,7 @@ class UserActivityManager(private val context: Context) {
 
             // correcting the start time so it's only within the span of today
             if(startTime.toLocalDateTime().isBefore(startOfToday))
-                startTime = startOfToday.atZone(ZoneId.systemDefault())
+                startTime = startOfToday.atZone(timeZone)
 
             // creating a copy instead of passing the original object to keep the original time values
             activities.add(activity.copy(startTime = startTime))
