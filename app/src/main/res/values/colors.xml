@@ -21,7 +21,7 @@
     <color name="colorRipple">#28000000</color>
     <color name="colorIconTint">#FF000000</color>
     <color name="colorListDivider">#FFBDBDBD</color>
-    <color name="colorChartRemainingTime">#FFEEEEEE</color>
+    <color name="colorChartRemainingTime">#FFE0E0E0</color>
     
     <color name="colorLabelBackground">#80000000</color>
 

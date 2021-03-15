@@ -1,6 +1,6 @@
 package me.maagk.johannes.virtualpeer.fragment
 
-import android.graphics.Color
+import android.graphics.*
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -19,9 +19,12 @@ import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
+import java.text.DateFormat
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.math.round
 
 class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle, ChatFragment.OnMessageSentListener {
@@ -62,10 +65,13 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         currentActivityText = view.findViewById(R.id.currentActivityText)
         updateCurrentActivityText()
 
+        val chartDate: TextView = view.findViewById(R.id.chartDate)
         val changeActivityButton: Button = view.findViewById(R.id.currentActivityChange)
         val currentActivityLayout: View = view.findViewById(R.id.currentActivityLayout)
         val changeActivityLayout: View = view.findViewById(R.id.changeActivityLayout)
         val activityRadioGroup: RadioGroup = view.findViewById(R.id.radioGroup)
+
+        chartDate.text = DateFormat.getDateInstance(DateFormat.SHORT).format(Date())
 
         changeActivityButton.setOnClickListener {
             currentActivityLayout.visibility = View.GONE
