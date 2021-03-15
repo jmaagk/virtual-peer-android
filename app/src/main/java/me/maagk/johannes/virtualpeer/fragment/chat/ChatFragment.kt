@@ -148,8 +148,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         val inputField: TextInputEditText = view.findViewById(R.id.chatInput)
 
         val sendButton: FloatingActionButton = view.findViewById(R.id.send)
-        sendButton.setOnClickListener {
+        sendButton.setOnClickListener start@ {
             val userInput = inputField.text.toString()
+
+            if(userInput.isEmpty())
+                return@start
+
             val userMessage = prepareUserMessage(userInput)
             sendMessage(userMessage)
         }
