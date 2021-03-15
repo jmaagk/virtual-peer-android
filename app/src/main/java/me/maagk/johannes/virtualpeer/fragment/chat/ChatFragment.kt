@@ -238,6 +238,17 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
                 val multipleChoiceQuestion = (message as MultipleChoiceQuestionMessage).multipleChoiceQuestion
                 multipleChoiceQuestionView.question = multipleChoiceQuestion
+
+                // (re)selecting the option that was previously clicked
+                if(multipleChoiceQuestion.answered) {
+                    val selectedButtonIndex = multipleChoiceQuestion.answer as Int
+                    multipleChoiceQuestionView.radioGroup.children.forEachIndexed start@ { index, view ->
+                        if(index == selectedButtonIndex) {
+                            multipleChoiceQuestionView.radioGroup.check(view.id)
+                            return@start
+                        }
+                    }
+                }
             }
 
         }
