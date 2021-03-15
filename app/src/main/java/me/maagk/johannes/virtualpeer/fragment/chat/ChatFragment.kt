@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.slider.Slider
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
@@ -34,7 +32,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     }
 
     override val actionBarTitle: String
-        get() = getString(R.string.nav_drawer_chat)
+        get() = getString(R.string.nav_chat)
 
     private val messages = arrayListOf<Message>()
     private val messageQueue = arrayListOf<Message>()

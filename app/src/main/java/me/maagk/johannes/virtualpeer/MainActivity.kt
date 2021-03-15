@@ -12,16 +12,18 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
 import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     private var startFragment: StartFragment? = null
     private var chatFragment: ChatFragment? = null
@@ -57,7 +59,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navigationView = findViewById(R.id.navigationView)
-        navigationView.setNavigationItemSelectedListener(this)
+        navigationView.setNavigationItemSelectedListener { item -> onNavigationItemSelected(item, true) }
+
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item -> onNavigationItemSelected(item, false) }
 
         /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             val manager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if(savedInstanceState == null) {
             startFragment = StartFragment()
             supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, startFragment!!, StartFragment.TAG).commit()
-            navigationView.setCheckedItem(R.id.navDrawerStart)
+            bottomNavigationView.selectedItemId = R.id.navStart
         } else {
             // TODO: retrieve the fragment on top for later use
             // val topFragment = getTopFragment()
@@ -89,15 +94,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if(navigationView.checkedItem?.itemId == item.itemId)
+    private fun onNavigationItemSelected(item: MenuItem, navDrawer: Boolean): Boolean {
+        if(navDrawer && navigationView.checkedItem?.itemId == item.itemId)
+            return false
+
+        if(!navDrawer && bottomNavigationView.selectedItemId == item.itemId)
             return false
 
         // TODO: reuse fragment instances; add them to the back stack?
         val fragment: Fragment = when(item.itemId) {
             R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
             R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
-            R.id.navDrawerChat -> {
+            R.id.navChat -> {
                 if(chatFragment == null)
                     chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
                 chatFragment as Fragment
@@ -112,7 +120,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val tag = when(item.itemId) {
             R.id.navDrawerSettings -> SettingsFragment.TAG
             R.id.navDrawerSurvey -> SurveyFragment.TAG
-            R.id.navDrawerChat -> ChatFragment.TAG
+            R.id.navChat -> ChatFragment.TAG
             else -> StartFragment.TAG
         }
 
@@ -142,22 +150,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         chatFragment?.queueMessage(message)
         if(getTopFragment() !is ChatFragment) {
-            val chatItem = navigationView.menu.findItem(R.id.navDrawerChat)
-            onNavigationItemSelected(chatItem)
-            navigationView.setCheckedItem(chatItem)
+            val chatItem = bottomNavigationView.menu.findItem(R.id.navChat)
+            onNavigationItemSelected(chatItem, false)
+            bottomNavigationView.selectedItemId = chatItem.itemId
         }
     }
 
     override fun onBackStackChanged() {
         // TODO: is there a better way to achieve this behavior?
+        var navDrawer = false
         val itemToSelect = when(getTopFragment()) {
-            is StartFragment -> R.id.navDrawerStart
-            is SettingsFragment -> R.id.navDrawerSettings
-            is SurveyFragment -> R.id.navDrawerSurvey
-            else -> R.id.navDrawerChat
+            is StartFragment -> R.id.navStart
+            is SettingsFragment -> {
+                navDrawer = true
+                R.id.navDrawerSettings
+            }
+            is SurveyFragment -> {
+                navDrawer = true
+                R.id.navDrawerSurvey
+            }
+            else -> R.id.navChat
         }
 
-        navigationView.setCheckedItem(itemToSelect)
+        if(navDrawer)
+            navigationView.setCheckedItem(itemToSelect)
+        else
+            bottomNavigationView.selectedItemId = itemToSelect
     }
 
     fun removeOnMessageSentListener(onMessageSentListener: ChatFragment.OnMessageSentListener) {

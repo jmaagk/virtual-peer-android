@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Virtual Peer</string>
-    <string name="nav_drawer_start">Start</string>
-    <string name="nav_drawer_graphs">Grafiken</string>
+    <string name="nav_start">Start</string>
+    <string name="nav_stats">Grafiken</string>
     <string name="nav_drawer_help">Hilfe</string>
     <string name="nav_drawer_settings">Einstellungen</string>
     <string name="nav_drawer_open">Menü öffnen</string>
@@ -27,9 +27,11 @@
     <string name="user_activity_current_work">Studieren</string>
     <string name="user_activity_current_essential">Lebensnotwendiges</string>
     <string name="user_activity_current_rewards">Belohnung</string>
-    <string name="nav_drawer_chat">Chat</string>
+    <string name="nav_chat">Chat</string>
     <string name="chat_hint">Gib eine Nachricht ein</string>
     <string name="chat_send">Senden</string>
     <string name="start_chart_dataset_label">Aktivitäten</string>
     <string name="chat_submit">Bestätigen</string>
+    <string name="nav_drawer_stats">Statistiken</string>
+    <string name="nav_library">Bibliothek</string>
 </resources>
