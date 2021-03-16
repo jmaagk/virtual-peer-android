@@ -64,23 +64,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.setOnNavigationItemSelectedListener { item -> onNavigationItemSelected(item, false) }
 
-        /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            val manager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
-
-            val calendar = Calendar.getInstance()
-            val to = calendar.timeInMillis
-            calendar.add(Calendar.YEAR, -1)
-            val from = calendar.timeInMillis
-
-            val stats = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, from, to)
-            for(stat in stats) {
-                if(stat.packageName == "me.maagk.johannes.customsoundboard") {
-                    Utils.log("packageName=${stat.packageName}")
-                }
-            }
-            Utils.log("size=${stats.size}")
-        }*/
-
         // showing either the start fragment or the one that was previously on top
         if(savedInstanceState == null) {
             startFragment = StartFragment()
