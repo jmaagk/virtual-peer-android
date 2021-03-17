@@ -17,6 +17,7 @@ import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
+import me.maagk.johannes.virtualpeer.fragment.stats.StatsFragment
 import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
 
 class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
     private var startFragment: StartFragment? = null
     private var chatFragment: ChatFragment? = null
+    private var statsFragment: StatsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +95,11 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                     chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
                 chatFragment as Fragment
             }
+            R.id.navStats -> {
+                if(statsFragment == null)
+                    statsFragment = supportFragmentManager.findFragmentByTag(StatsFragment.TAG) as StatsFragment? ?: StatsFragment()
+                statsFragment as Fragment
+            }
             else -> {
                 if(startFragment == null)
                     startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) as StartFragment? ?: StartFragment()
@@ -104,6 +111,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
             R.id.navDrawerSettings -> SettingsFragment.TAG
             R.id.navDrawerSurvey -> SurveyFragment.TAG
             R.id.navChat -> ChatFragment.TAG
+            R.id.navStats -> StatsFragment.TAG
             else -> StartFragment.TAG
         }
 
@@ -143,7 +151,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         // TODO: is there a better way to achieve this behavior?
         var navDrawer = false
         val itemToSelect = when(getTopFragment()) {
-            is StartFragment -> R.id.navStart
             is SettingsFragment -> {
                 navDrawer = true
                 R.id.navDrawerSettings
@@ -152,7 +159,9 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                 navDrawer = true
                 R.id.navDrawerSurvey
             }
-            else -> R.id.navChat
+            is ChatFragment -> R.id.navChat
+            is StatsFragment -> R.id.navStats
+            else -> R.id.navStart
         }
 
         if(navDrawer)

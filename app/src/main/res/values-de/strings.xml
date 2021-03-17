@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Virtual Peer</string>
     <string name="nav_start">Start</string>
-    <string name="nav_stats">Grafiken</string>
+    <string name="nav_stats">Statistiken</string>
     <string name="nav_drawer_help">Hilfe</string>
     <string name="nav_drawer_settings">Einstellungen</string>
     <string name="nav_drawer_open">Menü öffnen</string>
@@ -32,6 +32,8 @@
     <string name="chat_send">Senden</string>
     <string name="start_chart_dataset_label">Aktivitäten</string>
     <string name="chat_submit">Bestätigen</string>
-    <string name="nav_drawer_stats">Statistiken</string>
     <string name="nav_library">Bibliothek</string>
+    <string name="app_usage_chart_dataset_label">App-Nutzung</string>
+    <string name="app_usage_chart_time_format">%1$dh %2$dm</string>
+    <string name="app_usage_chart_time_format_below_1h">%1$dm</string>
 </resources>

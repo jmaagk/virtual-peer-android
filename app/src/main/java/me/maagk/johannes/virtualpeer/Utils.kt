@@ -1,9 +1,11 @@
 package me.maagk.johannes.virtualpeer
 
 import android.content.Context
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
+import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -22,6 +24,14 @@ class Utils {
         fun round(value: Float, precision: Int): Double {
             val scale = 10.0.pow(precision)
             return round(value * scale) / scale
+        }
+
+        fun dpToPx(dp: Int, displayMetrics: DisplayMetrics): Int {
+            return (dp * displayMetrics.density + 0.5f).toInt()
+        }
+
+        fun pxToDp(px: Int, displayMetrics: DisplayMetrics): Int {
+            return ceil((px - 0.5) / displayMetrics.density).toInt()
         }
 
     }

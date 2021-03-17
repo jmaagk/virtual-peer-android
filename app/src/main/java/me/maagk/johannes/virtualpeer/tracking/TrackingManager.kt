@@ -5,15 +5,19 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import java.util.*
 
+// TODO: check permission
 class TrackingManager(context: Context) {
 
     class TrackedApp(var packageName: String, var timeUsed: Long)
 
-    val rawStats: List<UsageStats>
+    lateinit var rawStats: List<UsageStats>
+    private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
     init {
-        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        update()
+    }
 
+    fun update() {
         val calendar = Calendar.getInstance()
         val to = calendar.timeInMillis
         calendar.add(Calendar.DAY_OF_YEAR, -1)
