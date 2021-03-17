@@ -25,11 +25,8 @@ class TrackingManager(context: Context) {
     fun getMostUsedApps(count: Int): List<TrackedApp> {
         val appList = arrayListOf<TrackedApp>()
 
-        // cleaning up the list given to us by the system
-        val cleanedList = rawStats.toList()
-
         // grouping multiple entries of one app
-        for(appStats in cleanedList) {
+        for(appStats in rawStats) {
             // only adding apps that were actually in the foreground
             if(appStats.totalTimeInForeground > 0L) {
                 val packageName = appStats.packageName
