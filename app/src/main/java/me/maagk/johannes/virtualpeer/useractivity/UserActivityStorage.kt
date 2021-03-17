@@ -40,6 +40,11 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
             if(!success)
                 TODO("add some error handling here (maybe the app should quit here?)")
         }
+
+        // making sure a time zone is set
+        // this should only run when the app is started for the first time
+        if(!this::timeZone.isInitialized)
+            timeZone = ZoneId.systemDefault()
     }
 
     fun refresh() {
