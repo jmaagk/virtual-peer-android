@@ -7,14 +7,8 @@ import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.ValueFormatter
 import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
-import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
@@ -22,11 +16,7 @@ import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
 import java.text.DateFormat
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
-import kotlin.math.round
 
 class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle, ChatFragment.OnMessageSentListener {
 
@@ -34,12 +24,6 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
     private lateinit var currentActivityText: TextView
     private lateinit var chart: ActivityPoolChart
-
-    class Formatter : ValueFormatter() {
-        override fun getFormattedValue(value: Float): String {
-            return if(value <= 0) "" else (round(value * 10) / 10).toString()
-        }
-    }
 
     companion object {
         const val TAG = "start"

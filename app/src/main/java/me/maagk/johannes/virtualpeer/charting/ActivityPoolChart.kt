@@ -7,6 +7,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
@@ -15,11 +16,18 @@ import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
+import kotlin.math.round
 
 class ActivityPoolChart @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0) : PieChart(context, attrs, defStyleAttr) {
+
+    class Formatter : ValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            return if(value <= 0) "" else (round(value * 10) / 10).toString()
+        }
+    }
 
     private val userActivityManager = UserActivityManager(context)
 
@@ -55,7 +63,7 @@ class ActivityPoolChart @JvmOverloads constructor(
             dataset.colors = colors
 
             val data = PieData(dataset)
-            data.setValueFormatter(StartFragment.Formatter())
+            data.setValueFormatter(Formatter())
             data.setValueTextSize(11f)
             this.data = data
         } else {
