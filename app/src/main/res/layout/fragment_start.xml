@@ -15,7 +15,7 @@
         android:layout_marginStart="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     
-    <com.github.mikephil.charting.charts.PieChart
+    <me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
         android:id="@+id/startChart"
         android:layout_width="225dp"
         android:layout_height="225dp"

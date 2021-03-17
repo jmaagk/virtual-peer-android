@@ -15,6 +15,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
@@ -32,7 +33,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var userActivityManager: UserActivityManager
 
     private lateinit var currentActivityText: TextView
-    private lateinit var chart: PieChart
+    private lateinit var chart: ActivityPoolChart
 
     class Formatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
@@ -56,7 +57,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     override fun onResume() {
         super.onResume()
 
-        updateChartData()
+        chart.update()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,53 +115,6 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         }
 
         chart = view.findViewById(R.id.startChart)
-
-        configureChart()
-        chart.invalidate()
-    }
-
-    private fun configureChart() {
-        chart.description.isEnabled = false
-        chart.isDrawHoleEnabled = true
-        chart.setHoleColor(Color.TRANSPARENT)
-        chart.legend.isEnabled = false
-
-        chart.holeRadius = 55f
-        chart.transparentCircleRadius = 0f
-
-        chart.rotationAngle = -90f
-        chart.isRotationEnabled = false
-        chart.setDrawEntryLabels(false)
-
-        chart.highlightValues(null)
-    }
-
-    private fun updateChartData() {
-        if(chart.data == null) {
-            val dataset = PieDataSet(getCurrentChartEntries(), getString(R.string.start_chart_dataset_label))
-            dataset.valueTextColor = Utils.getColor(requireContext(), R.color.colorText)
-            dataset.setDrawIcons(false)
-
-            val activityTypes = UserActivity.Type.values()
-            val colors = arrayListOf<Int>()
-            for(activityType in activityTypes)
-                colors.add(activityType.color)
-
-            colors.add(Utils.getColor(requireContext(), R.color.colorChartRemainingTime))
-
-            dataset.colors = colors
-
-            val data = PieData(dataset)
-            data.setValueFormatter(Formatter())
-            data.setValueTextSize(11f)
-            chart.data = data
-        } else {
-            chart.data.dataSet.clear()
-            for(entry in getCurrentChartEntries())
-                chart.data.dataSet.addEntry(entry)
-        }
-
-        chart.notifyDataSetChanged()
     }
 
     private fun updateCurrentActivityText() {
@@ -175,37 +129,6 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             }
             currentActivityText.text = getString(R.string.user_activity_current_display, getString(activityTextId))
         }
-    }
-
-    private fun getCurrentChartEntries(): ArrayList<PieEntry> {
-        val todaysActivities = userActivityManager.getTodaysActivities()
-        var workTotalMillis = 0L; var essentialTotalMillis = 0L; var rewardsTotalMillis = 0L
-        for(activity in todaysActivities) {
-            val duration = activity.getDuration(true)
-            when(activity.type) {
-                UserActivity.Type.POOL_WORK -> workTotalMillis += duration
-                UserActivity.Type.POOL_ESSENTIAL -> essentialTotalMillis += duration
-                UserActivity.Type.POOL_REWARDS -> rewardsTotalMillis += duration
-            }
-        }
-
-        val workHours = TimeUnit.MILLISECONDS.toMinutes(workTotalMillis) / 60f
-        val essentialHours = TimeUnit.MILLISECONDS.toMinutes(essentialTotalMillis) / 60f
-        val rewardsHours = TimeUnit.MILLISECONDS.toMinutes(rewardsTotalMillis) / 60f
-
-        val now = ZonedDateTime.now()
-        val startOfToday = now.toLocalDate().atStartOfDay()
-        val millisSinceStartOfToday = startOfToday.until(now, ChronoUnit.MILLIS)
-
-        val hoursLeft = 24 - (TimeUnit.MILLISECONDS.toMinutes(millisSinceStartOfToday) / 60f)
-
-        val entries = arrayListOf<PieEntry>()
-        entries.add(PieEntry(workHours))
-        entries.add(PieEntry(essentialHours))
-        entries.add(PieEntry(rewardsHours))
-        entries.add(PieEntry(hoursLeft))
-
-        return entries
     }
 
     override fun onMessageSent(message: ChatFragment.Message) {
