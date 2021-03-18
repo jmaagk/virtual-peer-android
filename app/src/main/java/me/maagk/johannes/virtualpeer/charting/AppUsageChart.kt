@@ -41,7 +41,7 @@ class AppUsageChart @JvmOverloads constructor(
         }
     }
 
-    private val trackingManager = TrackingManager(context)
+    lateinit var trackingManager: TrackingManager
 
     var maxApps = 6
         set(value) {
@@ -49,14 +49,9 @@ class AppUsageChart @JvmOverloads constructor(
 
             setMaxVisibleValueCount(value + 1)
             xAxis.setLabelCount(value, true)
-
-            update()
         }
 
     init {
-        // calling the custom setter here to initialize the things in there as well
-        this::maxApps.set(maxApps)
-
         setDrawBarShadow(false)
         setDrawValueAboveBar(false)
         description.isEnabled = false
@@ -113,6 +108,9 @@ class AppUsageChart @JvmOverloads constructor(
     private fun getCurrentChartEntries() : ArrayList<BarEntry> {
         val entries = arrayListOf<BarEntry>()
         var maxValue = 0L
+
+        if(!this::trackingManager.isInitialized)
+            return entries
 
         trackingManager.update()
         val mostUsedApps = trackingManager.getMostUsedApps(maxApps)

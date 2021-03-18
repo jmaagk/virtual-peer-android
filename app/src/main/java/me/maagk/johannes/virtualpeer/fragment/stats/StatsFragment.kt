@@ -11,19 +11,25 @@ import me.maagk.johannes.virtualpeer.tracking.TrackingManager
 
 class StatsFragment : Fragment(R.layout.fragment_stats) {
 
-    private lateinit var trackingManager: TrackingManager
     private lateinit var appUsageChart: AppUsageChart
+    private lateinit var trackingManager: TrackingManager
 
     companion object {
         const val TAG = "stats"
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        trackingManager = TrackingManager(requireContext())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trackingManager = TrackingManager(requireContext())
-
         appUsageChart = view.findViewById(R.id.appUsageChart)
+        appUsageChart.trackingManager = trackingManager
+        appUsageChart.maxApps = 6
     }
 
     override fun onResume() {
