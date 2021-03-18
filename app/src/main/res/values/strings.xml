@@ -43,4 +43,9 @@
     <string name="app_usage_chart_dataset_label">App usage</string>
     <string name="app_usage_chart_time_format_below_1h">%1$dm</string>
     <string name="app_usage_chart_time_format">%1$dh %2$dm</string>
+    <string name="stats_app_usage_title">App usage</string>
+    <string name="stats_screen_time_title">Screen time</string>
+    <string name="stats_screen_time_total">%1$dh %2$dm total</string>
+    <string name="stats_screen_time_total_below_1h">%1$dm total</string>
+    <string name="stats_app_usage_description">Tap for more</string>
 </resources>

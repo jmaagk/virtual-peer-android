@@ -112,7 +112,6 @@ class AppUsageChart @JvmOverloads constructor(
         if(!this::trackingManager.isInitialized)
             return entries
 
-        trackingManager.update()
         val mostUsedApps = trackingManager.getMostUsedApps(maxApps)
         mostUsedApps.forEachIndexed { index, app ->
             val entry = BarEntry(index.toFloat(), app.timeUsed.toFloat())

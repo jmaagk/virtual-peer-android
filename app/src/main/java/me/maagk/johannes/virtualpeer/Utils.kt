@@ -1,6 +1,7 @@
 package me.maagk.johannes.virtualpeer
 
 import android.content.Context
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.annotation.ColorRes
@@ -32,6 +33,10 @@ class Utils {
 
         fun pxToDp(px: Int, displayMetrics: DisplayMetrics): Int {
             return ceil((px - 0.5) / displayMetrics.density).toInt()
+        }
+
+        fun getAnimatorDurationScale(context: Context): Float {
+            return Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
         }
 
     }
