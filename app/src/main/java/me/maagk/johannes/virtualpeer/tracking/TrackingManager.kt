@@ -26,6 +26,13 @@ class TrackingManager(context: Context) {
         rawStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, from, to)
     }
 
+    fun getScreenTime(): Long {
+        var total = 0L
+        for(appStats in rawStats)
+            total += appStats.totalTimeInForeground
+        return total
+    }
+
     fun getMostUsedApps(count: Int): List<TrackedApp> {
         val appList = arrayListOf<TrackedApp>()
 
