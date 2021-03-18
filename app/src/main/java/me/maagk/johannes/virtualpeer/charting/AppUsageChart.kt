@@ -15,6 +15,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.tracking.TrackingManager
+import kotlin.math.max
 
 class AppUsageChart @JvmOverloads constructor(
         context: Context,
@@ -111,11 +112,13 @@ class AppUsageChart @JvmOverloads constructor(
 
     private fun getCurrentChartEntries() : ArrayList<BarEntry> {
         val entries = arrayListOf<BarEntry>()
+        var maxValue = 0L
 
         trackingManager.update()
         val mostUsedApps = trackingManager.getMostUsedApps(maxApps)
         mostUsedApps.forEachIndexed { index, app ->
             val entry = BarEntry(index.toFloat(), app.timeUsed.toFloat())
+            maxValue = max(maxValue, app.timeUsed)
 
             val drawable = context.packageManager.getApplicationIcon(app.packageName)
             val bitmap = drawable.toBitmap()
@@ -129,6 +132,8 @@ class AppUsageChart @JvmOverloads constructor(
 
             entries.add(entry)
         }
+
+        axisLeft.axisMaximum = maxValue.toFloat() * 1.25f
 
         return entries
     }
