@@ -49,7 +49,6 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
             animateIcon(true)
             animateContent(true)
             card.isSelected = true
-
         }
 
         fun collapse() {

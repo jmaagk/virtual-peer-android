@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import me.maagk.johannes.virtualpeer.chat.Message
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         return manager.findFragmentByTag(backStackStateTag)
     }
 
-    fun queueMessage(message: ChatFragment.Message) {
+    fun queueMessage(message: Message) {
         if(chatFragment == null)
             chatFragment = ChatFragment()
 

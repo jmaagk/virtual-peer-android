@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
+import me.maagk.johannes.virtualpeer.chat.*
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
@@ -41,29 +42,6 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     private lateinit var adapter: ChatAdapter
 
     private val onMessageSentListeners = arrayListOf<OnMessageSentListener>()
-
-    open class Message(var type: Int, val message: String) {
-
-        companion object {
-            const val INCOMING = 0
-            const val OUTGOING = 1
-            const val ANSWER = 2
-            const val EMOJI_QUESTION = 3
-            const val SLIDER_QUESTION = 4
-            const val MULTIPLE_CHOICE_QUESTION = 5
-            const val CHOOSE_PICTURE_QUESTION = 6
-            const val TEXT_INPUT_QUESTION = 7
-        }
-
-    }
-
-    abstract class QuestionMessage(type: Int, message: String, val question: Question) : Message(type, message)
-    class EmojiQuestionMessage(val emojiQuestion: EmojiQuestion) : QuestionMessage(EMOJI_QUESTION, emojiQuestion.question, emojiQuestion)
-    class SliderQuestionMessage(val sliderQuestion: SliderQuestion) : QuestionMessage(SLIDER_QUESTION, sliderQuestion.question, sliderQuestion)
-    class MultipleChoiceQuestionMessage(val multipleChoiceQuestion: MultipleChoiceQuestion) : QuestionMessage(MULTIPLE_CHOICE_QUESTION, multipleChoiceQuestion.question, multipleChoiceQuestion)
-    class ChoosePictureQuestionMessage(val choosePictureQuestion: ChoosePictureQuestion) : QuestionMessage(CHOOSE_PICTURE_QUESTION, choosePictureQuestion.question, choosePictureQuestion)
-    class TextInputQuestionMessage(val textInputQuestion: TextInputQuestion) : QuestionMessage(TEXT_INPUT_QUESTION, textInputQuestion.question, textInputQuestion)
-    class AnswerMessage(message: String?, val answeredQuestion: Question) : QuestionMessage(ANSWER, message ?: answeredQuestion.question, answeredQuestion)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

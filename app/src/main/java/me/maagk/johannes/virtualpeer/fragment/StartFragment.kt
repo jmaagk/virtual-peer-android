@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
+import me.maagk.johannes.virtualpeer.chat.*
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
@@ -82,11 +83,11 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             if(isAdded) {
                 val questionType = (0..4).random()
                 val questionMessage = when(questionType) {
-                    0 -> ChatFragment.TextInputQuestionMessage(Question.getExampleTextInputQuestion(requireContext()))
-                    1 -> ChatFragment.EmojiQuestionMessage(Question.getExampleEmojiQuestion(requireContext()))
-                    2 -> ChatFragment.SliderQuestionMessage(Question.getExampleSliderQuestion(requireContext()))
-                    3 -> ChatFragment.MultipleChoiceQuestionMessage(Question.getExampleMultipleChoiceQuestion(requireContext()))
-                    else -> ChatFragment.ChoosePictureQuestionMessage(Question.getExampleChoosePictureQuestion(requireContext()))
+                    0 -> TextInputQuestionMessage(Question.getExampleTextInputQuestion(requireContext()))
+                    1 -> EmojiQuestionMessage(Question.getExampleEmojiQuestion(requireContext()))
+                    2 -> SliderQuestionMessage(Question.getExampleSliderQuestion(requireContext()))
+                    3 -> MultipleChoiceQuestionMessage(Question.getExampleMultipleChoiceQuestion(requireContext()))
+                    else -> ChoosePictureQuestionMessage(Question.getExampleChoosePictureQuestion(requireContext()))
                 }
                 questionMessage.question.tag = "activity_rating"
 
@@ -115,8 +116,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         }
     }
 
-    override fun onMessageSent(message: ChatFragment.Message) {
-        if(message is ChatFragment.AnswerMessage) {
+    override fun onMessageSent(message: Message) {
+        if(message is AnswerMessage) {
             val prevActivity = userActivityManager.getPreviousActivity() ?: return
 
             prevActivity.userRating = message.question.answer
