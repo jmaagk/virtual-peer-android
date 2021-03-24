@@ -41,4 +41,7 @@
     <string name="stats_screen_time_total">Insgesamt %1$dh %2$dm</string>
     <string name="stats_screen_time_total_below_1h">Insgesamt %1$dm total</string>
     <string name="stats_app_usage_description">Für mehr tippen</string>
+    <string name="stats_screen_unlock_count_title">Gerät entsperrt</string>
+    <string name="stats_screen_unlock_count_description_one">1 mal</string>
+    <string name="stats_screen_unlock_count_description">%1$d mal</string>
 </resources>

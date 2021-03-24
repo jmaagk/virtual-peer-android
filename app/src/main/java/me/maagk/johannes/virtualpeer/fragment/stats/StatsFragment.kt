@@ -1,7 +1,6 @@
 package me.maagk.johannes.virtualpeer.fragment.stats
 
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -20,6 +19,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
     private lateinit var screenTimeCard: StatsCard
     private lateinit var appUsageCard: ExpandableStatsCard
+    private lateinit var unlockCountCard: StatsCard
 
     private lateinit var appUsageChartCard: MaterialCardView
     private lateinit var appUsageChart: AppUsageChart
@@ -131,10 +131,14 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
         appUsageCard = ExpandableStatsCard(view.findViewById(R.id.appUsageCard), appUsageChartCard)
 
+        unlockCountCard = StatsCard(view.findViewById(R.id.unlockCountCard))
+
         screenTimeCard.title.text = getString(R.string.stats_screen_time_title)
 
         appUsageCard.title.text = getString(R.string.stats_app_usage_title)
         appUsageCard.description.text = getString(R.string.stats_app_usage_description)
+
+        unlockCountCard.title.text = getString(R.string.stats_screen_unlock_count_title)
     }
 
     override fun onResume() {
@@ -142,7 +146,12 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
         trackingManager.update()
         appUsageChart.update()
+        updateTexts()
+    }
+
+    private fun updateTexts() {
         updateScreenTimeTotalText()
+        updateUnlockCountText()
     }
 
     private fun updateScreenTimeTotalText() {
@@ -157,6 +166,16 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
             getString(R.string.stats_screen_time_total, hours, minutes)
 
         screenTimeCard.description.text = text
+    }
+
+    private fun updateUnlockCountText() {
+        val unlocks = trackingManager.getUnlockCount()
+        val text = if(unlocks == 1)
+            getString(R.string.stats_screen_unlock_count_description_one)
+        else
+            getString(R.string.stats_screen_unlock_count_description, unlocks)
+
+        unlockCountCard.description.text = text
     }
 
 }

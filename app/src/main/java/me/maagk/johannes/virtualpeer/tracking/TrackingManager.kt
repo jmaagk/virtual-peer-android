@@ -1,5 +1,6 @@
 package me.maagk.johannes.virtualpeer.tracking
 
+import android.app.usage.UsageEvents
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -10,8 +11,12 @@ class TrackingManager(context: Context) {
 
     class TrackedApp(var packageName: String, var timeUsed: Long)
 
-    lateinit var rawStats: List<UsageStats>
+    lateinit var rawUsageStats: List<UsageStats>
+    lateinit var rawEventData: UsageEvents
     private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+    // this is saved because the raw stats are only accessible once (hasNextEvent())
+    private var unlockCount = 0
 
     init {
         update()
@@ -23,12 +28,14 @@ class TrackingManager(context: Context) {
         calendar.add(Calendar.DAY_OF_YEAR, -1)
         val from = calendar.timeInMillis
 
-        rawStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, from, to)
+        // getting the raw data from Android
+        rawUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, from, to)
+        rawEventData = usageStatsManager.queryEvents(from, to)
     }
 
     fun getScreenTime(): Long {
         var total = 0L
-        for(appStats in rawStats)
+        for(appStats in rawUsageStats)
             total += appStats.totalTimeInForeground
         return total
     }
@@ -37,7 +44,7 @@ class TrackingManager(context: Context) {
         val appList = arrayListOf<TrackedApp>()
 
         // grouping multiple entries of one app
-        for(appStats in rawStats) {
+        for(appStats in rawUsageStats) {
             // only adding apps that were actually in the foreground
             if(appStats.totalTimeInForeground > 0L) {
                 val packageName = appStats.packageName
@@ -65,6 +72,22 @@ class TrackingManager(context: Context) {
         val sortedAppList = appList.sortedByDescending { it.timeUsed }
 
         return sortedAppList.subList(0, count.coerceAtMost(sortedAppList.size))
+    }
+
+    fun getUnlockCount(): Int {
+        if(rawEventData.hasNextEvent()) {
+            unlockCount = 0
+
+            while(rawEventData.hasNextEvent()) {
+                val event = UsageEvents.Event()
+                rawEventData.getNextEvent(event)
+
+                if(event.eventType == UsageEvents.Event.KEYGUARD_HIDDEN)
+                    unlockCount++
+            }
+        }
+
+        return unlockCount
     }
 
 }

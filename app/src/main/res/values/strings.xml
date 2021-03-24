@@ -48,4 +48,7 @@
     <string name="stats_screen_time_total">%1$dh %2$dm total</string>
     <string name="stats_screen_time_total_below_1h">%1$dm total</string>
     <string name="stats_app_usage_description">Tap for more</string>
+    <string name="stats_screen_unlock_count_title">Device unlocked</string>
+    <string name="stats_screen_unlock_count_description_one">1 time</string>
+    <string name="stats_screen_unlock_count_description">%1$d times</string>
 </resources>
