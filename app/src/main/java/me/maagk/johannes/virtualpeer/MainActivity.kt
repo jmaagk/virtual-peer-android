@@ -27,9 +27,9 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private lateinit var navigationView: NavigationView
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    private var startFragment: StartFragment? = null
-    private var chatFragment: ChatFragment? = null
-    private var statsFragment: StatsFragment? = null
+    private lateinit var startFragment: StartFragment
+    private lateinit var chatFragment: ChatFragment
+    private lateinit var statsFragment: StatsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,19 +92,19 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
             R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
             R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
             R.id.navChat -> {
-                if(chatFragment == null)
+                if(!this::chatFragment.isInitialized)
                     chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
-                chatFragment as Fragment
+                chatFragment
             }
             R.id.navStats -> {
-                if(statsFragment == null)
+                if(!this::statsFragment.isInitialized)
                     statsFragment = supportFragmentManager.findFragmentByTag(StatsFragment.TAG) as StatsFragment? ?: StatsFragment()
-                statsFragment as Fragment
+                statsFragment
             }
             else -> {
-                if(startFragment == null)
+                if(!this::startFragment.isInitialized)
                     startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) as StartFragment? ?: StartFragment()
-                startFragment as Fragment
+                startFragment
             }
         }
 
@@ -131,16 +131,15 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     fun queueMessage(message: Message) {
-        if(chatFragment == null)
+        if(!this::chatFragment.isInitialized)
             chatFragment = ChatFragment()
 
-        if(startFragment == null)
+        if(!this::startFragment.isInitialized)
             startFragment = StartFragment()
 
-        startFragment?.let {
-            chatFragment?.addOnMessageSentListener(it)
-        }
-        chatFragment?.queueMessage(message)
+        chatFragment.addOnMessageSentListener(startFragment)
+        chatFragment.queueMessage(message)
+
         if(getTopFragment() !is ChatFragment) {
             val chatItem = bottomNavigationView.menu.findItem(R.id.navChat)
             onNavigationItemSelected(chatItem, false)
@@ -172,7 +171,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     fun removeOnMessageSentListener(onMessageSentListener: ChatFragment.OnMessageSentListener) {
-        chatFragment?.removeOnMessageSentListener(onMessageSentListener)
+        chatFragment.removeOnMessageSentListener(onMessageSentListener)
     }
 
 }
