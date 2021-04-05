@@ -92,17 +92,17 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
             R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
             R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
             R.id.navChat -> {
-                if(!this::chatFragment.isInitialized)
+                if(!::chatFragment.isInitialized)
                     chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
                 chatFragment
             }
             R.id.navStats -> {
-                if(!this::statsFragment.isInitialized)
+                if(!::statsFragment.isInitialized)
                     statsFragment = supportFragmentManager.findFragmentByTag(StatsFragment.TAG) as StatsFragment? ?: StatsFragment()
                 statsFragment
             }
             else -> {
-                if(!this::startFragment.isInitialized)
+                if(!::startFragment.isInitialized)
                     startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) as StartFragment? ?: StartFragment()
                 startFragment
             }
@@ -131,10 +131,10 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     fun queueMessage(message: Message) {
-        if(!this::chatFragment.isInitialized)
+        if(!::chatFragment.isInitialized)
             chatFragment = ChatFragment()
 
-        if(!this::startFragment.isInitialized)
+        if(!::startFragment.isInitialized)
             startFragment = StartFragment()
 
         chatFragment.addOnMessageSentListener(startFragment)

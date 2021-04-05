@@ -405,7 +405,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
     }
 
     fun queueMessage(message: Message) {
-        if(this::recyclerView.isInitialized && this::adapter.isInitialized)
+        if(::recyclerView.isInitialized && ::adapter.isInitialized)
             sendMessage(message)
         else
             messageQueue.add(message)

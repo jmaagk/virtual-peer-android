@@ -43,7 +43,7 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
 
         // making sure a time zone is set
         // this should only run when the app is started for the first time
-        if(!this::timeZone.isInitialized)
+        if(!::timeZone.isInitialized)
             timeZone = ZoneId.systemDefault()
     }
 
