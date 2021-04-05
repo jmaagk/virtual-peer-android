@@ -1,11 +1,13 @@
 package me.maagk.johannes.virtualpeer
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -15,8 +17,10 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.chat.Message
+import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
+import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
 import me.maagk.johannes.virtualpeer.fragment.stats.StatsFragment
 import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
@@ -30,6 +34,14 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private lateinit var startFragment: StartFragment
     private lateinit var chatFragment: ChatFragment
     private lateinit var statsFragment: StatsFragment
+
+    private val Intent.rateExercise
+        get() = hasExtra("rateExercise")
+
+    private val Intent.exerciseClass
+        get() = intent.getSerializableExtra("rateExercise")
+
+    private var exerciseRatingStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +90,9 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         }
 
         supportFragmentManager.addOnBackStackChangedListener(this)
+
+        if(intent.rateExercise)
+            initRateExercise()
     }
 
     private fun onNavigationItemSelected(item: MenuItem, navDrawer: Boolean): Boolean {
@@ -159,7 +174,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                 navDrawer = true
                 R.id.navDrawerSurvey
             }
-            is ChatFragment -> R.id.navChat
+            is ChatFragment, is AddLearningContentFragment -> R.id.navChat
             is StatsFragment -> R.id.navStats
             else -> R.id.navStart
         }
@@ -168,10 +183,56 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
             navigationView.setCheckedItem(itemToSelect)
         else
             bottomNavigationView.selectedItemId = itemToSelect
+
+        if(intent.rateExercise && getTopFragment() is ChatFragment)
+            rateExercise()
     }
 
     fun removeOnMessageSentListener(onMessageSentListener: ChatFragment.OnMessageSentListener) {
         chatFragment.removeOnMessageSentListener(onMessageSentListener)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        if(intent == null)
+            return
+
+        this.intent = intent
+
+        if(intent.rateExercise)
+            initRateExercise()
+    }
+
+    private fun initRateExercise() {
+        if(::chatFragment.isInitialized)
+            rateExercise()
+        else
+            chatFragment = ChatFragment()
+
+        // switching to the chat in case it's not visible yet; also important for getting a context from it
+        if(getTopFragment() !is ChatFragment) {
+            val chatItem = bottomNavigationView.menu.findItem(R.id.navChat)
+            onNavigationItemSelected(chatItem, false)
+            bottomNavigationView.selectedItemId = chatItem.itemId
+        }
+    }
+
+    private fun rateExercise() {
+        if(exerciseRatingStarted)
+            return
+
+        exerciseRatingStarted = true
+
+        when(intent.exerciseClass) {
+            PomodoroExercise::class.java -> {
+                val exercise = PomodoroExercise(chatFragment)
+                exercise.rate()
+
+                // canceling the notification because it would still be visible otherwise
+                NotificationManagerCompat.from(this).cancel(VirtualPeerApp.NOTIFICATION_ID_POMODORO_FINISH)
+            }
+        }
     }
 
 }

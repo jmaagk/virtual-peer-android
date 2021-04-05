@@ -14,6 +14,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.exercise.Exercise
+import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.chat.*
 import me.maagk.johannes.virtualpeer.survey.question.*
@@ -393,12 +395,19 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     TextInputQuestionMessage(textInputQuestion)
                 }
 
+                "pomodoro", "pd" -> {
+                    startExercise(PomodoroExercise(this))
+                    null
+                }
+
                 else -> {
                     Message(Message.INCOMING, sent.message)
                 }
             }
 
-            sendMessage(botMessage)
+            botMessage?.let {
+                sendMessage(it)
+            }
         }
 
         recyclerView.smoothScrollToPosition(messages.size - 1)
@@ -426,6 +435,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
     fun removeOnMessageSentListener(onMessageSentListener: OnMessageSentListener) {
         onMessageSentListeners.remove(onMessageSentListener)
+    }
+
+    private fun startExercise(exercise: Exercise) {
+        exercise.prepare()
     }
 
 }
