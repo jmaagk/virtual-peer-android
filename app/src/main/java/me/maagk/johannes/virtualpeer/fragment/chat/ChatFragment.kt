@@ -132,6 +132,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             if(userInput.isEmpty())
                 return@start
 
+            inputField.text?.clear()
+
             val userMessage = prepareUserMessage(userInput)
             sendMessage(userMessage)
         }
