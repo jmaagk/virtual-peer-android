@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         get() = hasExtra("rateExercise")
 
     private val Intent.exerciseClass
-        get() = intent.getSerializableExtra("rateExercise")
+        get() = getSerializableExtra("rateExercise")
 
     private var exerciseRatingStarted = false
 
