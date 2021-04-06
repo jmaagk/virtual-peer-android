@@ -44,4 +44,5 @@
     <string name="stats_screen_unlock_count_title">Gerät entsperrt</string>
     <string name="stats_screen_unlock_count_description_one">1 mal</string>
     <string name="stats_screen_unlock_count_description">%1$d mal</string>
+    <string name="eisenhower_matrix_title">Eisenhower-Matrix</string>
 </resources>

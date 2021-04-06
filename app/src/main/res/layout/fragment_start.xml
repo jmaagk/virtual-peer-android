@@ -6,11 +6,16 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+    <include layout="@layout/view_quick_action_card_eisenhower_matrix"
+        android:id="@+id/eisenhowerMatrixButton"
+        android:layout_width="125dp"
+        android:layout_height="125dp" />
+
     <TextView
         android:id="@+id/chartDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/eisenhowerMatrixButton"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />

@@ -85,4 +85,5 @@
     <string name="pomodoro_didnt_get_everything_done_message_option_1">Ich habe nicht alles geschafft.</string>
     <string name="pomodoro_didnt_get_everything_done_message_option_2">Ich war heute unkonzentriert.</string>
     <string name="pomodoro_didnt_get_everything_done_message_option_3">Ich sollte mir die Einheiten anders aufteilen.</string>
+    <string name="eisenhower_matrix_title">Eisenhower Matrix</string>
 </resources>

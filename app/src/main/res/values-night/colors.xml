@@ -4,6 +4,7 @@
     <color name="colorBackground">#FF212121</color>
     <color name="colorBackgroundDark">#FF121212</color>
     <color name="colorBackgroundCard">#FF424242</color>
+    <color name="colorBackgroundCardStripe">#FF616161</color>
     <color name="colorText">#FFFFFFFF</color>
     <color name="colorSubText">#FFE0E0E0</color>
     <color name="colorButtonText">#FF000000</color>
