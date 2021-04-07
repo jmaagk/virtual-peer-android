@@ -6,6 +6,8 @@ import android.util.DisplayMetrics
 import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
+import androidx.transition.AutoTransition
 import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.round
@@ -37,6 +39,17 @@ class Utils {
 
         fun getAnimatorDurationScale(context: Context): Float {
             return Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        }
+
+        // TODO: add transitions to fragments
+        fun Fragment.setTransitions() {
+            reenterTransition = AutoTransition()
+            returnTransition = AutoTransition()
+            enterTransition = AutoTransition()
+            exitTransition = AutoTransition()
+
+            allowEnterTransitionOverlap = true
+            allowReturnTransitionOverlap = true
         }
 
     }

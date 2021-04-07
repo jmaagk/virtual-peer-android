@@ -86,4 +86,8 @@
     <string name="pomodoro_didnt_get_everything_done_message_option_2">Ich war heute unkonzentriert.</string>
     <string name="pomodoro_didnt_get_everything_done_message_option_3">Ich sollte mir die Einheiten anders aufteilen.</string>
     <string name="eisenhower_matrix_title">Eisenhower Matrix</string>
+    <string name="eisenhower_matrix_urgent_important">Urgent &amp; important</string>
+    <string name="eisenhower_matrix_not_urgent_important">Not urgent &amp; important</string>
+    <string name="eisenhower_matrix_urgent_not_important">Urgent &amp; not important</string>
+    <string name="eisenhower_matrix_not_urgent_not_important">Not urgent &amp; not important</string>
 </resources>

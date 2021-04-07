@@ -6,12 +6,15 @@ import android.view.View
 import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
 import me.maagk.johannes.virtualpeer.chat.*
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
+import me.maagk.johannes.virtualpeer.fragment.exercise.EisenhowerMatrixFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
@@ -100,6 +103,15 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         }
 
         chart = view.findViewById(R.id.startChart)
+
+        val eisenhowereMatrixButton: CardView = view.findViewById(R.id.eisenhowerMatrixButton)
+        eisenhowereMatrixButton.setOnClickListener {
+            val eisenhowerMatrixFragment = EisenhowerMatrixFragment()
+            eisenhowerMatrixFragment.setTransitions()
+            val tag = EisenhowerMatrixFragment.TAG
+
+            parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, eisenhowerMatrixFragment, tag).addToBackStack(tag).commit()
+        }
     }
 
     private fun updateCurrentActivityText() {

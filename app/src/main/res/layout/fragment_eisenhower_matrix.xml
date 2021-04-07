@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_add"
+        app:fabSize="mini"
+        app:maxImageSize="18dp"
+        android:scaleType="center" />
+
+    <include layout="@layout/view_eisenhower_matrix_part"
+        android:id="@+id/urgentImportantLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/notUrgentImportantLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/urgentNotImportantLayout" />
+
+    <include layout="@layout/view_eisenhower_matrix_part"
+        android:id="@+id/notUrgentImportantLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/urgentImportantLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/notUrgentNotImportantLayout" />
+
+    <include layout="@layout/view_eisenhower_matrix_part"
+        android:id="@+id/urgentNotImportantLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/notUrgentNotImportantLayout"
+        app:layout_constraintTop_toBottomOf="@id/urgentImportantLayout"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <include layout="@layout/view_eisenhower_matrix_part"
+        android:id="@+id/notUrgentNotImportantLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/urgentNotImportantLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notUrgentImportantLayout"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

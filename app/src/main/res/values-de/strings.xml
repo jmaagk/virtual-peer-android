@@ -45,4 +45,8 @@
     <string name="stats_screen_unlock_count_description_one">1 mal</string>
     <string name="stats_screen_unlock_count_description">%1$d mal</string>
     <string name="eisenhower_matrix_title">Eisenhower-Matrix</string>
+    <string name="eisenhower_matrix_urgent_important">Dringend &amp; wichtig</string>
+    <string name="eisenhower_matrix_not_urgent_important">Nicht dringend &amp; wichtig</string>
+    <string name="eisenhower_matrix_urgent_not_important">Dringend &amp; nicht wichtig</string>
+    <string name="eisenhower_matrix_not_urgent_not_important">Nicht dringend &amp; nicht wichtig</string>
 </resources>
