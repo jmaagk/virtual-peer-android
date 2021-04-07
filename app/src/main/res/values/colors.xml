@@ -3,8 +3,8 @@
 
     <!-- Primary and secondary colors -->
     <!-- These are only defined once because they're the same for all themes -->
-    <color name="colorPrimary">#FF2196F3</color>
-    <color name="colorPrimaryVariant">#FF1976D2</color>
+    <color name="colorPrimary">#00C2CB</color> <!-- 3d969c -->
+    <color name="colorPrimaryVariant">#03989E</color>
     <color name="colorOnPrimary">@android:color/white</color>
 
     <color name="colorSecondary">#FFFFC107</color>
