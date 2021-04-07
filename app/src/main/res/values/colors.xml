@@ -26,9 +26,9 @@
     
     <color name="colorLabelBackground">#80000000</color>
 
-    <color name="colorActivityWork">#2196F3</color>
-    <color name="colorActivityEssential">#64B5F6</color>
-    <color name="colorActivityRewards">#1976D2</color>
+    <color name="colorActivityWork">#00C2CB</color>
+    <color name="colorActivityEssential">#03989E</color>
+    <color name="colorActivityRewards">#3EDAD8</color>
 
     <color name="colorTaskUrgentImportant">#03989E</color>
     <color name="colorTaskNotUrgentImportant">#00C2CB</color>
