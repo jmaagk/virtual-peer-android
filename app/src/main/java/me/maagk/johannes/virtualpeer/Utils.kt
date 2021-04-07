@@ -27,7 +27,7 @@ class Utils {
             return round(value * scale) / scale
         }
 
-        fun dpToPx(dp: Int, displayMetrics: DisplayMetrics): Int {
+        fun dpToPx(dp: Float, displayMetrics: DisplayMetrics): Int {
             return (dp * displayMetrics.density + 0.5f).toInt()
         }
 
