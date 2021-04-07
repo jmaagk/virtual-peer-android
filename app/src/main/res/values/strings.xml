@@ -90,4 +90,11 @@
     <string name="eisenhower_matrix_not_urgent_important">Not urgent &amp; important</string>
     <string name="eisenhower_matrix_urgent_not_important">Urgent &amp; not important</string>
     <string name="eisenhower_matrix_not_urgent_not_important">Not urgent &amp; not important</string>
+    <string name="eisenhower_matrix_add_goal_dialog_new_goal_hint">Goal name</string>
+    <string name="eisenhower_matrix_add_goal_dialog_choose_matrix_position">Choose position in matrix</string>
+    <string name="eisenhower_matrix_add_goal_dialog_choose_activity_area">Choose an activity area</string>
+    <string name="user_activity_type_work">Work</string>
+    <string name="user_activity_type_essential">Essential things</string>
+    <string name="user_activity_type_rewards">Rewards</string>
+    <string name="eisenhower_matrix_add_goal_dialog_error_empty_name">Please enter a name</string>
 </resources>

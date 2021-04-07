@@ -49,4 +49,11 @@
     <string name="eisenhower_matrix_not_urgent_important">Nicht dringend &amp; wichtig</string>
     <string name="eisenhower_matrix_urgent_not_important">Dringend &amp; nicht wichtig</string>
     <string name="eisenhower_matrix_not_urgent_not_important">Nicht dringend &amp; nicht wichtig</string>
+    <string name="eisenhower_matrix_add_goal_dialog_new_goal_hint">Name des Ziels</string>
+    <string name="eisenhower_matrix_add_goal_dialog_choose_matrix_position">Position in der Matrix</string>
+    <string name="eisenhower_matrix_add_goal_dialog_choose_activity_area">Wähle einen Bereich</string>
+    <string name="user_activity_type_essential">Lebensnotwendige Dinge</string>
+    <string name="user_activity_type_rewards">Belohnungen</string>
+    <string name="user_activity_type_work">Arbeit</string>
+    <string name="eisenhower_matrix_add_goal_dialog_error_empty_name">Bitte gib einen Namen ein</string>
 </resources>

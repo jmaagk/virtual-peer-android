@@ -1,10 +1,8 @@
 package me.maagk.johannes.virtualpeer.useractivity
 
 import android.content.Context
-import android.graphics.Color
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -31,6 +29,14 @@ data class UserActivity(val type: Type, var startTime: ZonedDateTime, var endTim
                 POOL_WORK -> Utils.getColor(context, R.color.colorActivityWork)
                 POOL_ESSENTIAL -> Utils.getColor(context, R.color.colorActivityEssential)
                 POOL_REWARDS -> Utils.getColor(context, R.color.colorActivityRewards)
+            }
+        }
+
+        fun getName(context: Context): String {
+            return when(this) {
+                POOL_WORK -> context.getString(R.string.user_activity_type_work)
+                POOL_ESSENTIAL -> context.getString(R.string.user_activity_type_essential)
+                POOL_REWARDS -> context.getString(R.string.user_activity_type_rewards)
             }
         }
     }
