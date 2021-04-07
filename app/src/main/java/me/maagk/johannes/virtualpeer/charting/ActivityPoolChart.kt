@@ -55,7 +55,7 @@ class ActivityPoolChart @JvmOverloads constructor(
             val activityTypes = UserActivity.Type.values()
             val colors = arrayListOf<Int>()
             for(activityType in activityTypes)
-                colors.add(activityType.color)
+                colors.add(activityType.getColor(context))
 
             colors.add(Utils.getColor(context, R.color.colorChartRemainingTime))
 

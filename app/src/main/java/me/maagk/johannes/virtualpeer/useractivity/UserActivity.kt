@@ -1,6 +1,9 @@
 package me.maagk.johannes.virtualpeer.useractivity
 
+import android.content.Context
 import android.graphics.Color
+import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Utils
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -20,10 +23,16 @@ data class UserActivity(val type: Type, var startTime: ZonedDateTime, var endTim
     var userRatingType: Int = RATING_TYPE_UNKNOWN
     var userRating: Any? = null
 
-    enum class Type(val color: Int) {
-        POOL_WORK(Color.parseColor("#2196F3")),
-        POOL_ESSENTIAL(Color.parseColor("#64B5F6")),
-        POOL_REWARDS(Color.parseColor("#1976D2"))
+    enum class Type {
+        POOL_WORK, POOL_ESSENTIAL, POOL_REWARDS;
+
+        fun getColor(context: Context): Int {
+            return when(this) {
+                POOL_WORK -> Utils.getColor(context, R.color.colorActivityWork)
+                POOL_ESSENTIAL -> Utils.getColor(context, R.color.colorActivityEssential)
+                POOL_REWARDS -> Utils.getColor(context, R.color.colorActivityRewards)
+            }
+        }
     }
 
     fun getDuration(): Long {
