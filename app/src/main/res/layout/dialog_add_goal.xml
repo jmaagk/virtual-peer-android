@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/eisenhower_matrix_add_goal_dialog_new_goal_hint"
             android:maxLines="1"
+            android:maxLength="50"
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>

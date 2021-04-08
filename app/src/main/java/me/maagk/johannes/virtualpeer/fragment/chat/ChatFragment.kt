@@ -144,6 +144,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
 
     private class ChatAdapter(val messages: ArrayList<Message>, val onQuestionClick: (QuestionMessageViewHolder, View) -> Unit) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>() {
 
+        private lateinit var layoutInflater: LayoutInflater
+
         private abstract class MessageViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             val messageText: TextView = itemView.findViewById(R.id.message)
@@ -262,7 +264,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         class AnswerMessageViewHolder(itemView: View) : QuestionMessageViewHolder(itemView, {_, _ -> })
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-            val layoutInflater = LayoutInflater.from(parent.context)
+            if(!::layoutInflater.isInitialized)
+                layoutInflater = LayoutInflater.from(parent.context)
 
             return when(viewType) {
                 Message.INCOMING -> {

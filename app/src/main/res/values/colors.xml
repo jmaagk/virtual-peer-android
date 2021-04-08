@@ -15,9 +15,12 @@
     <color name="colorBackgroundDark">#FFEEEEEE</color>
     <color name="colorBackgroundCard">#FFFFFFFF</color>
     <color name="colorBackgroundCardStripe">#FFEEEEEE</color>
+    <color name="colorBackgroundCardContrast">#FF424242</color>
     <color name="colorText">#FF212121</color>
     <color name="colorSubText">#FF757575</color>
     <color name="colorButtonText">#FF000000</color>
+    <color name="colorTextContrast">#FFFFFFFF</color>
+    <color name="colorSubTextContrast">#FFE0E0E0</color>
     <color name="colorSelectedCard">#FFFFCCBC</color>
     <color name="colorRipple">#28000000</color>
     <color name="colorIconTint">#FF000000</color>
