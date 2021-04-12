@@ -41,8 +41,8 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
 
             // adjusting the position of this part's list
             // 2 of these have the majority of their padding on the left, the others on the right
-            val marginLarge = Utils.dpToPx(35f, requireContext().resources.displayMetrics)
-            val marginSmall = Utils.dpToPx(2.5f, requireContext().resources.displayMetrics)
+            val marginLarge = Utils.dpToPx(35f, requireContext().resources.displayMetrics).toInt()
+            val marginSmall = Utils.dpToPx(2.5f, requireContext().resources.displayMetrics).toInt()
 
             val layoutParams = goalListCard.layoutParams as LinearLayout.LayoutParams
 

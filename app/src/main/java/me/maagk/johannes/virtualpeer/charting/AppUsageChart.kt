@@ -119,11 +119,11 @@ class AppUsageChart @JvmOverloads constructor(
 
             val drawable = context.packageManager.getApplicationIcon(app.packageName)
             val bitmap = drawable.toBitmap()
-            val sizePx = Utils.dpToPx(36f, resources.displayMetrics)
+            val sizePx = Utils.dpToPx(36f, resources.displayMetrics).toInt()
             val scaledBitmap = bitmap.scale(sizePx, sizePx)
 
             val scaledDrawable = BitmapDrawable(resources, scaledBitmap)
-            scaledDrawable.setBounds(0, -Utils.dpToPx(36f, resources.displayMetrics), 0, 0)
+            scaledDrawable.setBounds(0, -Utils.dpToPx(36f, resources.displayMetrics).toInt(), 0, 0)
 
             entry.icon = scaledDrawable
 
