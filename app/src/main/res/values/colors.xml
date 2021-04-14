@@ -38,4 +38,7 @@
     <color name="colorTaskUrgentNotImportant">#3EDAD8</color>
     <color name="colorTaskNotUrgentNotImportant">#AAF0EF</color>
 
+    <color name="colorChatMessage">#00C2CB</color>
+    <color name="colorChatMessageOutgoing">#3EDAD8</color>
+
 </resources>
