@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/fragment_question_base" />
@@ -10,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:textColorHint="?attr/textColor"
-        android:hint="@string/survey_answer_hint">
+        android:hint="@string/survey_answer_hint"
+        app:boxBackgroundColor="@color/colorBackgroundCard">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInput"

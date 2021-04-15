@@ -30,7 +30,6 @@
         android:layout_columnSpan="2"
         android:layout_columnWeight="1"
         android:layout_margin="5dp"
-        style="@style/CardView"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         android:visibility="gone">

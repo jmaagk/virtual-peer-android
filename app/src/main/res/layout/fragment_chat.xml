@@ -22,7 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/send"
         android:layout_marginHorizontal="7.5dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        app:boxBackgroundColor="@color/colorBackgroundCard">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/chatInput"

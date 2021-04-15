@@ -36,8 +36,17 @@
 
         <item name="buttonTextColor">@color/colorButtonText</item>
 
+        <!-- Widgets -->
+        <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="checkboxStyle">@style/CheckBoxStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+
         <!-- Preferences -->
         <item name="preferenceTheme">@style/PreferenceTheme</item>
+
+        <!-- Other styles -->
+        <item name="cardViewStyle">@style/CardViewStyle</item>
+        <item name="materialCardViewStyle">@style/MaterialCardViewStyle</item>
 
     </style>
 
@@ -64,6 +73,31 @@
     <!-- Preference style (just used to have the icons colored correctly) -->
     <style name="PreferenceTheme" parent="@style/PreferenceThemeOverlay">
         <item name="android:tint">@color/colorIconTint</item>
+    </style>
+
+    <!-- CardView style -->
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardBackgroundColor">@color/colorBackgroundCard</item>
+    </style>
+
+    <!-- MaterialCardView style (the style is essentially the same as the one above; only the parent is different) -->
+    <style name="MaterialCardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorBackgroundCard</item>
+    </style>
+
+    <!-- Button style -->
+    <style name="ButtonStyle" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textColor">@color/colorButtonText</item>
+    </style>
+
+    <!-- Check box style -->
+    <style name="CheckBoxStyle" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/colorSubText</item>
+    </style>
+
+    <!-- Radio button style -->
+    <style name="RadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:textColor">@color/colorSubText</item>
     </style>
 
 </resources>

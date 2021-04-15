@@ -50,7 +50,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/menu_bottom_navigation"
-            app:labelVisibilityMode="unlabeled" />
+            app:labelVisibilityMode="unlabeled"
+            app:backgroundTint="@color/colorBackgroundCard" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
