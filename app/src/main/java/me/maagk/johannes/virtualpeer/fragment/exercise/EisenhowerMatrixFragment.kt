@@ -15,12 +15,15 @@ import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.exercise.AddGoalDialog
 import me.maagk.johannes.virtualpeer.exercise.EisenhowerMatrix
 import me.maagk.johannes.virtualpeer.goals.Goal
+import me.maagk.johannes.virtualpeer.goals.GoalStorage
 
 class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), AddGoalDialog.OnGoalCompletedListener {
 
     companion object {
         const val TAG = "eisenhowerMatrix"
     }
+
+    private lateinit var storage: GoalStorage
 
     private lateinit var urgentImportantPart: MatrixPart
     private lateinit var notUrgentImportantPart: MatrixPart
@@ -115,10 +118,21 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        storage = GoalStorage(requireContext())
+
         urgentImportantPart = MatrixPart(view.findViewById(R.id.urgentImportantLayout), EisenhowerMatrix.Position.URGENT_IMPORTANT)
         notUrgentImportantPart = MatrixPart(view.findViewById(R.id.notUrgentImportantLayout), EisenhowerMatrix.Position.NOT_URGENT_IMPORTANT)
         urgentNotImportantPart = MatrixPart(view.findViewById(R.id.urgentNotImportantLayout), EisenhowerMatrix.Position.URGENT_NOT_IMPORTANT)
         notUrgentNotImportantPart = MatrixPart(view.findViewById(R.id.notUrgentNotImportantLayout), EisenhowerMatrix.Position.NOT_URGENT_NOT_IMPORTANT)
+
+        for(goal in storage.goals) {
+            when(goal.position) {
+                EisenhowerMatrix.Position.URGENT_IMPORTANT -> urgentImportantPart.goals.add(goal)
+                EisenhowerMatrix.Position.NOT_URGENT_IMPORTANT -> notUrgentImportantPart.goals.add(goal)
+                EisenhowerMatrix.Position.URGENT_NOT_IMPORTANT -> urgentNotImportantPart.goals.add(goal)
+                EisenhowerMatrix.Position.NOT_URGENT_NOT_IMPORTANT -> notUrgentNotImportantPart.goals.add(goal)
+            }
+        }
 
         val addGoalButton: FloatingActionButton = view.findViewById(R.id.addGoal)
         addGoalButton.setOnClickListener {
@@ -142,6 +156,9 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
         adapter?.let {
             adapter.notifyItemInserted(adapter.itemCount)
         }
+
+        storage.goals.add(goal)
+        storage.save()
     }
 
 }
