@@ -137,7 +137,10 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
     }
 
     fun validateId(id: String): Boolean {
-        // TODO: implement this
+        for(goal in goals) {
+            if(id == goal.id)
+                return false
+        }
         return true
     }
 
