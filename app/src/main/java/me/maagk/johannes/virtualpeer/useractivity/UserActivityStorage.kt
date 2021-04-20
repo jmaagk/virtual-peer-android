@@ -71,10 +71,8 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
             userActivities.add(activity)
         }
 
-        if(fileVersion != VERSION) {
+        if(fileVersion != VERSION)
             update(fileVersion)
-            save()
-        }
     }
 
     private fun parseActivity(activityTag: Node, version: Int): UserActivity {
