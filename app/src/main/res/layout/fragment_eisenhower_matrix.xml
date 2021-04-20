@@ -16,6 +16,8 @@
         android:src="@drawable/ic_add"
         app:fabSize="mini"
         app:maxImageSize="18dp"
+        app:backgroundTint="@color/colorTaskUrgentImportant"
+        app:tint="@color/colorText"
         android:scaleType="center" />
 
     <include layout="@layout/view_eisenhower_matrix_part"
