@@ -56,4 +56,7 @@
     <string name="user_activity_type_rewards">Belohnungen</string>
     <string name="user_activity_type_work">Arbeit</string>
     <string name="eisenhower_matrix_add_goal_dialog_error_empty_name">Bitte gib einen Namen ein</string>
+    <string name="eisenhower_matrix_goal_info_no_deadline">Keine Frist</string>
+    <string name="eisenhower_matrix_goal_info">Frist: %1$s</string>
+    <string name="eisenhower_matrix_add_goal_dialog_invalid_deadline">Bitte wähle eine gültige Frist aus</string>
 </resources>

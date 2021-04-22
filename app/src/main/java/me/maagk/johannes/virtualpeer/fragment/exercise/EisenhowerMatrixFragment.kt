@@ -3,6 +3,7 @@ package me.maagk.johannes.virtualpeer.fragment.exercise
 import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +22,9 @@ import me.maagk.johannes.virtualpeer.exercise.AddGoalDialog
 import me.maagk.johannes.virtualpeer.exercise.EisenhowerMatrix
 import me.maagk.johannes.virtualpeer.goals.Goal
 import me.maagk.johannes.virtualpeer.goals.GoalStorage
+import java.time.ZoneId
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.min
 
@@ -142,10 +146,16 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 this.goal = goal
 
                 goalName.text = goal.name
-                goalInfo.text = "Placeholder"
+                goalInfo.text = if(goal.deadline == null) {
+                    getString(R.string.eisenhower_matrix_goal_info_no_deadline)
+                } else {
+                    val dateFormat = DateFormat.getDateFormat(requireContext())
+                    val oldDate = Date.from(goal.deadline.atStartOfDay(ZoneId.systemDefault()).toInstant())
+                    val formattedDate = dateFormat.format(oldDate)
+                    getString(R.string.eisenhower_matrix_goal_info, formattedDate)
+                }
 
                 goalCheckBox.isChecked = goal.completed
-                // TODO: set info on deadline / something else
             }
         }
 

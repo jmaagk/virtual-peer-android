@@ -97,4 +97,7 @@
     <string name="user_activity_type_essential">Essential things</string>
     <string name="user_activity_type_rewards">Rewards</string>
     <string name="eisenhower_matrix_add_goal_dialog_error_empty_name">Please enter a name</string>
+    <string name="eisenhower_matrix_goal_info_no_deadline">No deadline set</string>
+    <string name="eisenhower_matrix_goal_info">Deadline: %1$s</string>
+    <string name="eisenhower_matrix_add_goal_dialog_invalid_deadline">Please select a valid deadline</string>
 </resources>

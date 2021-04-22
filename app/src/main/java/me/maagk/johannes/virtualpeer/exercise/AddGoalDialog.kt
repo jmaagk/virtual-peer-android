@@ -1,12 +1,11 @@
 package me.maagk.johannes.virtualpeer.exercise
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.view.inputmethod.EditorInfo
-import android.widget.CheckBox
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -16,8 +15,8 @@ import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.goals.Goal
 import me.maagk.johannes.virtualpeer.goals.GoalStorage
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
+import java.time.LocalDate
 
-// TODO: add ability to add a deadline
 class AddGoalDialog(context: Context) : AlertDialog(context) {
 
     interface OnGoalCompletedListener {
@@ -25,6 +24,8 @@ class AddGoalDialog(context: Context) : AlertDialog(context) {
     }
 
     lateinit var onGoalCompletedListener: OnGoalCompletedListener
+
+    private var selectedDate: LocalDate? = null
 
     init {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_goal, null)
@@ -101,6 +102,24 @@ class AddGoalDialog(context: Context) : AlertDialog(context) {
 
         val goalCheckBox: CheckBox = dialogView.findViewById(R.id.goalCheckBox)
 
+        val selectDeadlineButton: ImageView = dialogView.findViewById(R.id.selectDeadlineButton)
+        selectDeadlineButton.setOnClickListener {
+            val onDateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+
+                selectedDate?.let {
+                    if(it.isBefore(LocalDate.now())) {
+                        selectedDate = null
+                        Toast.makeText(context, R.string.eisenhower_matrix_add_goal_dialog_invalid_deadline, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            val dateNow = LocalDate.now()
+            val datePickerDialog = DatePickerDialog(context, onDateSetListener, dateNow.year, dateNow.monthValue - 1, dateNow.dayOfMonth)
+            datePickerDialog.show()
+        }
+
         val goalNameInput: TextInputEditText = dialogView.findViewById(R.id.goalNameInput)
         goalNameInput.setOnEditorActionListener start@ { _, actionId, _ ->
             if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -127,7 +146,7 @@ class AddGoalDialog(context: Context) : AlertDialog(context) {
                     else -> UserActivity.Type.POOL_REWARDS
                 }
 
-                val goal = Goal(storage.generateNewId(), goalNameInput.text.toString(), goalCheckBox.isChecked, null, position, activityArea)
+                val goal = Goal(storage.generateNewId(), goalNameInput.text.toString(), goalCheckBox.isChecked, selectedDate, position, activityArea)
                 if(::onGoalCompletedListener.isInitialized)
                     onGoalCompletedListener.onGoalCompleted(goal)
 

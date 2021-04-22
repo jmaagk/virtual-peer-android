@@ -8,6 +8,9 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.io.File
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
@@ -71,12 +74,19 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
         val id = attributes.getNamedItem("id").nodeValue
         val name = attributes.getNamedItem("name").nodeValue
         val completed = attributes.getNamedItem("completed").nodeValue.toBoolean()
-        // TODO: parse deadline here
+
+        val deadlineLong = attributes.getNamedItem("deadline").nodeValue.toLong()
+        val deadline = if(deadlineLong == -1L) {
+            null
+        } else {
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(deadlineLong), ZoneId.systemDefault()).toLocalDate()
+        }
+
         val eisenhowerMatrixPosition = EisenhowerMatrix.Position.valueOf(attributes.getNamedItem("eisenhowerMatrixPosition").nodeValue)
         val activityType = UserActivity.Type.valueOf(attributes.getNamedItem("activityType").nodeValue)
         val pinned = attributes.getNamedItem("pinned").nodeValue.toBoolean()
 
-        return Goal(id, name, completed, null, eisenhowerMatrixPosition, activityType, pinned)
+        return Goal(id, name, completed, deadline, eisenhowerMatrixPosition, activityType, pinned)
     }
 
     fun save() {
@@ -107,7 +117,14 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
         goalRoot.setAttribute("id", goal.id)
         goalRoot.setAttribute("name", goal.name)
         goalRoot.setAttribute("completed", goal.completed.toString())
-        goalRoot.setAttribute("deadline", if(goal.deadline == null) (-1).toString() else "?") // TODO: change this to UNIX timestamp
+
+        val deadlineString = if(goal.deadline == null) {
+            (-1).toString()
+        } else {
+            goal.deadline.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli().toString()
+        }
+        goalRoot.setAttribute("deadline", deadlineString)
+
         goalRoot.setAttribute("eisenhowerMatrixPosition", goal.position.toString())
         goalRoot.setAttribute("activityType", goal.activityArea.toString())
         goalRoot.setAttribute("pinned", goal.pinned.toString())
