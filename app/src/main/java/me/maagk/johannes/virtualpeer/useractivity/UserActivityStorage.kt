@@ -155,9 +155,11 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         // just a quick move to a new variable as arguments can't be reassigned in Kotlin
         var updatedVersion = fromVersion
 
-        /* some code to update the version we're now on
+        /*
+         * some code to update the version we're now on
          * switch without break would usually be used here to "fall" through necessary
-         * updates consecutively but it doesn't exist in Kotlin and when doesn't do the same thing */
+         * updates consecutively but it doesn't exist in Kotlin and when doesn't do the same thing
+         */
         if(updatedVersion == 1) {
             // future update code goes here
             updatedVersion = 2

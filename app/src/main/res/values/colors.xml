@@ -41,4 +41,9 @@
     <color name="colorChatMessage">#00C2CB</color>
     <color name="colorChatMessageOutgoing">#3EDAD8</color>
 
+    <color name="colorBackgroundCardGoal">#FFFFFFFF</color>
+    <color name="colorBackgroundCardGoalMenu">#E0E0E0</color>
+    <color name="colorTextGoal">#FF212121</color>
+    <color name="colorSubTextGoal">#FF757575</color>
+
 </resources>

@@ -10,8 +10,9 @@
     android:layout_marginTop="5dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@color/colorBackgroundCardContrast"
-    app:cardCornerRadius="15dp">
+    app:cardBackgroundColor="@color/colorBackgroundCardGoal"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
             app:layout_constraintWidth_max="wrap"
             android:layout_marginStart="5dp"
             android:paddingEnd="35dp"
-            android:textColor="@color/colorTextContrast"
+            android:textColor="@color/colorTextGoal"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             tools:text="@tools:sample/lorem" />
 
@@ -49,7 +50,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/goalCheckBox"
             android:layout_marginStart="5dp"
-            android:textColor="@color/colorSubTextContrast"
+            android:textColor="@color/colorSubTextGoal"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             tools:text="@tools:sample/lorem" />
 

@@ -158,4 +158,13 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
             TODO("Add error handling for failed updates")
     }
 
+    fun deleteGoal(toDelete: Goal) {
+        for(goal in goals) {
+            if(goal.id == toDelete.id) {
+                goals.remove(goal)
+                break
+            }
+        }
+    }
+
 }
