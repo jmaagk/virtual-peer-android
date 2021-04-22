@@ -70,12 +70,13 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
 
         val id = attributes.getNamedItem("id").nodeValue
         val name = attributes.getNamedItem("name").nodeValue
+        val completed = attributes.getNamedItem("completed").nodeValue.toBoolean()
         // TODO: parse deadline here
         val eisenhowerMatrixPosition = EisenhowerMatrix.Position.valueOf(attributes.getNamedItem("eisenhowerMatrixPosition").nodeValue)
         val activityType = UserActivity.Type.valueOf(attributes.getNamedItem("activityType").nodeValue)
         val pinned = attributes.getNamedItem("pinned").nodeValue.toBoolean()
 
-        return Goal(id, name, null, eisenhowerMatrixPosition, activityType, pinned)
+        return Goal(id, name, completed, null, eisenhowerMatrixPosition, activityType, pinned)
     }
 
     fun save() {
@@ -105,6 +106,7 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
 
         goalRoot.setAttribute("id", goal.id)
         goalRoot.setAttribute("name", goal.name)
+        goalRoot.setAttribute("completed", goal.completed.toString())
         goalRoot.setAttribute("deadline", if(goal.deadline == null) (-1).toString() else "?") // TODO: change this to UNIX timestamp
         goalRoot.setAttribute("eisenhowerMatrixPosition", goal.position.toString())
         goalRoot.setAttribute("activityType", goal.activityArea.toString())

@@ -6,12 +6,22 @@
     android:layout_height="match_parent"
     android:padding="12.5dp">
 
+    <CheckBox
+        android:id="@+id/goalCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/goalNameInputLayout"
+        app:layout_constraintTop_toTopOf="@id/goalNameInputLayout"
+        app:layout_constraintBottom_toBottomOf="@id/goalNameInputLayout"
+        android:layout_marginEnd="5dp" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/goalNameInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/goalCheckBox"
         app:layout_constraintEnd_toStartOf="@id/selectDeadlineButton">
 
         <com.google.android.material.textfield.TextInputEditText

@@ -125,17 +125,27 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
             var initialRight = Int.MIN_VALUE
             var initialX = Float.MIN_VALUE
 
+            private lateinit var goal: Goal
+
             init {
+                // TODO: should this be here?
                 goalCard.setOnClickListener {
                     goalCheckBox.isChecked = !goalCheckBox.isChecked
+                }
+
+                goalCheckBox.setOnCheckedChangeListener { _: CompoundButton, checked: Boolean ->
+                    goal.completed = checked
                 }
             }
 
             fun bind(goal: Goal) {
+                this.goal = goal
+
                 goalName.text = goal.name
                 goalInfo.text = "Placeholder"
+
+                goalCheckBox.isChecked = goal.completed
                 // TODO: set info on deadline / something else
-                // TODO: set onCheckedChangeListener for check box
             }
         }
 

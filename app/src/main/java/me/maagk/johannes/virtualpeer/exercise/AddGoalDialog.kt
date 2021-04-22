@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.view.inputmethod.EditorInfo
+import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
@@ -98,6 +99,8 @@ class AddGoalDialog(context: Context) : AlertDialog(context) {
         matrixRadioGroup.check(R.id.radioButtonUrgentImportant)
         activityAreaRadioGroup.check(R.id.radioButtonWork)
 
+        val goalCheckBox: CheckBox = dialogView.findViewById(R.id.goalCheckBox)
+
         val goalNameInput: TextInputEditText = dialogView.findViewById(R.id.goalNameInput)
         goalNameInput.setOnEditorActionListener start@ { _, actionId, _ ->
             if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -124,7 +127,7 @@ class AddGoalDialog(context: Context) : AlertDialog(context) {
                     else -> UserActivity.Type.POOL_REWARDS
                 }
 
-                val goal = Goal(storage.generateNewId(), goalNameInput.text.toString(), null, position, activityArea)
+                val goal = Goal(storage.generateNewId(), goalNameInput.text.toString(), goalCheckBox.isChecked, null, position, activityArea)
                 if(::onGoalCompletedListener.isInitialized)
                     onGoalCompletedListener.onGoalCompleted(goal)
 
