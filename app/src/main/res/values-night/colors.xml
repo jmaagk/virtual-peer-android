@@ -2,6 +2,7 @@
 <resources>
 
     <color name="colorBackground">#191824</color>
+    <color name="colorBackgroundContrast">#FFFAFAFA</color>
     <color name="colorBackgroundDark">#16151F</color>
     <color name="colorBackgroundCard">#272632</color>
     <color name="colorBackgroundCardStripe">#35343F</color>

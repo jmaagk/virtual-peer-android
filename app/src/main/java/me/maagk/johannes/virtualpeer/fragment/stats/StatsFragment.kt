@@ -34,7 +34,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
         val expanded: Boolean
             get() = card.isSelected
 
-        val expandIcon: ImageView = card.findViewById(R.id.expandIcon)
+        val expandCollapseIcon: ImageView = card.findViewById(R.id.expandCollapseIcon)
 
         init {
             card.setOnClickListener {
@@ -105,7 +105,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
             animation.fillAfter = true
             animation.duration = (250 * Utils.getAnimatorDurationScale(card.context)).toLong()
 
-            expandIcon.startAnimation(animation)
+            expandCollapseIcon.startAnimation(animation)
         }
     }
 

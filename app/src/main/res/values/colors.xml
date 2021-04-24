@@ -12,6 +12,7 @@
     <color name="colorOnSecondary">@android:color/black</color>
 
     <color name="colorBackground">#FFFAFAFA</color>
+    <color name="colorBackgroundContrast">#191824</color>
     <color name="colorBackgroundDark">#FFEEEEEE</color>
     <color name="colorBackgroundCard">#FFFFFFFF</color>
     <color name="colorBackgroundCardStripe">#FFEEEEEE</color>

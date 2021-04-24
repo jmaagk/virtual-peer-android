@@ -33,7 +33,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         <ImageView
-            android:id="@+id/expandIcon"
+            android:id="@+id/expandCollapseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_expand"

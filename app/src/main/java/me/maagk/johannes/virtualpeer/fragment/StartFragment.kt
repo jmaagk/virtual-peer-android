@@ -1,15 +1,18 @@
 package me.maagk.johannes.virtualpeer.fragment
 
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.view.ViewGroup
+import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.maagk.johannes.virtualpeer.MainActivity
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
 import me.maagk.johannes.virtualpeer.chat.*
@@ -21,6 +24,7 @@ import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
 import java.text.DateFormat
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.math.max
 
 class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle, ChatFragment.OnMessageSentListener {
 
@@ -111,6 +115,69 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             val tag = EisenhowerMatrixFragment.TAG
 
             parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, eisenhowerMatrixFragment, tag).addToBackStack(tag).commit()
+        }
+
+        // configuring the behavior of the bottom sheet (the main layout) that's in front of the backdrop
+        // (the small layout containing the button to open the Eisenhower Matrix)
+        val mainLayout: ViewGroup = view.findViewById(R.id.mainLayout)
+        val bottomSheetBehavior = BottomSheetBehavior.from(mainLayout)
+        bottomSheetBehavior.isHideable = false
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior.isDraggable = true // TODO: should this be enabled? (animating the icon will get more complicated)
+
+        val rootLayout: ViewGroup = view.findViewById(R.id.rootLayout)
+        val backdropLayout: ViewGroup = view.findViewById(R.id.backdropLayout)
+
+        // setting the height of the collapsed state of the main layout
+        view.viewTreeObserver.addOnGlobalLayoutListener {
+            bottomSheetBehavior.peekHeight = rootLayout.height - backdropLayout.height + backdropLayout.marginBottom
+        }
+
+        val expandCollapseIcon: ImageView = view.findViewById(R.id.expandCollapseIcon)
+        expandCollapseIcon.rotation = 180f // the icon has to be flipped to correspond with later animations
+        expandCollapseIcon.setOnClickListener {
+            // changing the expansion state of the bottom sheet when the icon is clicked
+            bottomSheetBehavior.state = when(bottomSheetBehavior.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                else -> BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        val headerLayout: ViewGroup = view.findViewById(R.id.headerLayout)
+        headerLayout.setOnClickListener {
+            expandCollapseIcon.callOnClick()
+        }
+
+        headerLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            val paint = Paint()
+            paint.isAntiAlias = true
+            paint.color = Utils.getColor(requireContext(), R.color.colorBackground)
+
+            var maxDistanceFromTop = -1
+            val maxCornerRadius = Utils.dpToPx(15f, requireContext().resources.displayMetrics)
+
+            headerLayout.viewTreeObserver.addOnDrawListener {
+                // adjusting the corner radius of the main layout
+                val distanceFromTop = mainLayout.top - rootLayout.top
+                maxDistanceFromTop = max(distanceFromTop, maxDistanceFromTop)
+
+                val expansionValue = distanceFromTop.toFloat() / maxDistanceFromTop.toFloat()
+                val cornerRadius = expansionValue * maxCornerRadius
+
+                val bitmap = Bitmap.createBitmap(headerLayout.width, headerLayout.height, Bitmap.Config.ARGB_8888)
+                val drawable = BitmapDrawable(requireContext().resources, bitmap)
+                val canvas = Canvas(bitmap)
+                headerLayout.background = drawable
+
+                val width = headerLayout.width.toFloat()
+                val height = headerLayout.height.toFloat()
+
+                canvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, paint)
+                canvas.drawRect(0f, height / 2, width, height, paint)
+
+                // adjusting the rotation of the icon
+                expandCollapseIcon.rotation = 180f * expansionValue
+            }
         }
     }
 
