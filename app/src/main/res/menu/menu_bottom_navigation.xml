@@ -4,7 +4,12 @@
     <item
         android:id="@+id/navStart"
         android:title="@string/nav_start"
-        android:icon="@drawable/ic_start" />
+        android:icon="@drawable/ic_home" />
+
+    <item
+        android:id="@+id/navLibrary"
+        android:title="@string/nav_library"
+        android:icon="@drawable/ic_library" />
 
     <item
         android:id="@+id/navChat"
@@ -15,10 +20,5 @@
         android:id="@+id/navStats"
         android:title="@string/nav_stats"
         android:icon="@drawable/ic_stats" />
-
-    <item
-        android:id="@+id/navLibrary"
-        android:title="@string/nav_library"
-        android:icon="@drawable/ic_library" />
 
 </menu>

@@ -1,6 +1,8 @@
 package me.maagk.johannes.virtualpeer
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -78,6 +80,20 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         bottomNavigationView.setOnNavigationItemSelectedListener { item -> onNavigationItemSelected(item, false) }
+
+        // the two states for the items in the bottom bar
+        val states = Array(2) {
+            IntArray(1)
+        }
+        states[0][0] = android.R.attr.state_checked
+        states[1][0] = android.R.attr.state_enabled
+
+        // the two colors the icons will have depending on the state
+        val textColors = IntArray(2)
+        textColors[0] = Utils.getColor(this, R.color.colorBottomNavigationActiveItem)
+        textColors[1] = Utils.getColor(this, R.color.colorBottomNavigationInactiveItem)
+
+        bottomNavigationView.itemIconTintList = ColorStateList(states, textColors)
 
         // showing either the start fragment or the one that was previously on top
         if(savedInstanceState == null) {

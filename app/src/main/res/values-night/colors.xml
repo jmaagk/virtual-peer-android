@@ -9,6 +9,7 @@
     <color name="colorBackgroundCardContrast">#FFFFFFFF</color>
     <color name="colorText">#FFFFFFFF</color>
     <color name="colorSubText">#FFE0E0E0</color>
+    <color name="colorTextBottomNavigation">#9E9E9E</color>
     <color name="colorButtonText">#FF000000</color>
     <color name="colorTextContrast">#FF212121</color>
     <color name="colorSubTextContrast">#FF757575</color>
