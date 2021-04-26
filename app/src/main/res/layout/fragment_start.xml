@@ -14,7 +14,8 @@
         android:paddingTop="10dp"
         android:paddingBottom="25dp"
         android:layout_marginBottom="15dp"
-        android:background="@color/colorBackgroundContrast">
+        android:background="@color/colorBackgroundContrast"
+        android:gravity="end">
 
         <include layout="@layout/view_quick_action_card_eisenhower_matrix"
             android:id="@+id/eisenhowerMatrixButton"
