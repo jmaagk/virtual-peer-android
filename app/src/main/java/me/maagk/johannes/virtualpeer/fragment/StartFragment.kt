@@ -108,8 +108,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         chart = view.findViewById(R.id.startChart)
 
-        val eisenhowereMatrixButton: CardView = view.findViewById(R.id.eisenhowerMatrixButton)
-        eisenhowereMatrixButton.setOnClickListener {
+        val eisenhowerMatrixButton: CardView = view.findViewById(R.id.eisenhowerMatrixButton)
+        eisenhowerMatrixButton.setOnClickListener {
             val eisenhowerMatrixFragment = EisenhowerMatrixFragment()
             eisenhowerMatrixFragment.setTransitions()
             val tag = EisenhowerMatrixFragment.TAG
@@ -127,6 +127,18 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         val rootLayout: ViewGroup = view.findViewById(R.id.rootLayout)
         val backdropLayout: ViewGroup = view.findViewById(R.id.backdropLayout)
+
+        // setting the view to be invisible when the sheet is expanded to prevent clicking through the main layout
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                backdropLayout.visibility = when(newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> View.INVISIBLE
+                    else -> View.VISIBLE
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
         // setting the height of the collapsed state of the main layout
         view.viewTreeObserver.addOnGlobalLayoutListener {
