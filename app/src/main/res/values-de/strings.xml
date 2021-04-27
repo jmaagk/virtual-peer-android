@@ -59,4 +59,7 @@
     <string name="eisenhower_matrix_goal_info_no_deadline">Keine Frist</string>
     <string name="eisenhower_matrix_goal_info">Frist: %1$s</string>
     <string name="eisenhower_matrix_add_goal_dialog_invalid_deadline">Bitte wähle eine gültige Frist aus</string>
+    <string name="app_usage_permission_not_granted">Virtual Peer kann nicht auf deine App-Nutzung zugreifen</string>
+    <string name="app_usage_permission_not_granted_open_settings">Einstellungen öffnen</string>
+    <string name="app_usage_permission_not_granted_open_settings_error">Die Einstellungen konnten nicht geöffnet werden. Bitte gib der App manuell die Berechtigung.</string>
 </resources>

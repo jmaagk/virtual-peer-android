@@ -1,13 +1,16 @@
 package me.maagk.johannes.virtualpeer.tracking
 
+import android.app.AppOpsManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.os.Build
+import android.os.Process
+import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 
-// TODO: check permission
-class TrackingManager(context: Context) {
+class TrackingManager(private val context: Context) {
 
     class TrackedApp(var packageName: String, var timeUsed: Long)
 
@@ -88,6 +91,18 @@ class TrackingManager(context: Context) {
         }
 
         return unlockCount
+    }
+
+    fun isUsageStatsPermissionGranted(): Boolean {
+        val appOpsManager = context.getSystemService(AppCompatActivity.APP_OPS_SERVICE) as AppOpsManager
+
+        val mode = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            appOpsManager.unsafeCheckOpNoThrow("android:get_usage_stats", Process.myUid(), context.opPackageName)
+        } else {
+            appOpsManager.checkOpNoThrow("android:get_usage_stats", Process.myUid(), context.packageName)
+        }
+
+        return mode == AppOpsManager.MODE_ALLOWED
     }
 
 }

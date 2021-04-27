@@ -1,19 +1,25 @@
 package me.maagk.johannes.virtualpeer.fragment.stats
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.view.animation.Transformation
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.charting.AppUsageChart
 import me.maagk.johannes.virtualpeer.tracking.TrackingManager
+import java.lang.Exception
 
 class StatsFragment : Fragment(R.layout.fragment_stats) {
 
@@ -23,6 +29,8 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
 
     private lateinit var appUsageChartCard: MaterialCardView
     private lateinit var appUsageChart: AppUsageChart
+    private lateinit var noPermissionLayout: ViewGroup
+
     private lateinit var trackingManager: TrackingManager
 
     private open class StatsCard(val card: MaterialCardView) {
@@ -129,6 +137,22 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
         appUsageChart.trackingManager = trackingManager
         appUsageChart.maxApps = 6
 
+        noPermissionLayout = view.findViewById(R.id.noPermissionLayout)
+        val openSettingsButton: Button = view.findViewById(R.id.openSettingsButton)
+        openSettingsButton.setOnClickListener {
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            intent.data = Uri.parse("package:${requireContext().packageName}")
+
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+
+            try {
+                startActivity(intent)
+            } catch(e: Exception) {
+                Toast.makeText(requireContext(), R.string.app_usage_permission_not_granted_open_settings_error, Toast.LENGTH_LONG).show()
+            }
+        }
+
         appUsageCard = ExpandableStatsCard(view.findViewById(R.id.appUsageCard), appUsageChartCard)
 
         unlockCountCard = StatsCard(view.findViewById(R.id.unlockCountCard))
@@ -145,7 +169,13 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
         super.onResume()
 
         trackingManager.update()
-        appUsageChart.update()
+
+        appUsageChart.visibility = if(trackingManager.isUsageStatsPermissionGranted()) View.VISIBLE else View.GONE
+        noPermissionLayout.visibility = if(trackingManager.isUsageStatsPermissionGranted()) View.GONE else View.VISIBLE
+
+        if(appUsageChart.visibility == View.VISIBLE)
+            appUsageChart.update()
+
         updateTexts()
     }
 

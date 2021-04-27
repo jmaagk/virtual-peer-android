@@ -38,6 +38,7 @@
 
         <!-- Widgets -->
         <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="borderlessButtonStyle">@style/BorderlessButtonStyle</item>
         <item name="checkboxStyle">@style/CheckBoxStyle</item>
         <item name="radioButtonStyle">@style/RadioButtonStyle</item>
 
@@ -88,6 +89,11 @@
     <!-- Button style -->
     <style name="ButtonStyle" parent="@style/Widget.AppCompat.Button">
         <item name="android:textColor">@color/colorButtonText</item>
+    </style>
+
+    <!-- Borderless button style (buttons where nothing but the text is visible) -->
+    <style name="BorderlessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <!-- Check box style -->

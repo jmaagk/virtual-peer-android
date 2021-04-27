@@ -109,7 +109,7 @@ class AppUsageChart @JvmOverloads constructor(
         val entries = arrayListOf<BarEntry>()
         var maxValue = 0L
 
-        if(!::trackingManager.isInitialized)
+        if(!::trackingManager.isInitialized || !trackingManager.isUsageStatsPermissionGranted())
             return entries
 
         val mostUsedApps = trackingManager.getMostUsedApps(maxApps)
