@@ -19,14 +19,21 @@
         android:theme="@style/Theme.VirtualPeer.NoActionBar"
         android:name=".VirtualPeerApp">
 
-        <activity android:name=".MainActivity"
-            android:launchMode="singleTop">
+        <activity android:name=".activity.SplashScreenActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/SplashScreen">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTop" />
 
         <receiver android:name=".tracking.BootReceiver">
             <intent-filter>
@@ -34,7 +41,8 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".exercise.PomodoroAlarmReceiver"
+        <receiver
+            android:name=".exercise.PomodoroAlarmReceiver"
             android:enabled="true"
             android:exported="false" />
 

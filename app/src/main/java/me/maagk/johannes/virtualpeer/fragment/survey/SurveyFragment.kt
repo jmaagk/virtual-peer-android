@@ -3,11 +3,9 @@ package me.maagk.johannes.virtualpeer.fragment.survey
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import me.maagk.johannes.virtualpeer.MainActivity
+import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.survey.Survey

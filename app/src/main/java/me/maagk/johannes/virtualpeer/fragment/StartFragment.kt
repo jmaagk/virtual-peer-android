@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import me.maagk.johannes.virtualpeer.MainActivity
+import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions

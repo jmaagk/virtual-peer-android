@@ -1,8 +1,7 @@
-package me.maagk.johannes.virtualpeer
+package me.maagk.johannes.virtualpeer.activity
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -18,6 +17,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.VirtualPeerApp
 import me.maagk.johannes.virtualpeer.chat.Message
 import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
@@ -57,17 +59,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         // finding the Toolbar and setting it
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        // checking if this is the first time the app is launched
-        // if this is the case, the current time will be saved for later use
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        var firstLaunchTime = sharedPreferences.getLong(getString(R.string.pref_first_launch_time), -1)
-        if(firstLaunchTime == -1L) {
-            firstLaunchTime = System.currentTimeMillis()
-            sharedPreferences.edit(commit = true) {
-                putLong(getString(R.string.pref_first_launch_time), firstLaunchTime)
-            }
-        }
 
         // creating the hamburger icon for the navigation drawer
         drawerLayout = findViewById(R.id.drawerLayout)
