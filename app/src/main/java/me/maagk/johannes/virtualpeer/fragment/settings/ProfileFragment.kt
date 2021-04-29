@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
@@ -18,6 +19,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     companion object {
         const val TAG = "profile"
+    }
+
+    interface OnLastEntryEnteredListener {
+        fun onLastEntryEntered()
     }
 
     class InputPart(rootLayout: ViewGroup, title: String, inputType: Int) {
@@ -43,6 +48,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private lateinit var pref: SharedPreferences
 
+    lateinit var onLastEntryEnteredListener: OnLastEntryEnteredListener
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -60,7 +67,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         nameInputPart = InputPart(view.findViewById(R.id.nameInputLayout), getString(R.string.profile_input_name_title),
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
 
-        nameInputPart.inputField.setText(pref.getString(getString(R.string.pref_name), ""))
         nameInputPart.inputField.addTextChangedListener { _ ->
             if(!nameInputPart.inputField.text.isNullOrBlank()) {
                 profileIcon.usernameChar = nameInputPart.inputField.text.toString()[0]
@@ -71,22 +77,25 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         dateOfBirthInputPart = InputPart(view.findViewById(R.id.dateOfBirthInputLayout), getString(R.string.profile_input_date_of_birth_title),
             InputType.TYPE_CLASS_DATETIME or InputType.TYPE_DATETIME_VARIATION_DATE)
-        dateOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_date_of_birth), ""))
 
         placeOfBirthInputPart = InputPart(view.findViewById(R.id.placeOfBirthInputLayout), getString(R.string.profile_input_place_of_birth_title), InputType.TYPE_CLASS_TEXT)
-        placeOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_place_of_birth), ""))
 
         emailInputPart = InputPart(view.findViewById(R.id.emailInputLayout), getString(R.string.profile_input_email_title),
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
-        emailInputPart.inputField.setText(pref.getString(getString(R.string.pref_email), ""))
 
         identifierInputPart = InputPart(view.findViewById(R.id.identifierInputLayout), getString(R.string.profile_input_identifier_title), InputType.TYPE_CLASS_TEXT)
-        identifierInputPart.inputField.setText(pref.getString(getString(R.string.pref_identifier), ""))
+        
+        identifierInputPart.inputField.setOnEditorActionListener { _, actionId, _ ->
+            if(actionId == EditorInfo.IME_ACTION_DONE) {
+                saveValues()
+                if(::onLastEntryEnteredListener.isInitialized)
+                    onLastEntryEnteredListener.onLastEntryEntered()
+            }
+            false
+        }
     }
-
-    override fun onPause() {
-        super.onPause()
-
+    
+    private fun saveValues() {
         pref.edit(commit = true) {
             // TODO: validate the correctness of all inputs
 
@@ -110,5 +119,21 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             if(!identifierInput.isNullOrBlank())
                 putString(getString(R.string.pref_identifier), identifierInput.toString())
         }
+    }
+    
+    override fun onPause() {
+        super.onPause()
+
+        saveValues()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        nameInputPart.inputField.setText(pref.getString(getString(R.string.pref_name), ""))
+        dateOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_date_of_birth), ""))
+        placeOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_place_of_birth), ""))
+        emailInputPart.inputField.setText(pref.getString(getString(R.string.pref_email), ""))
+        identifierInputPart.inputField.setText(pref.getString(getString(R.string.pref_identifier), ""))
     }
 }

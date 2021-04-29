@@ -116,4 +116,6 @@
     <string name="pref_place_of_birth" translatable="false">placeOfBirth</string>
     <string name="pref_email" translatable="false">email</string>
     <string name="pref_identifier" translatable="false">identifier</string>
+    <string name="profile_input_email_error_empty">Please enter an email address</string>
+    <string name="profile_input_identifier_error_empty">Please enter your identifier</string>
 </resources>

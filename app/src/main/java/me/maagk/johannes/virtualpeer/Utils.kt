@@ -1,6 +1,7 @@
 package me.maagk.johannes.virtualpeer
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
@@ -50,6 +51,10 @@ class Utils {
 
             allowEnterTransitionOverlap = true
             allowReturnTransitionOverlap = true
+        }
+
+        fun SharedPreferences.containsNonNullAndNonBlankValue(key: String): Boolean {
+            return contains(key) && !getString(key, null).isNullOrBlank()
         }
 
     }
