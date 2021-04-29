@@ -129,7 +129,7 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
             var initialRight = Int.MIN_VALUE
             var initialX = Float.MIN_VALUE
 
-            private lateinit var goal: Goal
+            lateinit var goal: Goal
 
             init {
                 // TODO: should this be here?
@@ -183,6 +183,8 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
 
             private val deleteButtonVectorDrawable = VectorDrawableCompat.create(requireContext().resources, R.drawable.ic_delete, requireContext().theme)
             private val pinButtonVectorDrawable = VectorDrawableCompat.create(requireContext().resources, R.drawable.ic_pin, requireContext().theme)
+
+            private val pinButtonColorFilter = PorterDuffColorFilter(Utils.getColor(requireContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
 
             init {
                 paint.isAntiAlias = true
@@ -313,7 +315,7 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 val offscreenCanvas = Canvas(offscreenBitmap)
 
                 // drawing the buttons to the offscreen canvas (see method for proper documentation)
-                drawButtons(offscreenCanvas, cornerRadius, dX)
+                drawButtons(offscreenCanvas, cornerRadius, dX, viewHolder.goal.pinned)
 
                 // creating a mask if it doesn't already exist; this is used to round the corners of the buttons drawn (to keep them within the card)
                 if(!::maskBitmap.isInitialized)
@@ -350,7 +352,7 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 return mask
             }
 
-            private fun drawButtons(canvas: Canvas, cornerRadius: Float, dX: Float) {
+            private fun drawButtons(canvas: Canvas, cornerRadius: Float, dX: Float, pinned: Boolean) {
                 if(deleteButtonVectorDrawable == null || pinButtonVectorDrawable == null)
                     return
 
@@ -401,6 +403,9 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 // to see what this does, look at the large comment above the same thing for the delete icon
                 val pinButtonLeftClip = max(0f, dX + horizontalPadding + buttonHorizontalPadding + singleButtonWidth)
                 pinButtonCanvas.clipRect(pinButtonLeftClip, 0f, pinButtonCanvas.width.toFloat(), pinButtonCanvas.height.toFloat())
+
+                // tinting the pin icon depending on if the current goal is pinned to the start screen or not
+                pinButtonVectorDrawable.colorFilter = if(pinned) pinButtonColorFilter else null
 
                 // drawing the pin icon onto its canvas
                 pinButtonVectorDrawable.draw(pinButtonCanvas)
