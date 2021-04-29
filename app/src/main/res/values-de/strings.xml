@@ -62,4 +62,6 @@
     <string name="app_usage_permission_not_granted">Virtual Peer kann nicht auf deine App-Nutzung zugreifen</string>
     <string name="app_usage_permission_not_granted_open_settings">Einstellungen öffnen</string>
     <string name="app_usage_permission_not_granted_open_settings_error">Die Einstellungen konnten nicht geöffnet werden. Bitte gib der App manuell die Berechtigung.</string>
+    <string name="registration_enter_name">Bitte gib deinen Namen ein</string>
+    <string name="registration_enter_name_error_empty_name">Bitte gib einen Namen ein</string>
 </resources>

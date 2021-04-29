@@ -103,4 +103,7 @@
     <string name="app_usage_permission_not_granted">Virtual Peer can\'t access your usage statistics</string>
     <string name="app_usage_permission_not_granted_open_settings">Open settings</string>
     <string name="app_usage_permission_not_granted_open_settings_error">Settings couldn\'t be open. Please grant the permission manually.</string>
+    <string name="registration_enter_name">Please enter your name</string>
+    <string name="pref_name" translatable="false">name</string>
+    <string name="registration_enter_name_error_empty_name">Please enter a name</string>
 </resources>

@@ -35,6 +35,8 @@
             android:name=".activity.MainActivity"
             android:launchMode="singleTop" />
 
+        <activity android:name=".activity.RegistrationActivity" />
+
         <receiver android:name=".tracking.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

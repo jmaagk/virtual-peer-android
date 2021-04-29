@@ -20,12 +20,12 @@ class SplashScreenActivity : AppCompatActivity() {
 
         // checking if this is the first time the app is launched
         // if this is the case, the current time will be saved for later use
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        var firstLaunchTime = sharedPreferences.getLong(getString(R.string.pref_first_launch_time), -1)
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        var firstLaunchTime = pref.getLong(getString(R.string.pref_first_launch_time), -1)
 
         val firstLaunch = if(firstLaunchTime == -1L) {
             firstLaunchTime = System.currentTimeMillis()
-            sharedPreferences.edit(commit = true) {
+            pref.edit(commit = true) {
                 putLong(getString(R.string.pref_first_launch_time), firstLaunchTime)
             }
             true
@@ -34,8 +34,13 @@ class SplashScreenActivity : AppCompatActivity() {
         }
 
         val nextActivityIntent = Intent()
-        if(firstLaunch) {
-            TODO("implement first launch behavior")
+
+        var registrationRequired = firstLaunch
+        // registration is required when no name has been entered
+        registrationRequired = registrationRequired || (!pref.contains(getString(R.string.pref_name)) || pref.getString(getString(R.string.pref_name), null).isNullOrBlank())
+
+        if(registrationRequired) {
+            nextActivityIntent.setClass(this, RegistrationActivity::class.java)
         } else {
             nextActivityIntent.setClass(this, MainActivity::class.java)
         }
