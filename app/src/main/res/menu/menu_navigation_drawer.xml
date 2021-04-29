@@ -4,19 +4,8 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/navDrawerHelp"
-            android:title="@string/nav_drawer_help"
-            android:icon="@drawable/ic_help" />
-
-        <item
-            android:id="@+id/navDrawerSettings"
-            android:title="@string/nav_drawer_settings"
-            android:icon="@drawable/ic_settings" />
-
-        <item
-            android:id="@+id/navDrawerSurvey"
-            android:title="@string/nav_drawer_survey"
-            android:icon="@drawable/ic_survey" />
+            android:id="@+id/navDrawerMyProfile"
+            android:title="@string/nav_drawer_my_profile" />
 
     </group>
 

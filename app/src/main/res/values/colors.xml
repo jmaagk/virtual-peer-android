@@ -51,4 +51,8 @@
     <color name="colorBottomNavigationActiveItem">@color/colorTaskUrgentNotImportant</color>
     <color name="colorBottomNavigationInactiveItem">@color/colorTaskUrgentImportant</color>
 
+    <color name="colorEditTextSettings">@color/colorBackgroundDark</color>
+    <color name="colorTextEditTextSettings">#212121</color>
+    <color name="colorEditTextSettingsCursor">@color/colorTextEditTextSettings</color>
+
 </resources>

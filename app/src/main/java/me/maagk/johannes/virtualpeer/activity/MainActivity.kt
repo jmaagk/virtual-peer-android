@@ -9,12 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import me.maagk.johannes.virtualpeer.R
@@ -25,9 +23,8 @@ import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
-import me.maagk.johannes.virtualpeer.fragment.settings.SettingsFragment
+import me.maagk.johannes.virtualpeer.fragment.settings.ProfileFragment
 import me.maagk.johannes.virtualpeer.fragment.stats.StatsFragment
-import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
 
 class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
@@ -38,6 +35,8 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private lateinit var startFragment: StartFragment
     private lateinit var chatFragment: ChatFragment
     private lateinit var statsFragment: StatsFragment
+
+    private lateinit var profileFragment: ProfileFragment
 
     private val Intent.rateExercise
         get() = hasExtra("rateExercise")
@@ -111,8 +110,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
         // TODO: reuse fragment instances; add them to the back stack?
         val fragment: Fragment = when(item.itemId) {
-            R.id.navDrawerSettings -> supportFragmentManager.findFragmentByTag(SettingsFragment.TAG) ?: SettingsFragment()
-            R.id.navDrawerSurvey -> supportFragmentManager.findFragmentByTag(SurveyFragment.TAG) ?: SurveyFragment()
             R.id.navChat -> {
                 if(!::chatFragment.isInitialized)
                     chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
@@ -123,6 +120,11 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                     statsFragment = supportFragmentManager.findFragmentByTag(StatsFragment.TAG) as StatsFragment? ?: StatsFragment()
                 statsFragment
             }
+            R.id.navDrawerMyProfile -> {
+                if(!::profileFragment.isInitialized)
+                    profileFragment = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as ProfileFragment? ?: ProfileFragment()
+                profileFragment
+            }
             else -> {
                 if(!::startFragment.isInitialized)
                     startFragment = supportFragmentManager.findFragmentByTag(StartFragment.TAG) as StartFragment? ?: StartFragment()
@@ -131,8 +133,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         }
 
         val tag = when(item.itemId) {
-            R.id.navDrawerSettings -> SettingsFragment.TAG
-            R.id.navDrawerSurvey -> SurveyFragment.TAG
             R.id.navChat -> ChatFragment.TAG
             R.id.navStats -> StatsFragment.TAG
             else -> StartFragment.TAG
@@ -173,14 +173,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         // TODO: is there a better way to achieve this behavior?
         var navDrawer = false
         val itemToSelect = when(getTopFragment()) {
-            is SettingsFragment -> {
-                navDrawer = true
-                R.id.navDrawerSettings
-            }
-            is SurveyFragment -> {
-                navDrawer = true
-                R.id.navDrawerSurvey
-            }
             is ChatFragment, is AddLearningContentFragment -> R.id.navChat
             is StatsFragment -> R.id.navStats
             else -> R.id.navStart

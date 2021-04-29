@@ -64,4 +64,10 @@
     <string name="app_usage_permission_not_granted_open_settings_error">Die Einstellungen konnten nicht geöffnet werden. Bitte gib der App manuell die Berechtigung.</string>
     <string name="registration_enter_name">Bitte gib deinen Namen ein</string>
     <string name="registration_enter_name_error_empty_name">Bitte gib einen Namen ein</string>
+    <string name="nav_drawer_my_profile">Mein Profil</string>
+    <string name="profile_input_date_of_birth_title">Geburtsdatum</string>
+    <string name="profile_input_email_title">Email</string>
+    <string name="profile_input_identifier_title">Kennzeichen</string>
+    <string name="profile_input_name_title">Name</string>
+    <string name="profile_input_place_of_birth_title">Geburtsort</string>
 </resources>

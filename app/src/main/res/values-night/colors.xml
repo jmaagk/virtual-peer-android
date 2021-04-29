@@ -19,4 +19,6 @@
     <color name="colorListDivider">#FF424242</color>
     <color name="colorChartRemainingTime">#272632</color>
 
+    <color name="colorEditTextSettings">@color/colorBackgroundContrast</color>
+
 </resources>

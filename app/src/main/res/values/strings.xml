@@ -106,4 +106,14 @@
     <string name="registration_enter_name">Please enter your name</string>
     <string name="pref_name" translatable="false">name</string>
     <string name="registration_enter_name_error_empty_name">Please enter a name</string>
+    <string name="nav_drawer_my_profile">My profile</string>
+    <string name="profile_input_name_title">Name</string>
+    <string name="profile_input_date_of_birth_title">Date of birth</string>
+    <string name="profile_input_place_of_birth_title">Place of birth</string>
+    <string name="profile_input_email_title">Email</string>
+    <string name="profile_input_identifier_title">Identifier</string>
+    <string name="pref_date_of_birth" translatable="false">dateOfBirth</string>
+    <string name="pref_place_of_birth" translatable="false">placeOfBirth</string>
+    <string name="pref_email" translatable="false">email</string>
+    <string name="pref_identifier" translatable="false">identifier</string>
 </resources>
