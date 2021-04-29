@@ -31,7 +31,8 @@
             android:maxLength="100"
             android:inputType="text"
             android:background="@drawable/round_edittext"
-            android:textCursorDrawable="@drawable/round_edittext_cursor" />
+            android:textCursorDrawable="@drawable/round_edittext_cursor"
+            android:backgroundTint="@color/colorPrimary" />
 
     </LinearLayout>
 
