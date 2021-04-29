@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:maxLength="100"
-            android:inputType="text"
+            android:inputType="textPersonName"
             android:background="@drawable/round_edittext"
             android:textCursorDrawable="@drawable/round_edittext_cursor"
             android:backgroundTint="@color/colorPrimary" />
