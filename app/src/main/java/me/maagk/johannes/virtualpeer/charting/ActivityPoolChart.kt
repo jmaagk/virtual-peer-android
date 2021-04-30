@@ -1,8 +1,10 @@
 package me.maagk.johannes.virtualpeer.charting
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.util.AttributeSet
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -29,6 +31,9 @@ class ActivityPoolChart @JvmOverloads constructor(
     }
 
     private val userActivityManager = UserActivityManager(context)
+
+    private var inSpin = false
+    private var spinTargetAngle = 0f
 
     init {
         description.isEnabled = false
@@ -76,6 +81,13 @@ class ActivityPoolChart @JvmOverloads constructor(
         notifyDataSetChanged()
     }
 
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+
+        if(inSpin && (rotationAngle == spinTargetAngle || rotationAngle == spinTargetAngle + 360f))
+            inSpin = false
+    }
+
     private fun getCurrentChartEntries(): ArrayList<PieEntry> {
         val todaysActivities = userActivityManager.getTodaysActivities()
 
@@ -100,6 +112,16 @@ class ActivityPoolChart @JvmOverloads constructor(
         entries.add(PieEntry(hoursLeft))
 
         return entries
+    }
+
+    override fun spin(durationmillis: Int, fromangle: Float, toangle: Float, easing: Easing.EasingFunction?) {
+        if(inSpin)
+            return
+
+        inSpin = true
+        spinTargetAngle = toangle
+
+        super.spin(durationmillis, fromangle, toangle, easing)
     }
 
 }

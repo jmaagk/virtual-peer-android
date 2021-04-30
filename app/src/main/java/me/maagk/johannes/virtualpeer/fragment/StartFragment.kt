@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.highlight.Highlight
@@ -346,6 +347,18 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         // as soon as a valid selection is found, this info can be visible
         activityAreaInfoLayout.visibility = View.VISIBLE
+
+        val yValueSum = chart.data.yValueSum
+        var toAngle = 0f
+
+        val entryIndex = chart.data.dataSet.getEntryIndex(entry)
+        for(i in 0 until entryIndex + 1) {
+            val pieEntry = chart.data.dataSet.getEntryForIndex(i)
+            if(pieEntry.label != null)
+                toAngle += (pieEntry.y / yValueSum) * 360f
+        }
+
+        chart.spin(250, chart.rotationAngle, 360f - toAngle, Easing.EaseInOutCubic)
 
         val color = activityArea.getColor(requireContext())
 
