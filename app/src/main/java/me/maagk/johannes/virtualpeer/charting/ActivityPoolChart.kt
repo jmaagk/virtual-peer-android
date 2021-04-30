@@ -36,7 +36,7 @@ class ActivityPoolChart @JvmOverloads constructor(
         setHoleColor(Color.TRANSPARENT)
         legend.isEnabled = false
 
-        holeRadius = 55f
+        holeRadius = Utils.dpToPx(12f, context.resources.displayMetrics)
         transparentCircleRadius = 0f
 
         rotationAngle = -90f
@@ -49,7 +49,8 @@ class ActivityPoolChart @JvmOverloads constructor(
     fun update() {
         if(data == null) {
             val dataset = PieDataSet(getCurrentChartEntries(), context.getString(R.string.start_chart_dataset_label))
-            dataset.valueTextColor = Utils.getColor(context, R.color.colorText)
+            dataset.sliceSpace = Utils.dpToPx(0.5f, context.resources.displayMetrics)
+            dataset.setDrawValues(false)
             dataset.setDrawIcons(false)
 
             val activityTypes = UserActivity.Type.values()
