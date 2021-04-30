@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
@@ -35,6 +36,11 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var chart: ActivityPoolChart
     private lateinit var userGreeting: TextView
 
+    private lateinit var rootLayout: ViewGroup
+    private lateinit var mainLayout: ViewGroup
+    private lateinit var headerLayout: ViewGroup
+    private lateinit var expandCollapseIcon: ImageView
+
     private lateinit var pref: SharedPreferences
 
     companion object {
@@ -44,10 +50,70 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     override val actionBarTitle: String
         get() = getString(R.string.app_name)
 
+    private inner class HeaderLayoutHandler : ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnDrawListener {
+
+        var maxDistanceFromTop = -1
+        val maxCornerRadius = Utils.dpToPx(15f, requireContext().resources.displayMetrics)
+
+        val paint = Paint()
+
+        init {
+            paint.isAntiAlias = true
+            paint.color = Utils.getColor(requireContext(), R.color.colorBackground)
+        }
+
+        fun onResume() {
+            headerLayout.viewTreeObserver.addOnGlobalLayoutListener(this)
+        }
+
+        fun onPause() {
+            headerLayout.viewTreeObserver.removeOnDrawListener(this)
+        }
+
+        override fun onGlobalLayout() {
+            headerLayout.viewTreeObserver.addOnDrawListener(this)
+            headerLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+
+        override fun onDraw() {
+            // adjusting the corner radius of the main layout
+            val distanceFromTop = mainLayout.top - rootLayout.top
+            maxDistanceFromTop = max(distanceFromTop, maxDistanceFromTop)
+
+            val expansionValue = distanceFromTop.toFloat() / maxDistanceFromTop.toFloat()
+            if(expansionValue.isNaN())
+                return
+
+            val cornerRadius = expansionValue * maxCornerRadius
+
+            val bitmap = Bitmap.createBitmap(headerLayout.width, headerLayout.height, Bitmap.Config.ARGB_8888)
+            val drawable = BitmapDrawable(requireContext().resources, bitmap)
+            val canvas = Canvas(bitmap)
+            headerLayout.background = drawable
+
+            val width = headerLayout.width.toFloat()
+            val height = headerLayout.height.toFloat()
+
+            canvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, paint)
+            canvas.drawRect(0f, height / 2, width, height, paint)
+
+            // adjusting the rotation of the icon
+            expandCollapseIcon.rotation = 180f * expansionValue
+        }
+    }
+
+    private lateinit var headerLayoutHandler: HeaderLayoutHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         userActivityManager = UserActivityManager(requireContext())
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        headerLayoutHandler.onPause()
     }
 
     override fun onResume() {
@@ -61,6 +127,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             userGreeting.text = getString(R.string.start_user_greeting, username)
         else
             userGreeting.visibility = View.GONE
+
+        headerLayoutHandler.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,13 +198,13 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         // configuring the behavior of the bottom sheet (the main layout) that's in front of the backdrop
         // (the small layout containing the button to open the Eisenhower Matrix)
-        val mainLayout: ViewGroup = view.findViewById(R.id.mainLayout)
+        mainLayout = view.findViewById(R.id.mainLayout)
         val bottomSheetBehavior = BottomSheetBehavior.from(mainLayout)
         bottomSheetBehavior.isHideable = false
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         bottomSheetBehavior.isDraggable = true // TODO: should this be enabled? (animating the icon will get more complicated)
 
-        val rootLayout: ViewGroup = view.findViewById(R.id.rootLayout)
+        rootLayout = view.findViewById(R.id.rootLayout)
         val backdropLayout: ViewGroup = view.findViewById(R.id.backdropLayout)
 
         // setting the view to be invisible when the sheet is expanded to prevent clicking through the main layout
@@ -156,7 +224,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             bottomSheetBehavior.peekHeight = rootLayout.height - backdropLayout.height + backdropLayout.marginBottom
         }
 
-        val expandCollapseIcon: ImageView = view.findViewById(R.id.expandCollapseIcon)
+        expandCollapseIcon = view.findViewById(R.id.expandCollapseIcon)
         expandCollapseIcon.rotation = 180f // the icon has to be flipped to correspond with later animations
         expandCollapseIcon.setOnClickListener {
             // changing the expansion state of the bottom sheet when the icon is clicked
@@ -166,42 +234,12 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             }
         }
 
-        val headerLayout: ViewGroup = view.findViewById(R.id.headerLayout)
+        headerLayout = view.findViewById(R.id.headerLayout)
         headerLayout.setOnClickListener {
             expandCollapseIcon.callOnClick()
         }
 
-        headerLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            val paint = Paint()
-            paint.isAntiAlias = true
-            paint.color = Utils.getColor(requireContext(), R.color.colorBackground)
-
-            var maxDistanceFromTop = -1
-            val maxCornerRadius = Utils.dpToPx(15f, requireContext().resources.displayMetrics)
-
-            headerLayout.viewTreeObserver.addOnDrawListener {
-                // adjusting the corner radius of the main layout
-                val distanceFromTop = mainLayout.top - rootLayout.top
-                maxDistanceFromTop = max(distanceFromTop, maxDistanceFromTop)
-
-                val expansionValue = distanceFromTop.toFloat() / maxDistanceFromTop.toFloat()
-                val cornerRadius = expansionValue * maxCornerRadius
-
-                val bitmap = Bitmap.createBitmap(headerLayout.width, headerLayout.height, Bitmap.Config.ARGB_8888)
-                val drawable = BitmapDrawable(requireContext().resources, bitmap)
-                val canvas = Canvas(bitmap)
-                headerLayout.background = drawable
-
-                val width = headerLayout.width.toFloat()
-                val height = headerLayout.height.toFloat()
-
-                canvas.drawRoundRect(0f, 0f, width, height, cornerRadius, cornerRadius, paint)
-                canvas.drawRect(0f, height / 2, width, height, paint)
-
-                // adjusting the rotation of the icon
-                expandCollapseIcon.rotation = 180f * expansionValue
-            }
-        }
+        headerLayoutHandler = HeaderLayoutHandler()
     }
 
     private fun updateCurrentActivityText() {
