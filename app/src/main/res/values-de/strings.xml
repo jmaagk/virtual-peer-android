@@ -73,4 +73,5 @@
     <string name="profile_input_identifier_error_empty">Bitte gib dein Kennzeichen ein</string>
     <string name="profile_input_email_error_empty">Bitte gib deine Email-Adresse ein</string>
     <string name="start_user_greeting">Hallo %1$s!</string>
+    <string name="start_time_format">%1$02d:%2$02d</string>
 </resources>

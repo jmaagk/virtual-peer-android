@@ -39,6 +39,15 @@ data class UserActivity(val type: Type, var startTime: ZonedDateTime, var endTim
                 POOL_REWARDS -> context.getString(R.string.user_activity_type_rewards)
             }
         }
+
+        fun getTotalTime(activities: List<UserActivity>, includeNewest: Boolean): Long {
+            var totalTime = 0L
+            for(activity in activities) {
+                if(activity.type == this)
+                    totalTime += activity.getDuration(includeNewest)
+            }
+            return totalTime
+        }
     }
 
     fun getDuration(): Long {

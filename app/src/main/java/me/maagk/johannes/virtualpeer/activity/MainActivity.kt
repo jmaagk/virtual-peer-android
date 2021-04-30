@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
     private fun getTopFragment(): Fragment? {
         val manager = supportFragmentManager
-        if (manager.backStackEntryCount == 0)
+        if(manager.backStackEntryCount == 0)
             return manager.findFragmentByTag(StartFragment.TAG)
 
         val backStackStateTag = manager.getBackStackEntryAt(manager.backStackEntryCount - 1).name

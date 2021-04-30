@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -79,6 +80,61 @@
                 app:layout_constraintTop_toBottomOf="@id/userGreeting"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="25dp" />
+
+            <LinearLayout
+                android:id="@+id/activityAreaInfoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/startChart"
+                app:layout_constraintBottom_toBottomOf="@id/startChart"
+                app:layout_constraintStart_toEndOf="@id/startChart"
+                android:layout_marginStart="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/activityAreaName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    tools:text="@tools:sample/lorem"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                <TextView
+                    android:id="@+id/timeSpentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:drawableStartCompat="@drawable/ic_time"
+                    app:drawableTint="@color/colorIconTint"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    tools:text="@tools:sample/lorem" />
+
+                <TextView
+                    android:id="@+id/sentimentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:drawableStartCompat="@drawable/ic_sentiment_neutral"
+                    app:drawableTint="@color/colorIconTint"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    tools:text="@tools:sample/lorem" />
+
+                <TextView
+                    android:id="@+id/successText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:drawableStartCompat="@drawable/ic_successful"
+                    app:drawableTint="@color/colorIconTint"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    tools:text="@tools:sample/lorem" />
+
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/activityCard"

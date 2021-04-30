@@ -52,6 +52,7 @@ class ActivityPoolChart @JvmOverloads constructor(
             dataset.sliceSpace = Utils.dpToPx(0.5f, context.resources.displayMetrics)
             dataset.setDrawValues(false)
             dataset.setDrawIcons(false)
+            dataset.selectionShift = 3f // this distance is already in dp
 
             val activityTypes = UserActivity.Type.values()
             val colors = arrayListOf<Int>()
@@ -77,15 +78,10 @@ class ActivityPoolChart @JvmOverloads constructor(
 
     private fun getCurrentChartEntries(): ArrayList<PieEntry> {
         val todaysActivities = userActivityManager.getTodaysActivities()
-        var workTotalMillis = 0L; var essentialTotalMillis = 0L; var rewardsTotalMillis = 0L
-        for(activity in todaysActivities) {
-            val duration = activity.getDuration(true)
-            when(activity.type) {
-                UserActivity.Type.POOL_WORK -> workTotalMillis += duration
-                UserActivity.Type.POOL_ESSENTIAL -> essentialTotalMillis += duration
-                UserActivity.Type.POOL_REWARDS -> rewardsTotalMillis += duration
-            }
-        }
+
+        val workTotalMillis = UserActivity.Type.POOL_WORK.getTotalTime(todaysActivities, true)
+        val essentialTotalMillis = UserActivity.Type.POOL_ESSENTIAL.getTotalTime(todaysActivities, true)
+        val rewardsTotalMillis = UserActivity.Type.POOL_REWARDS.getTotalTime(todaysActivities, true)
 
         val workHours = TimeUnit.MILLISECONDS.toMinutes(workTotalMillis) / 60f
         val essentialHours = TimeUnit.MILLISECONDS.toMinutes(essentialTotalMillis) / 60f
@@ -98,9 +94,9 @@ class ActivityPoolChart @JvmOverloads constructor(
         val hoursLeft = 24 - (TimeUnit.MILLISECONDS.toMinutes(millisSinceStartOfToday) / 60f)
 
         val entries = arrayListOf<PieEntry>()
-        entries.add(PieEntry(workHours))
-        entries.add(PieEntry(essentialHours))
-        entries.add(PieEntry(rewardsHours))
+        entries.add(PieEntry(workHours, UserActivity.Type.POOL_WORK.toString()))
+        entries.add(PieEntry(essentialHours, UserActivity.Type.POOL_ESSENTIAL.toString()))
+        entries.add(PieEntry(rewardsHours, UserActivity.Type.POOL_REWARDS.toString()))
         entries.add(PieEntry(hoursLeft))
 
         return entries

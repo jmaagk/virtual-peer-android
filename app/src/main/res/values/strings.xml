@@ -119,4 +119,5 @@
     <string name="profile_input_email_error_empty">Please enter an email address</string>
     <string name="profile_input_identifier_error_empty">Please enter your identifier</string>
     <string name="start_user_greeting">Hello %1$s!</string>
+    <string name="start_time_format">%1$02d:%2$02d</string>
 </resources>
