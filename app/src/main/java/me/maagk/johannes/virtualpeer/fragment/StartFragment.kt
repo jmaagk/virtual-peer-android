@@ -1,5 +1,6 @@
 package me.maagk.johannes.virtualpeer.fragment
 
+import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.R
@@ -21,7 +23,6 @@ import me.maagk.johannes.virtualpeer.fragment.exercise.EisenhowerMatrixFragment
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
-import java.text.DateFormat
 import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.max
@@ -32,6 +33,9 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
     private lateinit var currentActivityText: TextView
     private lateinit var chart: ActivityPoolChart
+    private lateinit var userGreeting: TextView
+
+    private lateinit var pref: SharedPreferences
 
     companion object {
         const val TAG = "start"
@@ -50,21 +54,28 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         super.onResume()
 
         chart.update()
+
+        // this is here because the user might have changed their name; this will respect that change
+        val username = pref.getString(getString(R.string.pref_name), null)
+        if(username != null)
+            userGreeting.text = getString(R.string.start_user_greeting, username)
+        else
+            userGreeting.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
         currentActivityText = view.findViewById(R.id.currentActivityText)
         updateCurrentActivityText()
 
-        val chartDate: TextView = view.findViewById(R.id.chartDate)
+        userGreeting = view.findViewById(R.id.userGreeting)
         val changeActivityButton: Button = view.findViewById(R.id.currentActivityChange)
         val currentActivityLayout: View = view.findViewById(R.id.currentActivityLayout)
         val changeActivityLayout: View = view.findViewById(R.id.changeActivityLayout)
         val activityRadioGroup: RadioGroup = view.findViewById(R.id.radioGroup)
-
-        chartDate.text = DateFormat.getDateInstance(DateFormat.SHORT).format(Date())
 
         changeActivityButton.setOnClickListener {
             currentActivityLayout.visibility = View.GONE
