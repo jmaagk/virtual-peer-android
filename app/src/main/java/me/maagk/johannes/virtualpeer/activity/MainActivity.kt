@@ -23,6 +23,7 @@ import me.maagk.johannes.virtualpeer.exercise.PomodoroChatExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
+import me.maagk.johannes.virtualpeer.fragment.library.LibraryFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.ProfileFragment
 import me.maagk.johannes.virtualpeer.fragment.stats.StatsFragment
 
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     private lateinit var startFragment: StartFragment
     private lateinit var chatFragment: ChatFragment
     private lateinit var statsFragment: StatsFragment
+    private lateinit var libraryFragment: LibraryFragment
 
     private lateinit var profileFragment: ProfileFragment
 
@@ -120,6 +122,11 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                     statsFragment = supportFragmentManager.findFragmentByTag(StatsFragment.TAG) as StatsFragment? ?: StatsFragment()
                 statsFragment
             }
+            R.id.navLibrary -> {
+                if(!::libraryFragment.isInitialized)
+                    libraryFragment = supportFragmentManager.findFragmentByTag(LibraryFragment.TAG) as LibraryFragment? ?: LibraryFragment()
+                libraryFragment
+            }
             R.id.navDrawerMyProfile -> {
                 if(!::profileFragment.isInitialized)
                     profileFragment = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG) as ProfileFragment? ?: ProfileFragment()
@@ -135,6 +142,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         val tag = when(item.itemId) {
             R.id.navChat -> ChatFragment.TAG
             R.id.navStats -> StatsFragment.TAG
+            R.id.navLibrary -> LibraryFragment.TAG
             else -> StartFragment.TAG
         }
 
@@ -175,6 +183,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         val itemToSelect = when(getTopFragment()) {
             is ChatFragment, is AddLearningContentFragment -> R.id.navChat
             is StatsFragment -> R.id.navStats
+            is LibraryFragment -> R.id.navLibrary
             else -> R.id.navStart
         }
 

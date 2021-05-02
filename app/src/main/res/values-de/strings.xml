@@ -77,4 +77,8 @@
     <string name="pomodoro_name">Pomodoro</string>
     <string name="box_breathing_name">Box-Breathing</string>
     <string name="meditation_name">Meditation</string>
+    <string name="library_exercise_last_activity">Letzte Aktivität</string>
+    <string name="library_exercise_total_time">Gesamtzeit</string>
+    <string name="library_exercise_start">Starten</string>
+    <string name="library_exercise_info">Info</string>
 </resources>
