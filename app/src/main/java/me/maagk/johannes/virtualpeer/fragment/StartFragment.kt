@@ -33,7 +33,6 @@ import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
 import java.time.ZonedDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.max
 
 class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle, ChatFragment.OnMessageSentListener, OnChartValueSelectedListener {
 
@@ -47,6 +46,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var mainLayout: ViewGroup
     private lateinit var headerLayout: ViewGroup
     private lateinit var expandCollapseIcon: ImageView
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ViewGroup>
 
     private lateinit var activityAreaInfoLayout: ViewGroup
     private lateinit var activityAreaNameText: TextView
@@ -86,12 +86,13 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         override fun onGlobalLayout() {
             headerLayout.viewTreeObserver.addOnDrawListener(this)
             headerLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+            maxDistanceFromTop = rootLayout.height - bottomSheetBehavior.peekHeight
         }
 
         override fun onDraw() {
             // adjusting the corner radius of the main layout
             val distanceFromTop = mainLayout.top - rootLayout.top
-            maxDistanceFromTop = max(distanceFromTop, maxDistanceFromTop)
 
             val expansionValue = distanceFromTop.toFloat() / maxDistanceFromTop.toFloat()
             if(expansionValue.isNaN())
@@ -235,7 +236,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         // configuring the behavior of the bottom sheet (the main layout) that's in front of the backdrop
         // (the small layout containing the button to open the Eisenhower Matrix)
         mainLayout = view.findViewById(R.id.mainLayout)
-        val bottomSheetBehavior = BottomSheetBehavior.from(mainLayout)
+        bottomSheetBehavior = BottomSheetBehavior.from(mainLayout)
         bottomSheetBehavior.isHideable = false
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         bottomSheetBehavior.isDraggable = true
