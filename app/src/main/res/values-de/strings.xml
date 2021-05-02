@@ -81,4 +81,5 @@
     <string name="library_exercise_total_time">Gesamtzeit</string>
     <string name="library_exercise_start">Starten</string>
     <string name="library_exercise_info">Info</string>
+    <string name="library_exercise_info_dialog_okay">Okay</string>
 </resources>

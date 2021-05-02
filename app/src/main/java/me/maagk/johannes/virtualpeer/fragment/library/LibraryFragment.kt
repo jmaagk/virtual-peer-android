@@ -2,12 +2,14 @@ package me.maagk.johannes.virtualpeer.fragment.library
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -66,11 +68,26 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
             val exerciseInfoButton: Button = itemView.findViewById(R.id.exerciseInfoButton)
             val exerciseStartButton: Button = itemView.findViewById(R.id.exerciseStartButton)
 
+            lateinit var currentExercise: Exercise
+
             init {
-                // TODO: start exercise and show info here
+                exerciseInfoButton.setOnClickListener {
+                    val dialog = AlertDialog.Builder(requireContext())
+                            .setTitle(currentExercise.name)
+                            .setMessage(currentExercise.info)
+                            .setPositiveButton(R.string.library_exercise_info_dialog_okay, null)
+                            .show()
+
+                    val dialogMessage: TextView? = dialog.findViewById(android.R.id.message)
+                    dialogMessage?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                }
+
+                // TODO: start exercise here
             }
 
             fun bind(exercise: Exercise) {
+                currentExercise = exercise
+
                 exerciseCard.setCardBackgroundColor(exercise.color)
 
                 exerciseTitleText.text = exercise.name
