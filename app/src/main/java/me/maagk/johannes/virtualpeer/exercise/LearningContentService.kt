@@ -52,7 +52,7 @@ class LearningContentService : Service() {
     }
 
     private fun buildNotification(timeLeft: Long): Notification {
-        return PomodoroExercise.Notification(this, learningContent, timeLeft).build()
+        return PomodoroChatExercise.Notification(this, learningContent, timeLeft).build()
     }
 
     private fun sendNotification(timeLeft: Long) {

@@ -19,7 +19,7 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.VirtualPeerApp
 import me.maagk.johannes.virtualpeer.chat.Message
-import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
+import me.maagk.johannes.virtualpeer.exercise.PomodoroChatExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
@@ -224,8 +224,8 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         exerciseRatingStarted = true
 
         when(intent.exerciseClass) {
-            PomodoroExercise::class.java -> {
-                val exercise = PomodoroExercise(chatFragment)
+            PomodoroChatExercise::class.java -> {
+                val exercise = PomodoroChatExercise(chatFragment)
                 exercise.rate()
 
                 // canceling the notification because it would still be visible otherwise

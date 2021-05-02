@@ -27,10 +27,10 @@ class PomodoroAlarmReceiver : BroadcastReceiver() {
 
         if(position == learningContents.size - 1) {
             // this is the point at which the exercise is completed; sending a notification for the user to rate this exercise
-            PomodoroExercise.finish(context)
+            PomodoroChatExercise.finish(context)
         } else {
             // going to the next part of the exercise
-            PomodoroExercise.startLearningContent(context, learningContents, position + 1)
+            PomodoroChatExercise.startLearningContent(context, learningContents, position + 1)
         }
     }
 }

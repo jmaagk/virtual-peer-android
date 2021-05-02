@@ -6,7 +6,7 @@ import me.maagk.johannes.virtualpeer.chat.MultipleChoiceQuestionMessage
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 
-abstract class Exercise(protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
+abstract class ChatExercise(protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
 
     private lateinit var startQuestion: MultipleChoiceQuestion
     private lateinit var startMessage: MultipleChoiceQuestionMessage

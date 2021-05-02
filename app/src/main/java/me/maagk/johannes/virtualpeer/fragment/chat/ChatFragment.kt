@@ -14,8 +14,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
-import me.maagk.johannes.virtualpeer.exercise.Exercise
-import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
+import me.maagk.johannes.virtualpeer.exercise.ChatExercise
+import me.maagk.johannes.virtualpeer.exercise.PomodoroChatExercise
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.chat.*
 import me.maagk.johannes.virtualpeer.survey.question.*
@@ -401,7 +401,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 }
 
                 "pomodoro", "pd" -> {
-                    startExercise(PomodoroExercise(this))
+                    startExercise(PomodoroChatExercise(this))
                     null
                 }
 
@@ -442,8 +442,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         onMessageSentListeners.remove(onMessageSentListener)
     }
 
-    private fun startExercise(exercise: Exercise) {
-        exercise.prepare()
+    private fun startExercise(chatExercise: ChatExercise) {
+        chatExercise.prepare()
     }
 
 }

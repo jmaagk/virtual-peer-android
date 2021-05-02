@@ -20,7 +20,7 @@ import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragmen
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 import java.util.concurrent.TimeUnit
 
-class PomodoroExercise(chatFragment: ChatFragment) : Exercise(chatFragment), AddLearningContentFragment.OnLearningContentsFinishedListener {
+class PomodoroChatExercise(chatFragment: ChatFragment) : ChatExercise(chatFragment), AddLearningContentFragment.OnLearningContentsFinishedListener {
 
     companion object {
         fun startLearningContent(context: Context, learningContents: ArrayList<LearningContent>, position: Int) {
@@ -186,7 +186,7 @@ class PomodoroExercise(chatFragment: ChatFragment) : Exercise(chatFragment), Add
 
         fun build(): android.app.Notification {
             val chatIntent = Intent(context, MainActivity::class.java)
-            chatIntent.putExtra("rateExercise", PomodoroExercise::class.java)
+            chatIntent.putExtra("rateExercise", PomodoroChatExercise::class.java)
             chatIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
             val contentIntent = PendingIntent.getActivity(context, -1, chatIntent, PendingIntent.FLAG_UPDATE_CURRENT)
