@@ -83,7 +83,7 @@ class PomodoroChatExercise(chatFragment: ChatFragment) : ChatExercise(chatFragme
         moreInfoQuestion.choices.add(context.getString(R.string.pomodoro_more_info_message_yes))
         moreInfoQuestion.choices.add(context.getString(R.string.pomodoro_more_info_message_not_now))
 
-        moreInfoQuestion.question = context.getString(R.string.pomodoro_more_info_message)
+        moreInfoQuestion.question = context.getString(R.string.pomodoro_info)
         return moreInfoQuestion
     }
 
