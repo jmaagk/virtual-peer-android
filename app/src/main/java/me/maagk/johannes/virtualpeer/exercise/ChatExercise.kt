@@ -1,5 +1,6 @@
 package me.maagk.johannes.virtualpeer.exercise
 
+import android.content.Context
 import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.chat.AnswerMessage
 import me.maagk.johannes.virtualpeer.chat.Message
@@ -7,7 +8,7 @@ import me.maagk.johannes.virtualpeer.chat.MultipleChoiceQuestionMessage
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 
-abstract class ChatExercise(protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
+abstract class ChatExercise(protected val context: Context, protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
 
     private lateinit var startQuestion: MultipleChoiceQuestion
     private lateinit var startMessage: MultipleChoiceQuestionMessage
@@ -18,7 +19,6 @@ abstract class ChatExercise(protected val chatFragment: ChatFragment) : ChatFrag
     protected lateinit var rateQuestion: MultipleChoiceQuestion
     private lateinit var rateMessage: MultipleChoiceQuestionMessage
 
-    protected val context = chatFragment.requireContext()
     protected val userProfile = UserProfile(context)
 
     init {
@@ -31,7 +31,7 @@ abstract class ChatExercise(protected val chatFragment: ChatFragment) : ChatFrag
 
         startMessage = MultipleChoiceQuestionMessage(startQuestion)
 
-        sendMessage(startMessage)
+        queueMessage(startMessage)
     }
 
     abstract fun start()

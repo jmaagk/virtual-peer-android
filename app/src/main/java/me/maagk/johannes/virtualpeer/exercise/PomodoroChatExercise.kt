@@ -20,7 +20,7 @@ import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragmen
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 import java.util.concurrent.TimeUnit
 
-class PomodoroChatExercise(chatFragment: ChatFragment) : ChatExercise(chatFragment), AddLearningContentFragment.OnLearningContentsFinishedListener {
+class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatExercise(context, chatFragment), AddLearningContentFragment.OnLearningContentsFinishedListener {
 
     companion object {
         fun startLearningContent(context: Context, learningContents: ArrayList<LearningContent>, position: Int) {

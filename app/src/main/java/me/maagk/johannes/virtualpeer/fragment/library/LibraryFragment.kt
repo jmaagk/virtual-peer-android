@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.exercise.BoxBreathingExercise
 import me.maagk.johannes.virtualpeer.exercise.Exercise
 import me.maagk.johannes.virtualpeer.exercise.MeditationExercise
@@ -84,7 +85,13 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                     dialogMessage?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
                 }
 
-                // TODO: start exercise here
+                exerciseStartButton.setOnClickListener {
+                    if(isAdded) {
+                        val activity = requireActivity()
+                        if(activity is MainActivity)
+                            activity.startExercise(currentExercise)
+                    }
+                }
             }
 
             fun bind(exercise: Exercise) {

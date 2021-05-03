@@ -19,7 +19,9 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.VirtualPeerApp
 import me.maagk.johannes.virtualpeer.chat.Message
+import me.maagk.johannes.virtualpeer.exercise.Exercise
 import me.maagk.johannes.virtualpeer.exercise.PomodoroChatExercise
+import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
 import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
@@ -234,11 +236,26 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
         when(intent.exerciseClass) {
             PomodoroChatExercise::class.java -> {
-                val exercise = PomodoroChatExercise(chatFragment)
+                val exercise = PomodoroChatExercise(this, chatFragment)
                 exercise.rate()
 
                 // canceling the notification because it would still be visible otherwise
                 NotificationManagerCompat.from(this).cancel(VirtualPeerApp.NOTIFICATION_ID_POMODORO_FINISH)
+            }
+        }
+    }
+
+    fun startExercise(exercise: Exercise) {
+        when(exercise) {
+            is PomodoroExercise -> {
+                if(!::chatFragment.isInitialized)
+                    chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
+
+                val tag = ChatFragment.TAG
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, chatFragment, tag).addToBackStack(tag).commit()
+
+                val pomodoroChatExercise = PomodoroChatExercise(this, chatFragment)
+                chatFragment.startExercise(pomodoroChatExercise)
             }
         }
     }

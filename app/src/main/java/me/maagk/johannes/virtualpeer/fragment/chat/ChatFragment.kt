@@ -401,7 +401,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 }
 
                 "pomodoro", "pd" -> {
-                    startExercise(PomodoroChatExercise(this))
+                    startExercise(PomodoroChatExercise(requireContext(), this))
                     null
                 }
 
@@ -442,7 +442,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         onMessageSentListeners.remove(onMessageSentListener)
     }
 
-    private fun startExercise(chatExercise: ChatExercise) {
+    fun startExercise(chatExercise: ChatExercise) {
         chatExercise.prepare()
     }
 
