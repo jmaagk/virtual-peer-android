@@ -57,7 +57,7 @@
     <string name="stats_screen_unlock_count_title">Device unlocked</string>
     <string name="stats_screen_unlock_count_description_one">1 time</string>
     <string name="stats_screen_unlock_count_description">%1$d times</string>
-    <string name="pomodoro_learning_content_message">Hallo %1$s! Trage als erstes deine Lerninhalte in 25 Minuten-Intervalle ein.\n(Hinweis: Trage dir realistische Ziele ein, die einerseits motivierend, aber andererseits nicht überfordernd sind)</string>
+    <string name="pomodoro_learning_content_message">Trage als erstes deine Lerninhalte in 25 Minuten-Intervalle ein.\n(Hinweis: Trage dir realistische Ziele ein, die einerseits motivierend, aber andererseits nicht überfordernd sind)</string>
     <string name="pomodoro_learning_content_message_ready">Ready</string>
     <string name="pomodoro_learning_content_message_back">Zurück</string>
     <string name="pomodoro_learning_content_screen_no_content">Deine Lerninhalte werden hier angezeigt</string>

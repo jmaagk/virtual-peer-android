@@ -100,7 +100,7 @@ class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatE
         options.add(context.getString(R.string.pomodoro_learning_content_message_ready))
         options.add(context.getString(R.string.pomodoro_learning_content_message_back))
 
-        val learningContentMessageString = context.getString(R.string.pomodoro_learning_content_message, userProfile.name)
+        val learningContentMessageString = context.getString(R.string.pomodoro_learning_content_message)
 
         learningContentQuestion = MultipleChoiceQuestion(learningContentMessageString, options)
         val learningContentMessage = MultipleChoiceQuestionMessage(learningContentQuestion)
