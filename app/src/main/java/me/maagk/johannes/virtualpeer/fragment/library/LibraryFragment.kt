@@ -33,9 +33,11 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         super.onViewCreated(view, savedInstanceState)
 
         // creating the list of exercises
-        exercises.add(PomodoroExercise(requireContext()))
-        exercises.add(BoxBreathingExercise(requireContext()))
-        exercises.add(MeditationExercise(requireContext()))
+        if(exercises.isEmpty()) {
+            exercises.add(PomodoroExercise(requireContext()))
+            exercises.add(BoxBreathingExercise(requireContext()))
+            exercises.add(MeditationExercise(requireContext()))
+        }
 
         val viewPager: ViewPager2 = view.findViewById(R.id.exerciseViewPager)
         val adapter = ExerciseAdapter()
