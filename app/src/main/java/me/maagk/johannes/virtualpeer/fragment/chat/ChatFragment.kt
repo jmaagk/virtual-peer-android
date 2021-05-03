@@ -400,19 +400,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                     TextInputQuestionMessage(textInputQuestion)
                 }
 
-                "pomodoro", "pd" -> {
-                    startExercise(PomodoroChatExercise(requireContext(), this))
-                    null
-                }
-
                 else -> {
                     Message(Message.INCOMING, sent.message)
                 }
             }
 
-            botMessage?.let {
-                sendMessage(it)
-            }
+            sendMessage(botMessage)
         }
 
         recyclerView.smoothScrollToPosition(messages.size - 1)
