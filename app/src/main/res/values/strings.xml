@@ -48,7 +48,7 @@
     <string name="stats_screen_time_total">%1$dh %2$dm total</string>
     <string name="stats_screen_time_total_below_1h">%1$dm total</string>
     <string name="stats_app_usage_description">Tap for more</string>
-    <string name="pomodoro_start_message">Hallo Max! Willkommen zu deinem Lernworkout! Ja, du hast richtig gehört! Jetzt wird Sport gemacht! Und zwar fürs Gehirn.</string>
+    <string name="pomodoro_start_message">Hallo %1$s! Willkommen zu deinem Lernworkout! Ja, du hast richtig gehört! Jetzt wird Sport gemacht! Und zwar fürs Gehirn.</string>
     <string name="pomodoro_start_message_more_info">Erzähl mir mehr über die Pomodoro-Technik!</string>
     <string name="pomodoro_more_info_message">Die Pomodoro-Technik ist eine Lerntechnik, die in 25 Minuten Intervallen absolviert wird. Nach den 25 Minuten hast du dir dann eine 5 Minuten Pause verdient, in der du Lüften oder einfach mal aufstehen kannst. Die Pausen und Lernintervalle werden jeweils mit einem Gong eingeleitet und auch beendet. Um deine Lernintervalle zu definieren, trägst du als erstes deine Lernziele in deine Pomodoro-Tabelle ein. Diese sollten in den 25 Minuten zu schaffen sein. Als Beispiel kannst du dir deine Vorlesung in Abschnitte unterteilen. (Tipp: Wenn du vor den 25 Minuten fertig bist, wiederhole doch gerne den Part, der dir am anspruchsvollsten vorkam). Nach 3 Lerneinheiten hast du dir eine 30-minütige Pause verdient. Wichtig: Während den Lernintervallen solltest du jeglichen Social-Media-Einfluss ausschalten. Schalte die Apps auf deinem Handy am besten auf stumm. Jegliche Ablenkung kann nämlich deinen Lernflow stören.\nAlso? Are you ready?</string>
     <string name="pomodoro_start_message_start">Let\'s go!</string>
@@ -57,7 +57,7 @@
     <string name="stats_screen_unlock_count_title">Device unlocked</string>
     <string name="stats_screen_unlock_count_description_one">1 time</string>
     <string name="stats_screen_unlock_count_description">%1$d times</string>
-    <string name="pomodoro_learning_content_message">Hallo Max! Trage als erstes deine Lerninhalte in 25 Minuten-Intervalle ein.\n(Hinweis: Trage dir realistische Ziele ein, die einerseits motivierend, aber andererseits nicht überfordernd sind)</string>
+    <string name="pomodoro_learning_content_message">Hallo %1$s! Trage als erstes deine Lerninhalte in 25 Minuten-Intervalle ein.\n(Hinweis: Trage dir realistische Ziele ein, die einerseits motivierend, aber andererseits nicht überfordernd sind)</string>
     <string name="pomodoro_learning_content_message_ready">Ready</string>
     <string name="pomodoro_learning_content_message_back">Zurück</string>
     <string name="pomodoro_learning_content_screen_no_content">Deine Lerninhalte werden hier angezeigt</string>
