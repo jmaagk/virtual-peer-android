@@ -1,5 +1,6 @@
 package me.maagk.johannes.virtualpeer.exercise
 
+import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.chat.AnswerMessage
 import me.maagk.johannes.virtualpeer.chat.Message
 import me.maagk.johannes.virtualpeer.chat.MultipleChoiceQuestionMessage
@@ -18,6 +19,7 @@ abstract class ChatExercise(protected val chatFragment: ChatFragment) : ChatFrag
     private lateinit var rateMessage: MultipleChoiceQuestionMessage
 
     protected val context = chatFragment.requireContext()
+    protected val userProfile = UserProfile(context)
 
     init {
         chatFragment.addOnMessageSentListener(this)

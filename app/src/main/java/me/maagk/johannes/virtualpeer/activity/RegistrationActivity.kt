@@ -5,32 +5,27 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import me.maagk.johannes.virtualpeer.R
-import me.maagk.johannes.virtualpeer.Utils.Companion.containsNonNullAndNonBlankValue
+import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.fragment.registration.NameInputFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.ProfileFragment
 
 class RegistrationActivity : AppCompatActivity(R.layout.activity_registration), NameInputFragment.OnNameEnteredListener, ProfileFragment.OnLastEntryEnteredListener {
 
     private lateinit var pref: SharedPreferences
-
-    private val emailAvailable: Boolean
-        get() = pref.containsNonNullAndNonBlankValue(getString(R.string.pref_email))
-
-    private val identifierAvailable: Boolean
-        get() = pref.containsNonNullAndNonBlankValue(getString(R.string.pref_identifier))
+    private lateinit var userProfile: UserProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
+        userProfile = UserProfile(this, pref)
 
         // checking which things still need to be answered by the user
-        val nameAvailable = pref.containsNonNullAndNonBlankValue(getString(R.string.pref_name))
+        val nameAvailable = userProfile.isNameAvailable()
 
-        if(nameAvailable && emailAvailable && identifierAvailable) {
+        if(nameAvailable && userProfile.isEmailAvailable() && userProfile.isIdentifierAvailable()) {
             startMainActivity()
         } else if(nameAvailable) {
             showProfileFragment()
@@ -44,13 +39,11 @@ class RegistrationActivity : AppCompatActivity(R.layout.activity_registration), 
 
     override fun onNameEntered(name: String) {
         // saving the name entered by the user to the app's preferences
-        pref.edit(commit = true) {
-            putString(getString(R.string.pref_name), name)
-        }
+        userProfile.name = name
 
         // depending on how much info the user already entered, either the MainActivity or
         // the profile fragment to enter more info will be shown
-        if(emailAvailable && identifierAvailable)
+        if(userProfile.isEmailAvailable() && userProfile.isIdentifierAvailable())
             startMainActivity()
         else
             showProfileFragment()
@@ -70,12 +63,12 @@ class RegistrationActivity : AppCompatActivity(R.layout.activity_registration), 
     }
 
     override fun onLastEntryEntered() {
-        if(!emailAvailable) {
+        if(!userProfile.isEmailAvailable()) {
             Toast.makeText(this, R.string.profile_input_email_error_empty, Toast.LENGTH_LONG).show()
             return
         }
 
-        if(!identifierAvailable) {
+        if(!userProfile.isIdentifierAvailable()) {
             Toast.makeText(this, R.string.profile_input_identifier_error_empty, Toast.LENGTH_LONG).show()
             return
         }

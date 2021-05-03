@@ -21,6 +21,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
@@ -55,6 +56,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var successText: TextView
 
     private lateinit var pref: SharedPreferences
+
+    private lateinit var userProfile: UserProfile
 
     companion object {
         const val TAG = "start"
@@ -134,7 +137,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         super.onResume()
 
         // this is here because the user might have changed their name; this will respect that change
-        val username = pref.getString(getString(R.string.pref_name), null)
+        val username = userProfile.name
         if(username != null)
             userGreeting.text = getString(R.string.start_user_greeting, username)
         else
@@ -147,6 +150,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         super.onViewCreated(view, savedInstanceState)
 
         pref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        userProfile = UserProfile(requireContext(), pref)
 
         currentActivityText = view.findViewById(R.id.currentActivityText)
         updateCurrentActivityText()

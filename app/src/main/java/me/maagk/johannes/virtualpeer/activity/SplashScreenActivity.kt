@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import me.maagk.johannes.virtualpeer.R
-import me.maagk.johannes.virtualpeer.Utils.Companion.containsNonNullAndNonBlankValue
+import me.maagk.johannes.virtualpeer.UserProfile
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -40,10 +40,14 @@ class SplashScreenActivity : AppCompatActivity() {
         val nextActivityIntent = Intent()
 
         var registrationRequired = firstLaunch
+
+        // creating an instance of UserProfile to manage preferences
+        val profile = UserProfile(this, pref)
+
         // registration is required when no name has been entered
-        registrationRequired = registrationRequired || !pref.containsNonNullAndNonBlankValue(getString(R.string.pref_name))
-        registrationRequired = registrationRequired || !pref.containsNonNullAndNonBlankValue(getString(R.string.pref_email))
-        registrationRequired = registrationRequired || !pref.containsNonNullAndNonBlankValue(getString(R.string.pref_identifier))
+        registrationRequired = registrationRequired || !profile.isNameAvailable()
+        registrationRequired = registrationRequired || !profile.isEmailAvailable()
+        registrationRequired = registrationRequired || !profile.isIdentifierAvailable()
 
         if(registrationRequired) {
             nextActivityIntent.setClass(this, RegistrationActivity::class.java)

@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.view.ProfileIconView
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -47,6 +47,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private lateinit var identifierInputPart: InputPart
 
     private lateinit var pref: SharedPreferences
+    private lateinit var userProfile: UserProfile
 
     lateinit var onLastEntryEnteredListener: OnLastEntryEnteredListener
 
@@ -58,7 +59,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         profileIcon = view.findViewById(R.id.profileIcon)
         usernameText = view.findViewById(R.id.username)
 
-        val username = pref.getString(getString(R.string.pref_name), null)
+        userProfile = UserProfile(requireContext(), pref)
+        val username = userProfile.name
         if(!username.isNullOrBlank()) {
             usernameText.text = username
             profileIcon.usernameChar = username[0]
@@ -96,29 +98,27 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
     
     private fun saveValues() {
-        pref.edit(commit = true) {
-            // TODO: validate the correctness of all inputs
+        // TODO: validate the correctness of all inputs
 
-            val nameInput = nameInputPart.inputField.text
-            if(!nameInput.isNullOrBlank())
-                putString(getString(R.string.pref_name), nameInput.toString())
+        val nameInput = nameInputPart.inputField.text
+        if(!nameInput.isNullOrBlank())
+            userProfile.name = nameInput.toString()
 
-            val dateOfBirthInput = dateOfBirthInputPart.inputField.text
-            if(!dateOfBirthInput.isNullOrBlank())
-                putString(getString(R.string.pref_date_of_birth), dateOfBirthInput.toString())
+        val dateOfBirthInput = dateOfBirthInputPart.inputField.text
+        if(!dateOfBirthInput.isNullOrBlank())
+            userProfile.dateOfBirth = dateOfBirthInput.toString()
 
-            val placeOfBirthInput = placeOfBirthInputPart.inputField.text
-            if(!placeOfBirthInput.isNullOrBlank())
-                putString(getString(R.string.pref_place_of_birth), placeOfBirthInput.toString())
+        val placeOfBirthInput = placeOfBirthInputPart.inputField.text
+        if(!placeOfBirthInput.isNullOrBlank())
+            userProfile.placeOfBirth = placeOfBirthInput.toString()
 
-            val emailInput = emailInputPart.inputField.text
-            if(!emailInput.isNullOrBlank())
-                putString(getString(R.string.pref_email), emailInput.toString())
+        val emailInput = emailInputPart.inputField.text
+        if(!emailInput.isNullOrBlank())
+            userProfile.email = emailInput.toString()
 
-            val identifierInput = identifierInputPart.inputField.text
-            if(!identifierInput.isNullOrBlank())
-                putString(getString(R.string.pref_identifier), identifierInput.toString())
-        }
+        val identifierInput = identifierInputPart.inputField.text
+        if(!identifierInput.isNullOrBlank())
+            userProfile.identifier = identifierInput.toString()
     }
     
     override fun onPause() {
@@ -130,10 +130,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onResume() {
         super.onResume()
 
-        nameInputPart.inputField.setText(pref.getString(getString(R.string.pref_name), ""))
-        dateOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_date_of_birth), ""))
-        placeOfBirthInputPart.inputField.setText(pref.getString(getString(R.string.pref_place_of_birth), ""))
-        emailInputPart.inputField.setText(pref.getString(getString(R.string.pref_email), ""))
-        identifierInputPart.inputField.setText(pref.getString(getString(R.string.pref_identifier), ""))
+        nameInputPart.inputField.setText(userProfile.name ?: "")
+        dateOfBirthInputPart.inputField.setText(userProfile.dateOfBirth ?: "")
+        placeOfBirthInputPart.inputField.setText(userProfile.placeOfBirth ?: "")
+        emailInputPart.inputField.setText(userProfile.email ?: "")
+        identifierInputPart.inputField.setText(userProfile.identifier ?: "")
     }
 }
