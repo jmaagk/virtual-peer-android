@@ -42,6 +42,10 @@ class Utils {
             return Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
         }
 
+        fun getScaledAnimationDuration(context: Context, duration: Long): Long {
+            return (duration * getAnimatorDurationScale(context)).toLong()
+        }
+
         // TODO: add transitions to fragments
         fun Fragment.setTransitions() {
             reenterTransition = AutoTransition()

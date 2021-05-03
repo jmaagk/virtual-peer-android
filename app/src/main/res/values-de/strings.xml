@@ -82,4 +82,8 @@
     <string name="library_exercise_start">Starten</string>
     <string name="library_exercise_info">Info</string>
     <string name="library_exercise_info_dialog_okay">Okay</string>
+    <string name="box_breathing_breathe_in">Einatmen</string>
+    <string name="box_breathing_breathe_out">Ausatmen</string>
+    <string name="box_breathing_hold">Halten</string>
+    <string name="box_breathing_start_again">Nochmal starten</string>
 </resources>

@@ -62,4 +62,7 @@
     <color name="colorButtonExercise">#F0F0F0</color>
     <color name="colorButtonExerciseBorder">#FFFFFF</color>
 
+    <color name="colorExerciseBoxBreathingGradientFrom">#060E0E</color>
+    <color name="colorExerciseBoxBreathingGradientTo">#05BFC6</color>
+
 </resources>

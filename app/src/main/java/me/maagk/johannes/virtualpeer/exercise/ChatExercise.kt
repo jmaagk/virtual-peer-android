@@ -62,7 +62,8 @@ abstract class ChatExercise(protected val context: Context, protected val chatFr
             }
 
             if(::moreInfoQuestion.isInitialized && answeredQuestion == moreInfoQuestion && moreInfoQuestion.answered) {
-                start()
+                if(moreInfoQuestion.answer as Int == 0) // this is a bit hacky
+                    start()
             }
 
             if(::rateQuestion.isInitialized && answeredQuestion == rateQuestion && rateQuestion.answered) {

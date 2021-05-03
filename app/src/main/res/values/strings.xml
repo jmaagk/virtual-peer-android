@@ -131,4 +131,14 @@
     <string name="library_exercise_start">Start</string>
     <string name="library_exercise_info_dialog_okay">Okay</string>
     <string name="pomodoro_info">Die Pomodoro-Technik ist eine Lerntechnik, die in 25 Minuten Intervallen absolviert wird. Nach den 25 Minuten hast du dir dann eine 5 Minuten Pause verdient, in der du Lüften oder einfach mal aufstehen kannst. Die Pausen und Lernintervalle werden jeweils mit einem Gong eingeleitet und auch beendet. Um deine Lernintervalle zu definieren, trägst du als erstes deine Lernziele in deine Pomodoro-Tabelle ein. Diese sollten in den 25 Minuten zu schaffen sein. Als Beispiel kannst du dir deine Vorlesung in Abschnitte unterteilen. (Tipp: Wenn du vor den 25 Minuten fertig bist, wiederhole doch gerne den Part, der dir am anspruchsvollsten vorkam). Nach 3 Lerneinheiten hast du dir eine 30-minütige Pause verdient. Wichtig: Während den Lernintervallen solltest du jeglichen Social-Media-Einfluss ausschalten. Schalte die Apps auf deinem Handy am besten auf stumm. Jegliche Ablenkung kann nämlich deinen Lernflow stören.</string>
+    <string name="box_breathing_start_message">Hallo %1$s! Willkommen zu deinem kleinen Box-Breathing! Fühlst du dich bereit für eine kleine Entspannung?</string>
+    <string name="box_breathing_start_message_option_1">Erzähl mir mehr über das Box-Breathing! </string>
+    <string name="box_breathing_start_message_option_2">Let\'s go!</string>
+    <string name="box_breathing_more_info_message">Beim Box-Breathing versuchst du dein Atmen zu verlangsamen. Durch die vollkommende Konzentration und Aufmerksamkeit über deine Atemzüge, versuche ich dich anzuleiten, langsamer und tiefer Ein-und Auszuatmen. Jetzt fragst du dich sicher „warum überhaupt?“ oder „was bringt mir das denn?“. Das sind sehr gute Fragen! Langsameres Atmen kann dir helfen, wacher zu werden. Ebenso kannst du versuchen, deine eigene Mitte wiederzufinden und dich in Stresssituationen, wie z.B. Prüfungsphasen, zu entspannen und deinen Herzschlag runterzuschrauben. Und? Überzeugt?</string>
+    <string name="box_breathing_more_info_message_option_1">Let\'s go!</string>
+    <string name="box_breathing_more_info_message_option_2">Zurück</string>
+    <string name="box_breathing_breathe_in">Breathe in</string>
+    <string name="box_breathing_breathe_out">Breathe out</string>
+    <string name="box_breathing_hold">Hold</string>
+    <string name="box_breathing_start_again">Start again</string>
 </resources>
