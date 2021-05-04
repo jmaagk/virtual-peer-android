@@ -16,6 +16,7 @@ import java.util.*
 class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animation.AnimationListener {
 
     private var animationPosition = -1
+    private var currentLoopCount = 0
 
     private lateinit var startButton: ImageView
     private lateinit var startAgainText: TextView
@@ -27,6 +28,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
     private val breatheInDurationSeconds = 5
     private val breatheOutDurationSeconds = 5
     private val holdDurationSeconds = 5
+    private val loopCount = 20 // assuming a cycle duration of 15 seconds, this should be exactly 5 minutes
 
     private val timer = Timer()
     private val timerPeriod = 250L
@@ -57,6 +59,12 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
         startButton.imageTintList = ColorStateList(states, colors)
 
         startButton.setOnClickListener {
+            startCycle()
+        }
+    }
+
+    private fun startCycle() {
+        if(startButton.visibility == View.VISIBLE) {
             val fadeOutAnimation = AlphaAnimation(1f, 0f)
             fadeOutAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
             fadeOutAnimation.setAnimationListener(this)
@@ -64,6 +72,9 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
             startButton.startAnimation(fadeOutAnimation)
             if(startAgainText.visibility == View.VISIBLE)
                 startAgainText.startAnimation(fadeOutAnimation)
+        } else {
+            animationPosition = if(currentLoopCount == 0) 0 else 1 // only showing the countdown once (on the initial start)
+            onAnimationEnd(null) // passing null here is not a problem as the argument is never used
         }
     }
 
@@ -140,16 +151,20 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 fadeOutAnimation.startOffset = breatheOutAnimation.startOffset + breatheOutAnimation.duration - fadeOutAnimation.duration
 
                 val breathIndicatorCycleAnimation = AnimationSet(false)
-                breathIndicatorCycleAnimation.addAnimation(fadeInAnimation)
+                if(isFirstLoop())
+                    breathIndicatorCycleAnimation.addAnimation(fadeInAnimation)
                 breathIndicatorCycleAnimation.addAnimation(breatheInAnimation)
                 breathIndicatorCycleAnimation.addAnimation(breatheOutAnimation)
-                breathIndicatorCycleAnimation.addAnimation(fadeOutAnimation)
+                if(isLastLoop())
+                    breathIndicatorCycleAnimation.addAnimation(fadeOutAnimation)
                 breathIndicatorCycleAnimation.setAnimationListener(this)
 
                 breathIndicator.startAnimation(breathIndicatorCycleAnimation)
 
                 val breathIndicatorTextCycleAnimation = AnimationSet(false)
-                breathIndicatorTextCycleAnimation.addAnimation(fadeInAnimation)
+                if(isFirstLoop())
+                    breathIndicatorTextCycleAnimation.addAnimation(fadeInAnimation)
+                if(isLastLoop())
                 breathIndicatorTextCycleAnimation.addAnimation(fadeOutAnimation)
 
                 breathIndicatorText.startAnimation(breathIndicatorTextCycleAnimation)
@@ -162,16 +177,23 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 breathIndicator.visibility = View.INVISIBLE
                 breathIndicatorText.visibility = View.INVISIBLE
 
-                startButton.visibility = View.VISIBLE
-                startAgainText.visibility = View.VISIBLE
-
-                val fadeInAnimation = AlphaAnimation(0f, 1f)
-                fadeInAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
-
-                startButton.startAnimation(fadeInAnimation)
-                startAgainText.startAnimation(fadeInAnimation)
-
                 animationPosition = -1
+
+                if(isLastLoop()) {
+                    startButton.visibility = View.VISIBLE
+                    startAgainText.visibility = View.VISIBLE
+
+                    val fadeInAnimation = AlphaAnimation(0f, 1f)
+                    fadeInAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+
+                    startButton.startAnimation(fadeInAnimation)
+                    startAgainText.startAnimation(fadeInAnimation)
+
+                    currentLoopCount = 0
+                } else {
+                    currentLoopCount++
+                    startCycle()
+                }
             }
         }
     }
@@ -249,5 +271,8 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
         }
 
     }
+
+    private fun isLastLoop() = currentLoopCount >= loopCount - 1
+    private fun isFirstLoop() = currentLoopCount == 0
 
 }
