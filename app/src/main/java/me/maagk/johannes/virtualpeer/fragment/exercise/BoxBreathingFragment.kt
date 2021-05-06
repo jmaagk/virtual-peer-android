@@ -65,8 +65,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
 
     private fun startCycle() {
         if(startButton.visibility == View.VISIBLE) {
-            val fadeOutAnimation = AlphaAnimation(1f, 0f)
-            fadeOutAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+            val fadeOutAnimation = Utils.newFadeAnimation(false, Utils.getScaledAnimationDuration(requireContext(), 500))
             fadeOutAnimation.setAnimationListener(this)
 
             startButton.startAnimation(fadeOutAnimation)
@@ -96,8 +95,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 countdownText.visibility = View.VISIBLE
                 countdownText.text = countdownDurationSeconds.toString()
 
-                val fadeInCountdownAnimation = AlphaAnimation(0f, 1f)
-                fadeInCountdownAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+                val fadeInCountdownAnimation = Utils.newFadeAnimation(true, Utils.getScaledAnimationDuration(requireContext(), 500))
 
                 val fromScale = 1f
                 val toScale = 0.25f
@@ -107,8 +105,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 scaleDownAnimation.duration = countdownDurationSeconds * 1000L // not scaling this because it'll always be the same
                 scaleDownAnimation.interpolator = AccelerateInterpolator(0.3f)
 
-                val fadeOutCountdownAnimation = AlphaAnimation(1f, 0f)
-                fadeOutCountdownAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+                val fadeOutCountdownAnimation = Utils.newFadeAnimation(false, Utils.getScaledAnimationDuration(requireContext(), 500))
                 fadeOutCountdownAnimation.startOffset = Utils.getScaledAnimationDuration(requireContext(), 500) + (countdownDurationSeconds * 1000L) - 1000L
 
                 val fadeScaleFadeAnimation = AnimationSet(false)
@@ -128,8 +125,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 breathIndicatorText.visibility = View.VISIBLE
 
                 // showing the circle for the first time
-                val fadeInAnimation = AlphaAnimation(0f, 1f)
-                fadeInAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+                val fadeInAnimation = Utils.newFadeAnimation(true, Utils.getScaledAnimationDuration(requireContext(), 500))
 
                 var fromScale = 0.25f
                 var toScale = 1f
@@ -146,8 +142,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 breatheOutAnimation.interpolator = AccelerateDecelerateInterpolator()
                 breatheOutAnimation.startOffset = (breatheInDurationSeconds + holdDurationSeconds) * 1000L
 
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+                val fadeOutAnimation = Utils.newFadeAnimation(false, Utils.getScaledAnimationDuration(requireContext(), 500))
                 fadeOutAnimation.startOffset = breatheOutAnimation.startOffset + breatheOutAnimation.duration - fadeOutAnimation.duration
 
                 val breathIndicatorCycleAnimation = AnimationSet(false)
@@ -183,8 +178,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                     startButton.visibility = View.VISIBLE
                     startAgainText.visibility = View.VISIBLE
 
-                    val fadeInAnimation = AlphaAnimation(0f, 1f)
-                    fadeInAnimation.duration = Utils.getScaledAnimationDuration(requireContext(), 500)
+                    val fadeInAnimation = Utils.newFadeAnimation(true, Utils.getScaledAnimationDuration(requireContext(), 500))
 
                     startButton.startAnimation(fadeInAnimation)
                     startAgainText.startAnimation(fadeInAnimation)

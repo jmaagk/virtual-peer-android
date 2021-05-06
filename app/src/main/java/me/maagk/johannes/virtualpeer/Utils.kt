@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.animation.AlphaAnimation
+import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -59,6 +61,16 @@ class Utils {
 
         fun SharedPreferences.containsNonNullAndNonBlankValue(key: String): Boolean {
             return contains(key) && !getString(key, null).isNullOrBlank()
+        }
+
+        fun newFadeAnimation(fadeIn: Boolean, duration: Long): AlphaAnimation {
+            val from = if(fadeIn) 0f else 1f
+            val to = if(fadeIn) 1f else 0f
+
+            val fadeAnimation = AlphaAnimation(from, to)
+            fadeAnimation.interpolator = LinearInterpolator()
+            fadeAnimation.duration = duration
+            return fadeAnimation
         }
 
     }
