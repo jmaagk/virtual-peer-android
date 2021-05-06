@@ -17,8 +17,11 @@
     <color name="colorBackgroundCard">#FFFFFFFF</color>
     <color name="colorBackgroundCardStripe">#FFEEEEEE</color>
     <color name="colorBackgroundCardContrast">#FF424242</color>
-    <color name="colorText">#FF212121</color>
+
+    <color name="colorText">@color/colorTextLight</color>
     <color name="colorTextLight">#FF212121</color>
+    <color name="colorTextDark">#FFFFFFFF</color>
+
     <color name="colorSubText">#FF757575</color>
     <color name="colorTextBottomNavigation">#BDBDBD</color>
     <color name="colorButtonText">#FF000000</color>
@@ -64,5 +67,8 @@
 
     <color name="colorExerciseBoxBreathingGradientFrom">#DEE6E5</color>
     <color name="colorExerciseBoxBreathingGradientTo">#05BFC6</color>
+
+    <color name="colorExerciseMeditationGradientFrom">#A7B1BE</color>
+    <color name="colorExerciseMeditationGradientTo">#2D2C37</color>
 
 </resources>

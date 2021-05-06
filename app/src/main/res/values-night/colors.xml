@@ -7,7 +7,7 @@
     <color name="colorBackgroundCard">#272632</color>
     <color name="colorBackgroundCardStripe">#35343F</color>
     <color name="colorBackgroundCardContrast">#FFFFFFFF</color>
-    <color name="colorText">#FFFFFFFF</color>
+    <color name="colorText">@color/colorTextDark</color>
     <color name="colorSubText">#FFE0E0E0</color>
     <color name="colorTextBottomNavigation">#9E9E9E</color>
     <color name="colorButtonText">#FF000000</color>

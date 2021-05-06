@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="meditation_durations">
+        <item>@string/meditation_duration_5_min</item>
+        <item>@string/meditation_duration_10_min</item>
+    </string-array>
+
+    <integer-array name="meditation_durations_values">
+        <item>5</item>
+        <item>10</item>
+    </integer-array>
+
+</resources>

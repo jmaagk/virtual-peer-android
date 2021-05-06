@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/meditation_gradient">
+
+    <RelativeLayout
+        android:id="@+id/meditationStartLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="@drawable/round_layout_background"
+        android:backgroundTint="@color/colorExerciseMeditationGradientTo">
+
+        <TextView
+            android:id="@+id/meditationHeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/meditation_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorTextDark" />
+
+        <ImageView
+            android:id="@+id/startButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@id/meditationHeadline"
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_start" />
+
+        <Spinner
+            android:id="@+id/durationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="15dp"
+            android:layout_below="@id/startButton"
+            style="@style/Widget.AppCompat.Spinner.Underlined" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/letsGoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/meditation_lets_go"
+        android:textColor="@color/colorText"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+        android:visibility="gone" />
+
+    <me.maagk.johannes.virtualpeer.view.EyeView
+        android:id="@+id/eyeView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/countdownLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/closeYourEyesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/meditation_close_your_eyes"
+            android:textColor="@color/colorText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+        <TextView
+            android:id="@+id/countdown"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+            android:gravity="center_horizontal"
+            android:textAlignment="gravity"
+            tools:text="5" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

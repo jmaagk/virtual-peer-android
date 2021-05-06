@@ -86,4 +86,9 @@
     <string name="box_breathing_breathe_out">Ausatmen</string>
     <string name="box_breathing_hold">Halten</string>
     <string name="box_breathing_start_again">Nochmal starten</string>
+    <string name="meditation_spinner_hint">Zeit</string>
+    <string name="meditation_duration_5_min">5 min</string>
+    <string name="meditation_duration_10_min">10 min</string>
+    <string name="meditation_lets_go">Let\'s go</string>
+    <string name="meditation_close_your_eyes">Schließe deine Augen in</string>
 </resources>

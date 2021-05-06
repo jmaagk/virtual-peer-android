@@ -24,6 +24,7 @@ import me.maagk.johannes.virtualpeer.fragment.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.BoxBreathingFragment
+import me.maagk.johannes.virtualpeer.fragment.exercise.MeditationFragment
 import me.maagk.johannes.virtualpeer.fragment.library.LibraryFragment
 import me.maagk.johannes.virtualpeer.fragment.settings.ProfileFragment
 import me.maagk.johannes.virtualpeer.fragment.stats.StatsFragment
@@ -182,7 +183,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         // TODO: is there a better way to achieve this behavior?
         var navDrawer = false
         val itemToSelect = when(getTopFragment()) {
-            is ChatFragment, is AddLearningContentFragment, is BoxBreathingFragment -> R.id.navChat
+            is ChatFragment, is AddLearningContentFragment, is BoxBreathingFragment, is MeditationFragment -> R.id.navChat
             is StatsFragment -> R.id.navStats
             is LibraryFragment -> R.id.navLibrary
             else -> R.id.navStart
@@ -245,30 +246,14 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     fun startExercise(exercise: Exercise) {
+        if(!::chatFragment.isInitialized)
+            chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
 
-        fun prepareChatFragment() {
-            if(!::chatFragment.isInitialized)
-                chatFragment = supportFragmentManager.findFragmentByTag(ChatFragment.TAG) as ChatFragment? ?: ChatFragment()
+        val tag = ChatFragment.TAG
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, chatFragment, tag).addToBackStack(tag).commit()
 
-            val tag = ChatFragment.TAG
-            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, chatFragment, tag).addToBackStack(tag).commit()
-        }
-
-        when(exercise) {
-            is PomodoroExercise -> {
-                prepareChatFragment()
-
-                val pomodoroChatExercise = PomodoroChatExercise(this, chatFragment)
-                chatFragment.startExercise(pomodoroChatExercise)
-            }
-
-            is BoxBreathingExercise -> {
-                prepareChatFragment()
-
-                val boxBreathingChatExercise = BoxBreathingChatExercise(this, chatFragment)
-                chatFragment.startExercise(boxBreathingChatExercise)
-            }
-        }
+        val chatExercise = exercise.getChatExercise(chatFragment)
+        chatFragment.startExercise(chatExercise)
     }
 
 }
