@@ -7,8 +7,8 @@
     <color name="colorPrimaryVariant">#03989E</color>
     <color name="colorOnPrimary">@android:color/white</color>
 
-    <color name="colorSecondary">#FFFFC107</color>
-    <color name="colorSecondaryVariant">#FFA000</color>
+    <color name="colorSecondary">#FFB800</color>
+    <color name="colorSecondaryVariant">#EDB421</color>
     <color name="colorOnSecondary">@android:color/black</color>
 
     <color name="colorBackground">#FFFAFAFA</color>
