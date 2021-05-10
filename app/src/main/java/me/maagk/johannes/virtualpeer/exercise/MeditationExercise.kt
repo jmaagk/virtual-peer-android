@@ -9,4 +9,6 @@ class MeditationExercise(context: Context) : Exercise(context, context.getString
 
     override fun createChatExercise(chatFragment: ChatFragment): ChatExercise = MeditationChatExercise(context, chatFragment)
 
+    override fun getIconResourceId(): Int = R.drawable.ic_meditation
+
 }

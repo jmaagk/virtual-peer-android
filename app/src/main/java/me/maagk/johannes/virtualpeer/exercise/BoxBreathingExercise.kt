@@ -9,4 +9,6 @@ class BoxBreathingExercise(context: Context) : Exercise(context, context.getStri
 
     override fun createChatExercise(chatFragment: ChatFragment): ChatExercise = BoxBreathingChatExercise(context, chatFragment)
 
+    override fun getIconResourceId(): Int = R.drawable.ic_box_breathing
+
 }

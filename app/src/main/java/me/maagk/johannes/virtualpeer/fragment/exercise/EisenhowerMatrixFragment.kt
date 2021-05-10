@@ -3,7 +3,6 @@ package me.maagk.johannes.virtualpeer.fragment.exercise
 import android.annotation.SuppressLint
 import android.graphics.*
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,11 +17,11 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
 import me.maagk.johannes.virtualpeer.exercise.AddGoalDialog
 import me.maagk.johannes.virtualpeer.exercise.EisenhowerMatrix
 import me.maagk.johannes.virtualpeer.goals.Goal
 import me.maagk.johannes.virtualpeer.goals.GoalStorage
-import java.time.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.max
@@ -146,13 +145,10 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 this.goal = goal
 
                 goalName.text = goal.name
-                goalInfo.text = if(goal.deadline == null) {
-                    getString(R.string.eisenhower_matrix_goal_info_no_deadline)
+                goalInfo.text = if(goal.hasDeadline()) {
+                    getString(R.string.eisenhower_matrix_goal_info, goal.deadline!!.getFormattedDate(requireContext()))
                 } else {
-                    val dateFormat = DateFormat.getDateFormat(requireContext())
-                    val oldDate = Date.from(goal.deadline.atStartOfDay(ZoneId.systemDefault()).toInstant())
-                    val formattedDate = dateFormat.format(oldDate)
-                    getString(R.string.eisenhower_matrix_goal_info, formattedDate)
+                    getString(R.string.eisenhower_matrix_goal_info_no_deadline)
                 }
 
                 goalCheckBox.isChecked = goal.completed

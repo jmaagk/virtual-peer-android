@@ -118,10 +118,10 @@ class GoalStorage(private val context: Context, refresh: Boolean = true) {
         goalRoot.setAttribute("name", goal.name)
         goalRoot.setAttribute("completed", goal.completed.toString())
 
-        val deadlineString = if(goal.deadline == null) {
-            (-1).toString()
+        val deadlineString = if(goal.hasDeadline()) {
+            goal.deadline!!.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli().toString()
         } else {
-            goal.deadline.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli().toString()
+            (-1).toString()
         }
         goalRoot.setAttribute("deadline", deadlineString)
 

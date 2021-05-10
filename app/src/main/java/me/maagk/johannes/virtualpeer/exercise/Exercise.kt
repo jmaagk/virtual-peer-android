@@ -1,7 +1,10 @@
 package me.maagk.johannes.virtualpeer.exercise
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 
@@ -23,5 +26,10 @@ abstract class Exercise(protected val context: Context, val name: String, val in
 
         return chatExercise
     }
+
+    @DrawableRes
+    abstract fun getIconResourceId(): Int
+
+    fun getIcon(): Drawable? = ResourcesCompat.getDrawable(context.resources, getIconResourceId(), context.theme)
 
 }

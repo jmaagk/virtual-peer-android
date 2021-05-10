@@ -91,4 +91,5 @@
     <string name="meditation_duration_10_min">10 min</string>
     <string name="meditation_lets_go">Let\'s go</string>
     <string name="meditation_close_your_eyes">Schließe deine Augen in</string>
+    <string name="pin_last_activity">Letzte Aktivität:</string>
 </resources>

@@ -20,7 +20,7 @@ import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.VirtualPeerApp
 import me.maagk.johannes.virtualpeer.chat.Message
 import me.maagk.johannes.virtualpeer.exercise.*
-import me.maagk.johannes.virtualpeer.fragment.StartFragment
+import me.maagk.johannes.virtualpeer.fragment.start.StartFragment
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.BoxBreathingFragment

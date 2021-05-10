@@ -2,7 +2,6 @@ package me.maagk.johannes.virtualpeer.charting
 
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
-import android.text.format.DateFormat
 import android.util.AttributeSet
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
@@ -23,8 +22,6 @@ class AppUsageChart @JvmOverloads constructor(
         defStyleAttr: Int = 0) : BarChart(context, attrs, defStyleAttr) {
 
     class Formatter(private val context: Context) : ValueFormatter() {
-
-        private val dateFormat = DateFormat()
 
         override fun getFormattedValue(value: Float): String {
             val totalSeconds = value.toLong() / 1000

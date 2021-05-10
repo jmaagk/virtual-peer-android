@@ -1,4 +1,4 @@
-package me.maagk.johannes.virtualpeer.fragment
+package me.maagk.johannes.virtualpeer.fragment.start
 
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
@@ -13,6 +13,9 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieEntry
@@ -26,8 +29,10 @@ import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions
 import me.maagk.johannes.virtualpeer.charting.ActivityPoolChart
 import me.maagk.johannes.virtualpeer.chat.*
+import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.EisenhowerMatrixFragment
+import me.maagk.johannes.virtualpeer.pins.Pin
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
@@ -54,6 +59,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var timeSpentText: TextView
     private lateinit var sentimentText: TextView
     private lateinit var successText: TextView
+
+    private lateinit var pinList: RecyclerView
 
     private lateinit var pref: SharedPreferences
 
@@ -287,6 +294,27 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         timeSpentText = view.findViewById(R.id.timeSpentText)
         sentimentText = view.findViewById(R.id.sentimentText)
         successText = view.findViewById(R.id.successText)
+
+        pinList = view.findViewById(R.id.pinList)
+
+        val pins = mutableListOf<Pin>()
+        // TODO: actually add pins
+
+        val pinListAdapter = PinListAdapter(requireContext(), pins)
+        pinList.adapter = pinListAdapter
+
+        val layoutManager = GridLayoutManager(requireContext(), 6)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when(pins[position].size) {
+                    Pin.Size.SMALL -> 1
+                    Pin.Size.NORMAL -> 2
+                    Pin.Size.LARGE -> 6
+                }
+            }
+        }
+        pinList.layoutManager = layoutManager
+        pinList.itemAnimator = DefaultItemAnimator()
     }
 
     private fun updateCurrentActivityText() {

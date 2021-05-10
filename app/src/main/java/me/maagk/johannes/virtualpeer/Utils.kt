@@ -3,6 +3,7 @@ package me.maagk.johannes.virtualpeer
 import android.content.Context
 import android.content.SharedPreferences
 import android.provider.Settings
+import android.text.format.DateFormat
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.animation.AlphaAnimation
@@ -11,6 +12,9 @@ import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.AutoTransition
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.round
@@ -71,6 +75,12 @@ class Utils {
             fadeAnimation.interpolator = LinearInterpolator()
             fadeAnimation.duration = duration
             return fadeAnimation
+        }
+
+        fun LocalDate.getFormattedDate(context: Context): String {
+            val dateFormat = DateFormat.getDateFormat(context)
+            val oldDate = Date.from(this.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+            return dateFormat.format(oldDate)
         }
 
     }

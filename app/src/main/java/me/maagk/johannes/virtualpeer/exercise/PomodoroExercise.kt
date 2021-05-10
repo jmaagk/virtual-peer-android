@@ -9,4 +9,6 @@ class PomodoroExercise(context: Context) : Exercise(context, context.getString(R
 
     override fun createChatExercise(chatFragment: ChatFragment): ChatExercise = PomodoroChatExercise(context, chatFragment)
 
+    override fun getIconResourceId(): Int = R.drawable.ic_pomodoro
+
 }
