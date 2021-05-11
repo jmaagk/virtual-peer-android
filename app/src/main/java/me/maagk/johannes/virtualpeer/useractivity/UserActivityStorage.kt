@@ -1,61 +1,35 @@
 package me.maagk.johannes.virtualpeer.useractivity
 
 import android.content.Context
-import android.net.Uri
+import me.maagk.johannes.virtualpeer.Storage
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
-import java.io.File
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamResult
-import kotlin.collections.ArrayList
 
-class UserActivityStorage(private val context: Context, refresh: Boolean = true) {
+class UserActivityStorage(context: Context, refresh: Boolean = true) : Storage<UserActivity>(context, refresh) {
 
-    private val FILE_NAME = "activities.xml"
-    private val VERSION = 1
+    override val FILE_NAME: String
+        get() = "activities.xml"
+    override val VERSION: Int
+        get() = 1
 
-    val userActivities = ArrayList<UserActivity>()
     lateinit var timeZone: ZoneId
 
-    private val formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy")
-    private val activitiesFile = File(context.filesDir, FILE_NAME)
+    // just an alias to have the name make a bit more sense
+    val userActivities = items
 
     init {
-        // refreshing the internal list of activities if the user of this class wants it to happen
-        if(refresh)
-            refresh()
-
-        // making sure the "files" directory in the app's directory exists
-        if(!context.filesDir.exists()) {
-            val success = context.filesDir.mkdir()
-            if(!success)
-                TODO("add some error handling here (maybe the app should quit here?)")
-        }
-
         // making sure a time zone is set
         // this should only run when the app is started for the first time
         if(!::timeZone.isInitialized)
             timeZone = ZoneId.systemDefault()
     }
 
-    fun refresh() {
-        if(!activitiesFile.exists())
-            return
-
-        // clearing the current list of activities as these will be loaded here
-        userActivities.clear()
-
-        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(context.contentResolver.openInputStream(Uri.fromFile(activitiesFile)))
-
+    override fun refreshList(doc: Document) {
         val activitiesTag = doc.documentElement
         if(activitiesTag.tagName != "activities") {
             // TODO: some error handling might be needed
@@ -67,23 +41,20 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         val activityTags = activitiesTag.getElementsByTagName("activity")
         for(i in 0 until activityTags.length) {
             val activityTag = activityTags.item(i)
-            val activity = parseActivity(activityTag, fileVersion)
-            userActivities.add(activity)
+            val activity = parseItem(activityTag, fileVersion)
+            items.add(activity)
         }
-
-        if(fileVersion != VERSION)
-            update(fileVersion)
     }
 
-    private fun parseActivity(activityTag: Node, version: Int): UserActivity {
-        val type = UserActivity.Type.valueOf(activityTag.attributes.getNamedItem("type").nodeValue.toUpperCase(Locale.ROOT))
+    override fun parseItem(tag: Node, version: Int): UserActivity {
+        val type = UserActivity.Type.valueOf(tag.attributes.getNamedItem("type").nodeValue.toUpperCase(Locale.ROOT))
 
         val startTime = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(
-                        activityTag.attributes.getNamedItem("startTime").nodeValue.toLong()),
+                    tag.attributes.getNamedItem("startTime").nodeValue.toLong()),
                         timeZone)
 
-        val endTimeLong = activityTag.attributes.getNamedItem("endTime").nodeValue.toLong()
+        val endTimeLong = tag.attributes.getNamedItem("endTime").nodeValue.toLong()
         val endTime = if(endTimeLong == -1L) {
             null
         } else {
@@ -92,8 +63,8 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
 
         val activity = UserActivity(type, startTime, endTime)
 
-        val userRatingTypeTag = activityTag.attributes.getNamedItem("userRatingType")
-        val userRatingTag = activityTag.attributes.getNamedItem("userRating")
+        val userRatingTypeTag = tag.attributes.getNamedItem("userRatingType")
+        val userRatingTag = tag.attributes.getNamedItem("userRating")
         if(userRatingTypeTag != null && userRatingTag != null) {
             activity.userRatingType = userRatingTypeTag.nodeValue.toInt()
             activity.userRating = when(activity.userRatingType) {
@@ -110,31 +81,16 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         return activity
     }
 
-    fun save() {
-        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
-        doc.xmlStandalone = true
-
+    override fun getRootElement(doc: Document): Element {
         val root = doc.createElement("activities")
-        root.setAttribute("version", VERSION.toString())
         root.setAttribute("timeZone", ZoneId.systemDefault().id)
 
-        for(userActivity in userActivities)
-            root.appendChild(convertActivityToXml(userActivity, doc))
-
-        doc.appendChild(root)
-
-        val transformer = TransformerFactory.newInstance().newTransformer()
-        // some options to make the resulting files more readable
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes")
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
-
-        val input = DOMSource(doc)
-        val output = StreamResult(activitiesFile)
-
-        transformer.transform(input, output)
+        return root
     }
 
-    private fun convertActivityToXml(activity: UserActivity, doc: Document): Element {
+    override fun convertItemToXml(element: UserActivity, doc: Document): Element {
+        val activity = element
+
         val activityRoot = doc.createElement("activity")
 
         activityRoot.setAttribute("type", activity.type.toString())
@@ -151,7 +107,7 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
         return activityRoot
     }
 
-    private fun update(fromVersion: Int) {
+    override fun update(fromVersion: Int) {
         // just a quick move to a new variable as arguments can't be reassigned in Kotlin
         var updatedVersion = fromVersion
 
@@ -177,11 +133,11 @@ class UserActivityStorage(private val context: Context, refresh: Boolean = true)
     }
 
     fun getNewestActivity(): UserActivity? {
-        if(userActivities.size == 0)
+        if(items.size == 0)
             return null
 
-        var newestActivity = userActivities[userActivities.size - 1]
-        for(userActivity in userActivities) {
+        var newestActivity = items[items.size - 1]
+        for(userActivity in items) {
             if(userActivity.startTime.isAfter(newestActivity.startTime))
                 newestActivity = userActivity
         }
