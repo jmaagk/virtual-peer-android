@@ -88,8 +88,8 @@ class UserActivityStorage(context: Context, refresh: Boolean = true) : Storage<U
         return root
     }
 
-    override fun convertItemToXml(element: UserActivity, doc: Document): Element {
-        val activity = element
+    override fun convertItemToXml(item: UserActivity, doc: Document): Element {
+        val activity = item
 
         val activityRoot = doc.createElement("activity")
 
@@ -107,7 +107,7 @@ class UserActivityStorage(context: Context, refresh: Boolean = true) : Storage<U
         return activityRoot
     }
 
-    override fun update(fromVersion: Int) {
+    override fun updateInternal(fromVersion: Int): Int {
         // just a quick move to a new variable as arguments can't be reassigned in Kotlin
         var updatedVersion = fromVersion
 
@@ -126,10 +126,7 @@ class UserActivityStorage(context: Context, refresh: Boolean = true) : Storage<U
             updatedVersion = 3
         }*/
 
-        if(updatedVersion == VERSION)
-            save() // saving user activities; this will make the changes made by the update persistent
-        else
-            TODO("Add error handling for failed updates")
+        return updatedVersion
     }
 
     fun getNewestActivity(): UserActivity? {

@@ -83,8 +83,17 @@ abstract class Storage<T>(protected val context: Context, refresh: Boolean = tru
 
     abstract fun parseItem(tag: Node, version: Int): T
 
-    abstract fun convertItemToXml(element: T, doc: Document): Element
+    abstract fun convertItemToXml(item: T, doc: Document): Element
 
-    protected abstract fun update(fromVersion: Int)
+    protected fun update(fromVersion: Int) {
+        val updatedVersion = updateInternal(fromVersion)
+
+        if(updatedVersion == VERSION)
+            save() // this will make updates persistent
+        else
+            TODO("Add error handling for failed updates")
+    }
+
+    protected abstract fun updateInternal(fromVersion: Int): Int
 
 }

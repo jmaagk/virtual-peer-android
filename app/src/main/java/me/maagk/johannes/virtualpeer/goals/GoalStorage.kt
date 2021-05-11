@@ -65,8 +65,8 @@ class GoalStorage(context: Context, refresh: Boolean = true): Storage<Goal>(cont
 
     override fun getRootElement(doc: Document): Element = doc.createElement("goals")
 
-    override fun convertItemToXml(element: Goal, doc: Document): Element {
-        val goal = element
+    override fun convertItemToXml(item: Goal, doc: Document): Element {
+        val goal = item
 
         val goalRoot = doc.createElement("goal")
 
@@ -119,7 +119,7 @@ class GoalStorage(context: Context, refresh: Boolean = true): Storage<Goal>(cont
         return true
     }
 
-    override fun update(fromVersion: Int) {
+    override fun updateInternal(fromVersion: Int): Int {
         var updatedVersion = fromVersion
 
         /*if(updatedVersion == 1) {
@@ -127,10 +127,7 @@ class GoalStorage(context: Context, refresh: Boolean = true): Storage<Goal>(cont
             updatedVersion = 2
         }*/
 
-        if(updatedVersion == VERSION)
-            save()
-        else
-            TODO("Add error handling for failed updates")
+        return updatedVersion
     }
 
     fun deleteGoal(toDelete: Goal) {
