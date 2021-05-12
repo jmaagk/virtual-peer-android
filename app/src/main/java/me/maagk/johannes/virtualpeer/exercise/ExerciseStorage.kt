@@ -67,6 +67,8 @@ class ExerciseStorage(context: Context) : Storage<Exercise>(context) {
         if(runningAttr != null)
             exercise.running = runningAttr.nodeValue.toBoolean()
 
+        exercise.pinned = tag.attributes.getNamedItem("pinned").nodeValue.toBoolean()
+
         return exercise
     }
 
@@ -84,6 +86,8 @@ class ExerciseStorage(context: Context) : Storage<Exercise>(context) {
 
         if(exercise.running)
             exerciseRoot.setAttribute("running", exercise.running.toString())
+
+        exerciseRoot.setAttribute("pinned", exercise.pinned.toString())
 
         return exerciseRoot
     }

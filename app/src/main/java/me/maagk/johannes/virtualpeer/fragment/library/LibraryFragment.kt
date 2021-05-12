@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -102,6 +103,18 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                             activity.startExercise(currentExercise)
                     }
                 }
+
+                pinIcon.setOnClickListener {
+                    currentExercise.pinned = !currentExercise.pinned
+                    exerciseStorage.editExercise(currentExercise)
+
+                    updatePinIcon()
+                }
+            }
+
+            private fun updatePinIcon() {
+                val drawableId = if(currentExercise.pinned) R.drawable.ic_pin else R.drawable.ic_pin_off
+                pinIcon.setImageDrawable(ResourcesCompat.getDrawable(requireContext().resources, drawableId, requireContext().theme))
             }
 
             fun bind(exercise: Exercise) {
@@ -139,6 +152,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 val colors = IntArray(1)
                 colors[0] = exercise.textColor
                 pinIcon.imageTintList = ColorStateList(states, colors)
+                updatePinIcon()
 
                 lastActivityText.setTextColor(exercise.textColor)
                 lastActivityTimeText.setTextColor(exercise.textColor)
