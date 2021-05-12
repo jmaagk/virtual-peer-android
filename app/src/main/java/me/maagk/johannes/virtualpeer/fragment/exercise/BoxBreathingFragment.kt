@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.exercise.BoxBreathingExercise
 import java.util.*
 
 class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animation.AnimationListener {
@@ -32,6 +33,8 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
 
     private val timer = Timer()
     private val timerPeriod = 250L
+
+    private var resetSwitch = false
 
     companion object {
         const val TAG = "boxBreathing"
@@ -78,6 +81,9 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
     }
 
     override fun onAnimationStart(animation: Animation?) {
+        if(resetSwitch)
+            return
+
         animationPosition++
 
         when(animationPosition) {
@@ -86,6 +92,9 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
     }
 
     override fun onAnimationEnd(animation: Animation?) {
+        if(resetSwitch)
+            return
+
         when(animationPosition) {
             0 -> {
                 startButton.visibility = View.GONE
@@ -175,21 +184,53 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
                 animationPosition = -1
 
                 if(isLastLoop()) {
-                    startButton.visibility = View.VISIBLE
-                    startAgainText.visibility = View.VISIBLE
-
-                    val fadeInAnimation = Utils.newFadeAnimation(true, Utils.getScaledAnimationDuration(requireContext(), 500))
-
-                    startButton.startAnimation(fadeInAnimation)
-                    startAgainText.startAnimation(fadeInAnimation)
-
-                    currentLoopCount = 0
+                    reset(false)
                 } else {
                     currentLoopCount++
                     startCycle()
                 }
             }
         }
+    }
+
+    private fun reset(hardReset: Boolean) {
+        startButton.visibility = View.VISIBLE
+        startAgainText.visibility = View.VISIBLE
+
+        if(hardReset) {
+            resetSwitch = true
+
+            startButton.clearAnimation()
+            startAgainText.clearAnimation()
+            countdownText.clearAnimation()
+            breathIndicator.clearAnimation()
+            breathIndicatorText.clearAnimation()
+
+            countdownText.visibility = View.GONE
+            breathIndicator.visibility = View.INVISIBLE
+            breathIndicatorText.visibility = View.INVISIBLE
+
+            animationPosition = -1
+        } else {
+            val fadeInAnimation = Utils.newFadeAnimation(true, Utils.getScaledAnimationDuration(requireContext(), 500))
+
+            startButton.startAnimation(fadeInAnimation)
+            startAgainText.startAnimation(fadeInAnimation)
+        }
+
+        currentLoopCount = 0
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        reset(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        resetSwitch = false
     }
 
     override fun onAnimationRepeat(animation: Animation?) {
@@ -216,7 +257,7 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
             secondsLeft = millisLeft / 1000L
             secondsLeftHigher = secondsLeft + 1
 
-            if(millisLeft <= 0 || !isAdded)
+            if(millisLeft <= 0 || !isAdded || resetSwitch)
                 cancel()
         }
     }
