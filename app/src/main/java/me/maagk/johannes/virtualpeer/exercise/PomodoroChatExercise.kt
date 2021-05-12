@@ -20,7 +20,9 @@ import me.maagk.johannes.virtualpeer.fragment.exercise.AddLearningContentFragmen
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 import java.util.concurrent.TimeUnit
 
-class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatExercise(context, chatFragment), AddLearningContentFragment.OnLearningContentsFinishedListener {
+class PomodoroChatExercise(context: Context, pomodoroExercise: PomodoroExercise, chatFragment: ChatFragment) :
+    ChatExercise(context, pomodoroExercise, chatFragment),
+    AddLearningContentFragment.OnLearningContentsFinishedListener {
 
     companion object {
         fun startLearningContent(context: Context, learningContents: ArrayList<LearningContent>, position: Int) {
@@ -57,6 +59,10 @@ class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatE
         }
 
         fun finish(context: Context) {
+            val exerciseStorage = ExerciseStorage(context)
+            exerciseStorage.notifyExerciseEnd<PomodoroExercise>()
+            exerciseStorage.save()
+
             val notification = FinishNotification(context).build()
 
             NotificationManagerCompat.from(context).notify(VirtualPeerApp.NOTIFICATION_ID_POMODORO_FINISH, notification)
@@ -95,7 +101,7 @@ class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatE
         return ratingQuestion
     }
 
-    override fun start() {
+    override fun onStartConfirmed() {
         val options = arrayListOf<String>()
         options.add(context.getString(R.string.pomodoro_learning_content_message_ready))
         options.add(context.getString(R.string.pomodoro_learning_content_message_back))
@@ -106,6 +112,14 @@ class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatE
         val learningContentMessage = MultipleChoiceQuestionMessage(learningContentQuestion)
 
         sendMessage(learningContentMessage)
+    }
+
+    override fun start() {
+        startTime = System.currentTimeMillis()
+
+        notifyStart<PomodoroExercise>()
+
+        startLearningContent(context, learningContents, 0)
     }
 
     override fun onMessageSent(message: Message) {
@@ -133,10 +147,7 @@ class PomodoroChatExercise(context: Context, chatFragment: ChatFragment) : ChatE
             if(::learningContentFinishedQuestion.isInitialized && answeredQuestion == learningContentFinishedQuestion && learningContentFinishedQuestion.answered) {
                 when(learningContentFinishedQuestion.answer as Int) {
                     0 -> {
-                        // this is the point at which the exercise *really* starts
-                        startTime = System.currentTimeMillis()
-
-                        startLearningContent(context, learningContents, 0)
+                        start()
                     }
 
                     1 -> {

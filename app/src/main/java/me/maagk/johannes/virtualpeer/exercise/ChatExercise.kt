@@ -8,7 +8,7 @@ import me.maagk.johannes.virtualpeer.chat.MultipleChoiceQuestionMessage
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 
-abstract class ChatExercise(protected val context: Context, protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
+abstract class ChatExercise(protected val context: Context, protected val exercise: Exercise, protected val chatFragment: ChatFragment) : ChatFragment.OnMessageSentListener {
 
     private lateinit var startQuestion: MultipleChoiceQuestion
     private lateinit var startMessage: MultipleChoiceQuestionMessage
@@ -20,6 +20,8 @@ abstract class ChatExercise(protected val context: Context, protected val chatFr
     private lateinit var rateMessage: MultipleChoiceQuestionMessage
 
     protected val userProfile = UserProfile(context)
+
+    val exerciseStorage = ExerciseStorage(context)
 
     init {
         chatFragment.addOnMessageSentListener(this)
@@ -35,6 +37,8 @@ abstract class ChatExercise(protected val context: Context, protected val chatFr
     }
 
     abstract fun start()
+
+    abstract fun onStartConfirmed()
 
     abstract fun createStartQuestion(startQuestion: MultipleChoiceQuestion): MultipleChoiceQuestion
 
@@ -57,13 +61,13 @@ abstract class ChatExercise(protected val context: Context, protected val chatFr
                         sendMessage(moreInfoMessage)
                     }
 
-                    1 -> start()
+                    1 -> onStartConfirmed()
                 }
             }
 
             if(::moreInfoQuestion.isInitialized && answeredQuestion == moreInfoQuestion && moreInfoQuestion.answered) {
                 if(moreInfoQuestion.answer as Int == 0) // this is a bit hacky
-                    start()
+                    onStartConfirmed()
             }
 
             if(::rateQuestion.isInitialized && answeredQuestion == rateQuestion && rateQuestion.answered) {
@@ -91,6 +95,12 @@ abstract class ChatExercise(protected val context: Context, protected val chatFr
 
         // queueing this message because the fragment may not be fully initialized yet at this point
         queueMessage(rateMessage)
+    }
+
+    inline fun <reified T : Exercise> notifyStart() {
+        exerciseStorage.refresh()
+        exerciseStorage.notifyExerciseStart<T>()
+        exerciseStorage.save()
     }
 
 }

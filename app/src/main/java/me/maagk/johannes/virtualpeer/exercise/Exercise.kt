@@ -7,6 +7,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
+import java.time.ZonedDateTime
 
 abstract class Exercise(protected val context: Context, val name: String, val info: String,
                         @ColorRes color: Int, @ColorRes textColor: Int, @ColorRes buttonTextColor: Int,
@@ -16,7 +17,25 @@ abstract class Exercise(protected val context: Context, val name: String, val in
     val textColor = Utils.getColor(context, textColor)
     val buttonTextColor = Utils.getColor(context, buttonTextColor)
 
+    var running = false
+
+    abstract val internalName: String
+
     private lateinit var chatExercise: ChatExercise
+
+    var totalTimeMillis = -1L
+
+    fun getTotalTimeMillis(toNow: Boolean): Long {
+        return if(toNow && running) {
+            totalTimeMillis + (System.currentTimeMillis() - lastStartTime.toInstant().toEpochMilli())
+        } else {
+            totalTimeMillis
+        }
+    }
+
+    lateinit var lastStartTime: ZonedDateTime
+
+    fun hasLastStartTime(): Boolean = ::lastStartTime.isInitialized
 
     protected abstract fun createChatExercise(chatFragment: ChatFragment): ChatExercise
 

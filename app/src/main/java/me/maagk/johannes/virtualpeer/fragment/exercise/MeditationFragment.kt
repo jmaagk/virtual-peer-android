@@ -14,6 +14,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.exercise.ExerciseStorage
+import me.maagk.johannes.virtualpeer.exercise.MeditationExercise
 import me.maagk.johannes.virtualpeer.view.EyeView
 import java.util.*
 
@@ -36,6 +38,14 @@ class MeditationFragment : Fragment(R.layout.fragment_meditation), Animation.Ani
     private val countdownTimerPeriod = 250L
     private val countdownDurationSeconds = 5
     private val timer = Timer()
+
+    private lateinit var exerciseStorage: ExerciseStorage
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exerciseStorage = ExerciseStorage(requireContext())
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,6 +78,10 @@ class MeditationFragment : Fragment(R.layout.fragment_meditation), Animation.Ani
         startButton.imageTintList = ColorStateList(states, colors)
 
         startButton.setOnClickListener {
+            exerciseStorage.refresh()
+            exerciseStorage.notifyExerciseStart<MeditationExercise>()
+            exerciseStorage.save()
+
             val fadeOutAnimation = Utils.newFadeAnimation(false, Utils.getScaledAnimationDuration(requireContext(), 500))
             fadeOutAnimation.setAnimationListener(this)
 
@@ -213,6 +227,14 @@ class MeditationFragment : Fragment(R.layout.fragment_meditation), Animation.Ani
                 cancel()
         }
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        exerciseStorage.refresh()
+        exerciseStorage.notifyExerciseEnd<MeditationExercise>()
+        exerciseStorage.save()
     }
 
 }

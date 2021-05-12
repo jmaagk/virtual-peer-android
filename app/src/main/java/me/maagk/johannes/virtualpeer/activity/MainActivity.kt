@@ -234,10 +234,13 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 
         exerciseRatingStarted = true
 
+        val exerciseStorage = ExerciseStorage(this)
+
         when(intent.exerciseClass) {
             PomodoroChatExercise::class.java -> {
-                val exercise = PomodoroChatExercise(this, chatFragment)
-                exercise.rate()
+                val pomodoroExercise = exerciseStorage.getExercise<PomodoroExercise>()
+                val pomodoroChatExercise = pomodoroExercise.getChatExercise(chatFragment)
+                pomodoroChatExercise.rate()
 
                 // canceling the notification because it would still be visible otherwise
                 NotificationManagerCompat.from(this).cancel(VirtualPeerApp.NOTIFICATION_ID_POMODORO_FINISH)

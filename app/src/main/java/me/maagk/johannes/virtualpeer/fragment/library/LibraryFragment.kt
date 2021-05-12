@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
 import me.maagk.johannes.virtualpeer.activity.MainActivity
-import me.maagk.johannes.virtualpeer.exercise.BoxBreathingExercise
-import me.maagk.johannes.virtualpeer.exercise.Exercise
-import me.maagk.johannes.virtualpeer.exercise.MeditationExercise
-import me.maagk.johannes.virtualpeer.exercise.PomodoroExercise
+import me.maagk.johannes.virtualpeer.exercise.*
+import java.util.concurrent.TimeUnit
 
 class LibraryFragment : Fragment(R.layout.fragment_library) {
 
@@ -28,17 +27,28 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         const val TAG = "library"
     }
 
-    private val exercises = arrayListOf<Exercise>()
+    private lateinit var exerciseStorage: ExerciseStorage
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exerciseStorage = ExerciseStorage(requireContext())
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        exerciseStorage.save()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        exerciseStorage.refresh()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // creating the list of exercises
-        if(exercises.isEmpty()) {
-            exercises.add(PomodoroExercise(requireContext()))
-            exercises.add(BoxBreathingExercise(requireContext()))
-            exercises.add(MeditationExercise(requireContext()))
-        }
 
         val viewPager: ViewPager2 = view.findViewById(R.id.exerciseViewPager)
         val adapter = ExerciseAdapter()
@@ -102,6 +112,25 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 exerciseTitleText.text = exercise.name
                 exerciseTitleText.setTextColor(exercise.textColor)
 
+                lastActivityTimeText.text =
+                    if(exercise.hasLastStartTime()) exercise.lastStartTime.toLocalDate().getFormattedDate(requireContext())
+                    else getString(R.string.library_last_activity_never)
+
+                val totalTimeMillis = exercise.getTotalTimeMillis(true)
+                totalTimeTimeText.text = when(totalTimeMillis) {
+                    -1L -> getString(R.string.library_total_time_none)
+                    in 0L..TimeUnit.MINUTES.toMillis(1) -> getString(R.string.library_total_time_less_than_one_minute)
+                    in TimeUnit.MINUTES.toMillis(1)..TimeUnit.MINUTES.toMillis(2) -> getString(R.string.library_total_time_one_minute)
+                    in TimeUnit.MINUTES.toMillis(2)..TimeUnit.HOURS.toMillis(1) -> {
+                        getString(R.string.library_total_time_minutes, TimeUnit.MILLISECONDS.toMinutes(totalTimeMillis).toInt())
+                    }
+                    else -> {
+                        val hours = TimeUnit.MILLISECONDS.toHours(totalTimeMillis).toInt()
+                        val minutes = TimeUnit.MILLISECONDS.toMinutes(totalTimeMillis).toInt() % 60
+                        getString(R.string.library_total_time, hours, minutes)
+                    }
+                }
+
                 val states = Array(1) {
                     IntArray(1)
                 }
@@ -139,11 +168,11 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
         }
 
         override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
-            holder.bind(exercises[position])
+            holder.bind(exerciseStorage.exercises[position])
         }
 
         override fun getItemCount(): Int {
-            return exercises.size
+            return exerciseStorage.exercises.size
         }
 
     }

@@ -92,4 +92,10 @@
     <string name="meditation_lets_go">Let\'s go</string>
     <string name="meditation_close_your_eyes">Schließe deine Augen in</string>
     <string name="pin_last_activity">Letzte Aktivität:</string>
+    <string name="library_last_activity_never">Nie</string>
+    <string name="library_total_time_less_than_one_minute">&lt; 1 Minute</string>
+    <string name="library_total_time_none">Keine</string>
+    <string name="library_total_time_one_minute">1 Minute</string>
+    <string name="library_total_time">%1$dh %2$02dm</string>
+    <string name="library_total_time_minutes">%1$d Minuten</string>
 </resources>

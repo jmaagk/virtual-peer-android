@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.exercise.BoxBreathingExercise
+import me.maagk.johannes.virtualpeer.exercise.ExerciseStorage
 import java.util.*
 
 class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animation.AnimationListener {
@@ -36,8 +37,16 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
 
     private var resetSwitch = false
 
+    private lateinit var exerciseStorage: ExerciseStorage
+
     companion object {
         const val TAG = "boxBreathing"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exerciseStorage = ExerciseStorage(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,6 +71,11 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
         startButton.imageTintList = ColorStateList(states, colors)
 
         startButton.setOnClickListener {
+            exerciseStorage.refresh()
+            exerciseStorage.notifyExerciseStart<BoxBreathingExercise>()
+            exerciseStorage.save()
+
+            // starting the first cycle here (breathe in, hold, breathe out)
             startCycle()
         }
     }
@@ -219,6 +233,10 @@ class BoxBreathingFragment : Fragment(R.layout.fragment_box_breathing), Animatio
         }
 
         currentLoopCount = 0
+
+        exerciseStorage.refresh()
+        exerciseStorage.notifyExerciseEnd<BoxBreathingExercise>()
+        exerciseStorage.save()
     }
 
     override fun onPause() {

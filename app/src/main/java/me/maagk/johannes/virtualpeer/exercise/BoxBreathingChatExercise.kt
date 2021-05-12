@@ -6,13 +6,18 @@ import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.BoxBreathingFragment
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 
-class BoxBreathingChatExercise(context: Context, chatFragment: ChatFragment) : ChatExercise(context, chatFragment) {
+class BoxBreathingChatExercise(context: Context, boxBreathingExercise: BoxBreathingExercise, chatFragment: ChatFragment) :
+    ChatExercise(context, boxBreathingExercise, chatFragment) {
 
     override fun start() {
         val boxBreathingFragment = BoxBreathingFragment()
 
         val tag = BoxBreathingFragment.TAG
         chatFragment.parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, boxBreathingFragment, tag).addToBackStack(tag).commit()
+    }
+
+    override fun onStartConfirmed() {
+        start()
     }
 
     override fun createStartQuestion(startQuestion: MultipleChoiceQuestion): MultipleChoiceQuestion {

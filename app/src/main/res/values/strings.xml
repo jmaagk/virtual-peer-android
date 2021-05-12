@@ -153,4 +153,10 @@
     <string name="meditation_lets_go">Let\'s go</string>
     <string name="meditation_close_your_eyes">Close your eyes in</string>
     <string name="pin_last_activity">Last activity:</string>
+    <string name="library_last_activity_never">Never</string>
+    <string name="library_total_time_less_than_one_minute">&lt; 1 minute</string>
+    <string name="library_total_time_none">None</string>
+    <string name="library_total_time_one_minute">1 minute</string>
+    <string name="library_total_time_minutes">%1$d minutes</string>
+    <string name="library_total_time">%1$dh %2$02dm</string>
 </resources>
