@@ -33,6 +33,7 @@ import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import me.maagk.johannes.virtualpeer.fragment.exercise.EisenhowerMatrixFragment
 import me.maagk.johannes.virtualpeer.pins.Pin
+import me.maagk.johannes.virtualpeer.pins.PinStorage
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.useractivity.UserActivity
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
@@ -65,6 +66,11 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var pref: SharedPreferences
 
     private lateinit var userProfile: UserProfile
+
+    private lateinit var pinStorage: PinStorage
+
+    // used to detect the first start and whether the storages should be refreshed
+    private var firstStart = true
 
     companion object {
         const val TAG = "start"
@@ -132,12 +138,16 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
         super.onCreate(savedInstanceState)
 
         userActivityManager = UserActivityManager(requireContext())
+
+        pinStorage = PinStorage(requireContext())
     }
 
     override fun onPause() {
         super.onPause()
 
         headerLayoutHandler.onPause()
+
+        pinStorage.save()
     }
 
     override fun onResume() {
@@ -151,6 +161,13 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
             userGreeting.visibility = View.GONE
 
         headerLayoutHandler.onResume()
+
+        // refreshing these here to get updated data on pins
+        if(firstStart) {
+            firstStart = false
+        } else {
+            pinStorage.refresh()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -297,16 +314,16 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         pinList = view.findViewById(R.id.pinList)
 
-        val pins = mutableListOf<Pin>()
+
         // TODO: actually add pins
 
-        val pinListAdapter = PinListAdapter(requireContext(), pins)
+        val pinListAdapter = PinListAdapter(requireContext(), pinStorage.pins)
         pinList.adapter = pinListAdapter
 
         val layoutManager = GridLayoutManager(requireContext(), 6)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when(pins[position].size) {
+                return when(pinStorage.pins[position].size) {
                     Pin.Size.SMALL -> 1
                     Pin.Size.NORMAL -> 2
                     Pin.Size.LARGE -> 6

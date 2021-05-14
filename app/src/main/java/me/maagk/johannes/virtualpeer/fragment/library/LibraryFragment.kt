@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
-import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
 import me.maagk.johannes.virtualpeer.activity.MainActivity
 import me.maagk.johannes.virtualpeer.exercise.*
 import java.util.concurrent.TimeUnit
@@ -125,9 +124,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 exerciseTitleText.text = exercise.name
                 exerciseTitleText.setTextColor(exercise.textColor)
 
-                lastActivityTimeText.text =
-                    if(exercise.hasLastStartTime()) exercise.lastStartTime.toLocalDate().getFormattedDate(requireContext())
-                    else getString(R.string.library_last_activity_never)
+                lastActivityTimeText.text = exercise.getLastStartTimeText()
+
 
                 val totalTimeMillis = exercise.getTotalTimeMillis(true)
                 totalTimeTimeText.text = when(totalTimeMillis) {

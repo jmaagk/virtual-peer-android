@@ -160,4 +160,13 @@ class ExerciseStorage(context: Context) : Storage<Exercise>(context) {
         editExercise(exercise)
     }
 
+    fun getExerciseByInternalName(internalName: String): Exercise? {
+        for(exercise in exercises) {
+            if(exercise.internalName == internalName)
+                return exercise
+        }
+
+        return null
+    }
+
 }

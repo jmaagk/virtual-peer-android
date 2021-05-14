@@ -139,4 +139,13 @@ class GoalStorage(context: Context, refresh: Boolean = true): Storage<Goal>(cont
         }
     }
 
+    fun findGoalById(id: String): Goal? {
+        for(goal in goals) {
+            if(goal.id == id)
+                return goal
+        }
+
+        return null
+    }
+
 }

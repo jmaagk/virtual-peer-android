@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     android:minHeight="75dp"
     app:cardCornerRadius="15dp"
+    android:padding="2.5dp"
     android:layout_margin="5dp">
 
     <ImageView

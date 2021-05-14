@@ -9,6 +9,8 @@ import kotlin.math.abs
 
 abstract class Pin @JvmOverloads constructor(var size: Size, @ColorInt var color: Int = -1) {
 
+    class EmptyPin : Pin(Size.SMALL)
+
     enum class Size {
         // 1,  2,      6 columns
         SMALL, NORMAL, LARGE

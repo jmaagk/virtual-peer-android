@@ -115,8 +115,7 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
 
         override fun bindExercisePin(pin: ExercisePin) {
             pinIcon.setImageDrawable(pin.exercise.getIcon())
-            // TODO: set last activity time text
-            lastActivityTimeText.text = "PLACEHOLDER"
+            lastActivityTimeText.text = pin.exercise.getLastStartTimeText()
         }
 
         override fun bindGoalPin(pin: GoalPin) {

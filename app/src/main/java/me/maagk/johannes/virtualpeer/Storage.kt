@@ -35,7 +35,7 @@ abstract class Storage<T>(protected val context: Context, refresh: Boolean = tru
         }
     }
 
-    fun refresh() {
+    open fun refresh() {
         if(!file.exists())
             return
 

@@ -5,7 +5,9 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
+import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
+import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
 import me.maagk.johannes.virtualpeer.fragment.chat.ChatFragment
 import java.time.ZonedDateTime
 
@@ -36,6 +38,13 @@ abstract class Exercise(protected val context: Context, val name: String, val in
     lateinit var lastStartTime: ZonedDateTime
 
     fun hasLastStartTime(): Boolean = ::lastStartTime.isInitialized
+
+    fun getLastStartTimeText(): String {
+        return if(hasLastStartTime())
+            lastStartTime.toLocalDate().getFormattedDate(context)
+        else
+            context.getString(R.string.library_last_activity_never)
+    }
 
     protected abstract fun createChatExercise(chatFragment: ChatFragment): ChatExercise
 
