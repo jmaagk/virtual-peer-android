@@ -180,9 +180,16 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
     }
 
     override fun onBackStackChanged() {
+        val topFragment = getTopFragment()
+
+        // this will finish the action mode used to change the size of pins as soon as another fragment is shown
+        // because it doesn't make sense to show it when you can't see any pins
+        if(topFragment !is StartFragment && ::startFragment.isInitialized && startFragment.isPinListAdapterInitialized())
+            startFragment.pinListAdapter.changeSizeActionMode?.finish()
+
         // TODO: is there a better way to achieve this behavior?
         var navDrawer = false
-        val itemToSelect = when(getTopFragment()) {
+        val itemToSelect = when(topFragment) {
             is ChatFragment, is AddLearningContentFragment, is BoxBreathingFragment, is MeditationFragment -> R.id.navChat
             is StatsFragment -> R.id.navStats
             is LibraryFragment -> R.id.navLibrary
@@ -194,7 +201,7 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         else
             bottomNavigationView.selectedItemId = itemToSelect
 
-        if(intent.rateExercise && getTopFragment() is ChatFragment)
+        if(intent.rateExercise && topFragment is ChatFragment)
             rateExercise()
     }
 

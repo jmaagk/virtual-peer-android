@@ -159,4 +159,5 @@
     <string name="library_total_time_one_minute">1 minute</string>
     <string name="library_total_time_minutes">%1$d minutes</string>
     <string name="library_total_time">%1$dh %2$02dm</string>
+    <string name="pin_save">Save</string>
 </resources>

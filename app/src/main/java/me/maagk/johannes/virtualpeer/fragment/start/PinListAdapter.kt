@@ -1,13 +1,15 @@
 package me.maagk.johannes.virtualpeer.fragment.start
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.drawable.LayerDrawable
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.cardview.widget.CardView
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.RecyclerView
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
@@ -15,14 +17,26 @@ import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
 import me.maagk.johannes.virtualpeer.pins.ExercisePin
 import me.maagk.johannes.virtualpeer.pins.GoalPin
 import me.maagk.johannes.virtualpeer.pins.Pin
+import me.maagk.johannes.virtualpeer.pins.PinStorage
 
-class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : RecyclerView.Adapter<PinListAdapter.PinViewHolder>() {
+class PinListAdapter(
+    val activity: AppCompatActivity,
+    val context: Context = activity.applicationContext,
+    val pinStorage: PinStorage) :
+    RecyclerView.Adapter<PinListAdapter.PinViewHolder>() {
 
     private val VIEW_TYPE_SMALL = 0
     private val VIEW_TYPE_NORMAL = 1
     private val VIEW_TYPE_LARGE = 2
 
-    abstract inner class PinViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    var changeSizeActionMode: ActionMode? = null
+
+    private var inChangeSizeActionMode = false
+    private var changeSizeActionModeSubjectIndex = -1
+
+    private var recyclerView: RecyclerView? = null
+
+    abstract inner class PinViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
 
         val pinCard: CardView = itemView.findViewById(R.id.pinCard)
         val background: ImageView = pinCard.findViewById(R.id.background)
@@ -30,7 +44,18 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
 
         var tintNeeded = false
 
+        var prevSize: Pin.Size? = null
+
+        lateinit var currentPin: Pin
+
+        init {
+            pinCard.setOnClickListener(this)
+            pinCard.setOnLongClickListener(this)
+        }
+
         open fun bind(pin: Pin) {
+            currentPin = pin
+
             pinCard.setCardBackgroundColor(pin.color)
 
             val isGoal = pin is GoalPin
@@ -45,6 +70,74 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
             } else {
                 bindGoalPin(pin as GoalPin)
             }
+        }
+
+        override fun onClick(view: View?) {
+            if(inChangeSizeActionMode) {
+                if(changeSizeActionModeSubjectIndex != adapterPosition)
+                    return
+
+                val currentSizeIndex = Pin.Size.values().indexOf(currentPin.size)
+                val newSizeIndex = if(currentSizeIndex == Pin.Size.values().size - 1) 0 else currentSizeIndex + 1
+
+                currentPin.size = Pin.Size.values()[newSizeIndex]
+                notifyItemChanged(adapterPosition)
+            } else {
+                // TODO: go to correct screen here
+            }
+        }
+
+        override fun onLongClick(view: View?): Boolean {
+            if(inChangeSizeActionMode)
+                return true
+
+            changeSizeActionMode = activity.startSupportActionMode(object : ActionMode.Callback {
+
+                var saveNewSize = false
+
+                override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    inChangeSizeActionMode = true
+                    changeSizeActionModeSubjectIndex = adapterPosition
+                    prevSize = currentPin.size
+
+                    activity.menuInflater.inflate(R.menu.menu_pin_action_mode, menu)
+
+                    setNonSubjectViewAlpha(itemView, 0.5f)
+
+                    return true
+                }
+
+                override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    return false
+                }
+
+                override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                    saveNewSize = true
+                    mode?.finish()
+                    return true
+                }
+
+                override fun onDestroyActionMode(mode: ActionMode?) {
+                    prevSize?.let {
+                        val notifyChange = currentPin.size != it
+
+                        if(!saveNewSize)
+                            currentPin.size = it
+
+                        if(notifyChange)
+                            notifyItemChanged(adapterPosition)
+                    }
+
+                    setNonSubjectViewAlpha(itemView, 1f)
+
+                    changeSizeActionMode = null
+                    inChangeSizeActionMode = false
+                    changeSizeActionModeSubjectIndex = -1
+                }
+
+            })
+
+            return true
         }
 
         abstract fun bindExercisePin(pin: ExercisePin)
@@ -72,9 +165,7 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
         override fun bindGoalPin(pin: GoalPin) {
             pinText.text = pin.goal.activityArea.getName(context)[0].toString()
 
-            // TODO: this could cause problems because texts are tinted once but not reset; testing required
-            if(tintNeeded)
-                pinText.setTextColor(pin.getColorOnBackground(context))
+            pinText.setTextColor(if(tintNeeded) pin.getColorOnBackground(context) else Utils.getColor(context, R.color.colorText))
         }
 
     }
@@ -100,17 +191,15 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
             exercisePinLayout.visibility = if(isGoal) View.GONE else View.VISIBLE
             goalPinLayout.visibility = if(isGoal) View.VISIBLE else View.GONE
 
-            // setting all text colors if it's needed
-            if(tintNeeded) {
-                val textColor = pin.getColorOnBackground(context)
+            // setting all text colors at once
+            val textColor = if(tintNeeded) pin.getColorOnBackground(context) else Utils.getColor(context, R.color.colorText)
 
-                lastActivityText.setTextColor(textColor)
-                lastActivityTimeText.setTextColor(textColor)
-                activityAreaText.setTextColor(textColor)
-                deadlineText.setTextColor(textColor)
-                goalNameText.setTextColor(textColor)
-                goalPositionText.setTextColor(textColor)
-            }
+            lastActivityText.setTextColor(textColor)
+            lastActivityTimeText.setTextColor(textColor)
+            activityAreaText.setTextColor(textColor)
+            deadlineText.setTextColor(textColor)
+            goalNameText.setTextColor(textColor)
+            goalPositionText.setTextColor(textColor)
         }
 
         override fun bindExercisePin(pin: ExercisePin) {
@@ -165,16 +254,47 @@ class PinListAdapter(val context: Context, val pins: MutableList<Pin>) : Recycle
         }
     }
 
-    override fun onBindViewHolder(holder: PinViewHolder, position: Int) = holder.bind(pins[position])
+    override fun onBindViewHolder(holder: PinViewHolder, position: Int) = holder.bind(pinStorage.pins[position])
 
-    override fun getItemCount(): Int = pins.size
+    override fun getItemCount(): Int = pinStorage.pins.size
 
     override fun getItemViewType(position: Int): Int {
-        return when(pins[position].size) {
+        return when(pinStorage.pins[position].size) {
             Pin.Size.SMALL -> VIEW_TYPE_SMALL
             Pin.Size.NORMAL -> VIEW_TYPE_NORMAL
             Pin.Size.LARGE -> VIEW_TYPE_LARGE
         }
     }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+
+        this.recyclerView = null
+    }
+
+    // this method sets the alpha of all views that are not the one that's currently the subject of an action mode
+    // (this is a bit of a hacky solution but it should work)
+    private fun setNonSubjectViewAlpha(subject: View, alpha: Float) {
+        // reducing the opacity of all view holders that aren't selected
+        recyclerView?.let {
+            for(view in it.iterator()) {
+                if(view == subject)
+                    continue
+
+                ObjectAnimator.ofFloat(view, "alpha", alpha).apply {
+                    duration = Utils.getScaledAnimationDuration(context, 250)
+                    start()
+                }
+            }
+        }
+    }
+
+
 
 }

@@ -16,6 +16,10 @@
         <!-- Status bar color -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
+        <!-- Action mode styles -->
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/ActionModeCloseButtonStyle</item>
+
         <!-- Attribute values -->
         <item name="colorBackground">@color/colorBackground</item>
         <item name="colorBackgroundDark">@color/colorBackgroundDark</item>
@@ -48,6 +52,7 @@
         <!-- Other styles -->
         <item name="cardViewStyle">@style/CardViewStyle</item>
         <item name="materialCardViewStyle">@style/MaterialCardViewStyle</item>
+        <item name="windowActionModeOverlay">true</item>
 
     </style>
 
@@ -62,6 +67,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
         <item name="android:colorBackground">?attr/colorBackground</item>
+        <item name="android:textColor">?attr/textColor</item>
         <item name="colorControlHighlight">?attr/colorRipple</item>
     </style>
 
@@ -109,6 +115,16 @@
     <!-- Splash screen style -->
     <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <!-- Action mode style -->
+    <style name="ActionModeStyle" parent="Widget.AppCompat.ActionMode">
+        <item name="background">@color/colorPrimary</item>
+    </style>
+
+    <!-- Style (tint) for the action mode's close / back button -->
+    <style name="ActionModeCloseButtonStyle" parent="Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">@android:color/white</item>
     </style>
 
 </resources>

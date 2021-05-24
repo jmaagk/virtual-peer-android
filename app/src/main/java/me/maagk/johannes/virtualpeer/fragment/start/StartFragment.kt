@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
@@ -68,6 +69,8 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     private lateinit var userProfile: UserProfile
 
     private lateinit var pinStorage: PinStorage
+
+    lateinit var pinListAdapter: PinListAdapter
 
     // used to detect the first start and whether the storages should be refreshed
     private var firstStart = true
@@ -317,7 +320,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         // TODO: actually add pins
 
-        val pinListAdapter = PinListAdapter(requireContext(), pinStorage.pins)
+        pinListAdapter = PinListAdapter(requireActivity() as AppCompatActivity, requireContext(), pinStorage)
         pinList.adapter = pinListAdapter
 
         val layoutManager = GridLayoutManager(requireContext(), 6)
@@ -451,5 +454,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
     override fun onNothingSelected() {
 
     }
+
+    fun isPinListAdapterInitialized(): Boolean = ::pinListAdapter.isInitialized
 
 }
