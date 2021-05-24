@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
@@ -317,10 +316,7 @@ class StartFragment : Fragment(R.layout.fragment_start), FragmentActionBarTitle,
 
         pinList = view.findViewById(R.id.pinList)
 
-
-        // TODO: actually add pins
-
-        pinListAdapter = PinListAdapter(requireActivity() as AppCompatActivity, requireContext(), pinStorage)
+        pinListAdapter = PinListAdapter(requireActivity() as MainActivity, requireContext(), pinStorage)
         pinList.adapter = pinListAdapter
 
         val layoutManager = GridLayoutManager(requireContext(), 6)

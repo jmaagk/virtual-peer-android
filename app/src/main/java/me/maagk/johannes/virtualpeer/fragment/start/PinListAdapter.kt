@@ -6,7 +6,6 @@ import android.graphics.drawable.LayerDrawable
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.cardview.widget.CardView
 import androidx.core.view.iterator
@@ -14,13 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.Utils.Companion.getFormattedDate
+import me.maagk.johannes.virtualpeer.Utils.Companion.setTransitions
+import me.maagk.johannes.virtualpeer.activity.MainActivity
+import me.maagk.johannes.virtualpeer.fragment.exercise.EisenhowerMatrixFragment
 import me.maagk.johannes.virtualpeer.pins.ExercisePin
 import me.maagk.johannes.virtualpeer.pins.GoalPin
 import me.maagk.johannes.virtualpeer.pins.Pin
 import me.maagk.johannes.virtualpeer.pins.PinStorage
 
 class PinListAdapter(
-    val activity: AppCompatActivity,
+    val activity: MainActivity,
     val context: Context = activity.applicationContext,
     val pinStorage: PinStorage) :
     RecyclerView.Adapter<PinListAdapter.PinViewHolder>() {
@@ -83,7 +85,18 @@ class PinListAdapter(
                 currentPin.size = Pin.Size.values()[newSizeIndex]
                 notifyItemChanged(adapterPosition)
             } else {
-                // TODO: go to correct screen here
+                // opening the Eisenhower matrix in case a goal is clicked; starting exercises in case they are selected
+                currentPin.let {
+                    if(it is ExercisePin) {
+                        activity.startExercise(it.exercise)
+                    } else if(it is GoalPin) {
+                        val eisenhowerMatrixFragment = EisenhowerMatrixFragment()
+                        eisenhowerMatrixFragment.setTransitions()
+                        val tag = EisenhowerMatrixFragment.TAG
+
+                        activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, eisenhowerMatrixFragment, tag).addToBackStack(tag).commit()
+                    }
+                }
             }
         }
 
