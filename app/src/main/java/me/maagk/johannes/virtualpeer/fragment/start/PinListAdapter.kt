@@ -233,7 +233,6 @@ class PinListAdapter(
             if(pin.goal.hasDeadline())
                 deadlineText.text = pin.goal.deadline!!.getFormattedDate(context)
 
-            // TODO: ellipsize this text
             goalNameText.text = pin.goal.name
 
             goalPositionText.text = pin.goal.position.getTitle(context)
