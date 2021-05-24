@@ -29,7 +29,11 @@
     <color name="colorSubTextContrast">#FFE0E0E0</color>
     <color name="colorSelectedCard">#FFFFCCBC</color>
     <color name="colorRipple">#28000000</color>
-    <color name="colorIconTint">#FF000000</color>
+
+    <color name="colorIconTint">@color/colorIconTintLight</color>
+    <color name="colorIconTintLight">#FF000000</color>
+    <color name="colorIconTintDark">#FFFFFFFF</color>
+
     <color name="colorListDivider">#FFBDBDBD</color>
     <color name="colorChartRemainingTime">#FFE0E0E0</color>
     

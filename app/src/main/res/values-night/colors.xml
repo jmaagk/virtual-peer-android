@@ -15,7 +15,7 @@
     <color name="colorSubTextContrast">#FF757575</color>
     <color name="colorSelectedCard">#FFE64A19</color>
     <color name="colorRipple">#28FFFFFF</color>
-    <color name="colorIconTint">#FFFFFFFF</color>
+    <color name="colorIconTint">@color/colorIconTintDark</color>
     <color name="colorListDivider">#FF424242</color>
     <color name="colorChartRemainingTime">#272632</color>
 

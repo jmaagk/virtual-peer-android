@@ -180,7 +180,8 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
             private val deleteButtonVectorDrawable = VectorDrawableCompat.create(requireContext().resources, R.drawable.ic_delete, requireContext().theme)
             private val pinButtonVectorDrawable = VectorDrawableCompat.create(requireContext().resources, R.drawable.ic_pin, requireContext().theme)
 
-            private val pinButtonColorFilter = PorterDuffColorFilter(Utils.getColor(requireContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
+            private val pinButtonColorFilterNotPinned = PorterDuffColorFilter(Utils.getColor(requireContext(), R.color.colorIconTintDark), PorterDuff.Mode.SRC_IN)
+            private val pinButtonColorFilterPinned = PorterDuffColorFilter(Utils.getColor(requireContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
 
             init {
                 paint.isAntiAlias = true
@@ -401,7 +402,7 @@ class EisenhowerMatrixFragment : Fragment(R.layout.fragment_eisenhower_matrix), 
                 pinButtonCanvas.clipRect(pinButtonLeftClip, 0f, pinButtonCanvas.width.toFloat(), pinButtonCanvas.height.toFloat())
 
                 // tinting the pin icon depending on if the current goal is pinned to the start screen or not
-                pinButtonVectorDrawable.colorFilter = if(pinned) pinButtonColorFilter else null
+                pinButtonVectorDrawable.colorFilter = if(pinned) pinButtonColorFilterPinned else pinButtonColorFilterNotPinned
 
                 // drawing the pin icon onto its canvas
                 pinButtonVectorDrawable.draw(pinButtonCanvas)
