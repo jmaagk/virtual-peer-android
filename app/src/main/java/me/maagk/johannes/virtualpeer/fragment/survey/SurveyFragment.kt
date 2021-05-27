@@ -28,6 +28,8 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
     private lateinit var startNextButton: Button
     private lateinit var backButton: Button
 
+    private lateinit var surveyStorage: SurveyStorage
+
     private var questionIndex: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,17 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
 
         activity = getActivity() as MainActivity
 
-        survey = SurveyStorage(requireContext()).survey
+        val surveySerializable = requireArguments().getSerializable("survey")
+
+        require(surveySerializable is Survey)
+        survey = surveySerializable
+
+        surveyStorage = SurveyStorage(requireContext())
+
+        savedInstanceState?.let {
+            if(it.containsKey("questionIndex"))
+                questionIndex = it.getInt("questionIndex")
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,23 +91,31 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
             questionIndex--
         }
 
+        surveyStorage.save(survey)
+
         update()
     }
 
     private fun updateFragments() {
-        var fragment: Fragment? = if(isOnInfoScreen()) {
-            val returnValue = SurveyStartFragment()
-            returnValue.title = survey.title
-            returnValue.description = survey.description
-            returnValue
+        var fragment = if(isOnInfoScreen()) {
+            SurveyStartFragment().also {
+                val bundle = Bundle()
+                bundle.putString("title", survey.title)
+                bundle.putString("description", survey.description)
+                it.arguments = bundle
+            }
         } else {
-            when(val question = survey.questions[questionIndex]) {
-                is TextInputQuestion -> TextInputQuestionFragment(question)
-                is SliderQuestion -> SliderQuestionFragment(question)
-                is EmojiQuestion -> EmojiQuestionFragment(question)
-                is MultipleChoiceQuestion -> MultipleChoiceQuestionFragment(question)
-                is ChoosePictureQuestion -> ChoosePictureQuestionFragment(question)
+            when(survey.questions[questionIndex]) {
+                is TextInputQuestion -> TextInputQuestionFragment()
+                is SliderQuestion -> SliderQuestionFragment()
+                is EmojiQuestion -> EmojiQuestionFragment()
+                is MultipleChoiceQuestion -> MultipleChoiceQuestionFragment()
+                is ChoosePictureQuestion -> ChoosePictureQuestionFragment()
                 else -> null
+            }.also {
+                val questionBundle = Bundle()
+                questionBundle.putSerializable("question", survey.questions[questionIndex])
+                it?.arguments = questionBundle
             }
         }
 
@@ -109,6 +129,18 @@ class SurveyFragment : Fragment(R.layout.fragment_survey), FragmentActionBarTitl
 
     private fun isOnInfoScreen() : Boolean {
         return questionIndex == -1
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        surveyStorage.save(survey)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("questionIndex", questionIndex)
     }
 
 }

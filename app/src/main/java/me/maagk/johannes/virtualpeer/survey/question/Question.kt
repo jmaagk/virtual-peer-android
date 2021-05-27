@@ -1,10 +1,10 @@
 package me.maagk.johannes.virtualpeer.survey.question
 
 import android.content.Context
-import androidx.core.content.res.ResourcesCompat
 import me.maagk.johannes.virtualpeer.R
+import java.io.Serializable
 
-abstract class Question(var question: String) {
+abstract class Question(var question: String) : Serializable {
 
     abstract var answer: Any?
     var answered = false
@@ -34,10 +34,10 @@ abstract class Question(var question: String) {
 
         fun getExampleChoosePictureQuestion(context: Context): ChoosePictureQuestion {
             val images = ArrayList<ChoosePictureQuestion.Image>()
-            ResourcesCompat.getDrawable(context.resources, R.drawable.test_image_1, context.theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 1")) }
-            ResourcesCompat.getDrawable(context.resources, R.drawable.test_image_2, context.theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 2")) }
-            ResourcesCompat.getDrawable(context.resources, R.drawable.test_image_3, context.theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 3")) }
-            ResourcesCompat.getDrawable(context.resources, R.drawable.test_image_4, context.theme)?.let { images.add(ChoosePictureQuestion.Image(it, "Lorem 4")) }
+            images.add(ChoosePictureQuestion.Image(R.drawable.test_image_1, "Lorem 1"))
+            images.add(ChoosePictureQuestion.Image(R.drawable.test_image_2, "Lorem 2"))
+            images.add(ChoosePictureQuestion.Image(R.drawable.test_image_3, "Lorem 3"))
+            images.add(ChoosePictureQuestion.Image(R.drawable.test_image_4, "Lorem 4"))
 
             return ChoosePictureQuestion(context.getString(R.string.lorem_ipsum_medium), images)
         }

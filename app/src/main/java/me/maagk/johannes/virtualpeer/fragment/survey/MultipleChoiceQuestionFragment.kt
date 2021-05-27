@@ -8,7 +8,7 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 import me.maagk.johannes.virtualpeer.view.MultipleChoiceQuestionView
 
-class MultipleChoiceQuestionFragment(question: MultipleChoiceQuestion) : QuestionFragment(R.layout.fragment_question_multiple_choice, question) {
+class MultipleChoiceQuestionFragment : QuestionFragment(R.layout.fragment_question_multiple_choice) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)

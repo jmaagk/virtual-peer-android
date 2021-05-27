@@ -1,13 +1,20 @@
 package me.maagk.johannes.virtualpeer.survey
 
 import android.content.Context
-import androidx.core.content.res.ResourcesCompat
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.*
+import org.w3c.dom.Document
 import org.w3c.dom.Element
+import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 
 class SurveyStorage(private val context: Context) {
+
+    val VERSION = 1
 
     init {
         refresh()
@@ -15,7 +22,11 @@ class SurveyStorage(private val context: Context) {
 
     lateinit var survey: Survey
 
+    /**
+     * Loads a survey from a given XML file
+     */
     fun refresh() {
+        // TODO: this is temporary; survey files should be fetched from the server
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(context.resources.openRawResource(R.raw.survey))
 
         var title = ""
@@ -108,14 +119,11 @@ class SurveyStorage(private val context: Context) {
 
                                         val drawableName = imageTag.attributes.getNamedItem("src").nodeValue
                                         val drawableId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-                                        val drawable = ResourcesCompat.getDrawable(context.resources, drawableId, context.theme)
 
                                         val label = imageTag.attributes.getNamedItem("label").nodeValue
 
-                                        if(drawable != null) {
-                                            val image = ChoosePictureQuestion.Image(drawable, label)
-                                            images.add(image)
-                                        }
+                                        val image = ChoosePictureQuestion.Image(drawableId, label)
+                                        images.add(image)
                                     }
                                 }
                             }
@@ -141,7 +149,84 @@ class SurveyStorage(private val context: Context) {
             }
         }
 
+        val fileVersion = surveyTag.getAttribute("version").toIntOrNull() ?: -1
+        if(fileVersion >= 0 && fileVersion != VERSION)
+            update(fileVersion)
+
         survey = Survey(title, description, questions)
+    }
+
+    /**
+     * Saves the current survey's results to a file
+     */
+    fun save() {
+        if(!this::survey.isInitialized)
+            return
+
+        save(survey)
+    }
+
+    /**
+     * Saves a survey's results to a file
+     */
+    fun save(survey: Survey) {
+        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        doc.xmlStandalone = true
+
+        val root = doc.createElement("surveyResults")
+        root.setAttribute("version", VERSION.toString())
+
+        val titleTag = doc.createElement("title")
+        titleTag.textContent = survey.title
+        root.appendChild(titleTag)
+
+        val questionsTag = doc.createElement("questions")
+
+        for(question in survey.questions)
+            questionsTag.appendChild(convertQuestionToXml(question, doc))
+
+        root.appendChild(questionsTag)
+        doc.appendChild(root)
+
+        val transformer = TransformerFactory.newInstance().newTransformer()
+        // some options to make the resulting files more readable
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
+
+        val input = DOMSource(doc)
+        val output = StreamResult(File(context.filesDir, "survey_results.xml"))
+
+        transformer.transform(input, output)
+    }
+
+    private fun convertQuestionToXml(question: Question, doc: Document): Element {
+        var tagName = question::class.simpleName
+        tagName = if(tagName == null) "question" else tagName[0].toLowerCase() + tagName.substring(1)
+
+        val questionRoot = doc.createElement(tagName)
+
+        val questionTag = doc.createElement("question")
+        questionTag.textContent = question.question
+        questionRoot.appendChild(questionTag)
+
+        if(question.answered) {
+            val answerTag = doc.createElement("answer")
+            answerTag.textContent = question.answer.toString()
+            questionRoot.appendChild(answerTag)
+        }
+
+        return questionRoot
+    }
+
+    private fun update(fromVersion: Int) {
+        var updatedVersion = fromVersion
+
+        // no update code just yet
+
+        if(updatedVersion == VERSION)
+            save() // this will make updates persistent
+        else
+            TODO("Add error handling for failed updates")
     }
 
 }

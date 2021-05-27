@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.core.view.forEachIndexed
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 
@@ -38,6 +39,16 @@ class MultipleChoiceQuestionView @JvmOverloads constructor(
             val radioButton = inflater.inflate(R.layout.view_radio_button, radioGroup, false) as RadioButton
             radioButton.text = it
             radioGroup.addView(radioButton)
+        }
+
+        radioGroup.setOnCheckedChangeListener { radioGroup, id ->
+            radioGroup.forEachIndexed { index, view ->
+                if(view.id == id) {
+                    question?.answer = index
+                    question?.answered = true
+                    return@setOnCheckedChangeListener
+                }
+            }
         }
     }
 

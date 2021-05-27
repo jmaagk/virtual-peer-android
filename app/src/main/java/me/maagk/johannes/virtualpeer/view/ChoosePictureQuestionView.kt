@@ -31,14 +31,21 @@ class ChoosePictureQuestionView @JvmOverloads constructor(
     fun update() {
         gridLayout.removeAllViews()
 
-        question?.images?.forEach { image ->
+        question?.images?.forEachIndexed { index, image ->
             // TODO: make this more efficient
             val labeledImageButton = inflate(context, R.layout.view_labeled_image_button, null)
             val imageButton: ImageButton = labeledImageButton.findViewById(R.id.imageButton)
             val imageLabel: TextView = labeledImageButton.findViewById(R.id.imageLabel)
 
-            imageButton.setImageDrawable(image.drawable)
+            imageButton.setImageDrawable(image.getDrawable(context))
             imageButton.contentDescription = image.label
+            imageButton.setOnClickListener {
+                question?.let {
+                    it.answer = index
+                    it.answered = true
+                }
+            }
+
             imageLabel.text = image.label
             gridLayout.addView(labeledImageButton)
         }

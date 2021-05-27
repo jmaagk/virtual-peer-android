@@ -6,7 +6,7 @@ import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
 
-class EmojiQuestionFragment(question: EmojiQuestion) : QuestionFragment(R.layout.fragment_question_emoji, question) {
+class EmojiQuestionFragment : QuestionFragment(R.layout.fragment_question_emoji) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

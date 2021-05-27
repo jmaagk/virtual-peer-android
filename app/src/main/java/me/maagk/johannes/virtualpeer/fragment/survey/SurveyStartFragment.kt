@@ -14,6 +14,13 @@ class SurveyStartFragment : Fragment(R.layout.fragment_survey_start) {
     private lateinit var titleText: TextView
     private lateinit var descriptionText: TextView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        title = requireArguments().getString("title") ?: ""
+        description = requireArguments().getString("description") ?: ""
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

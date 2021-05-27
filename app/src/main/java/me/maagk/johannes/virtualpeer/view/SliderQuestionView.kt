@@ -26,6 +26,14 @@ class SliderQuestionView @JvmOverloads constructor(
         inflate(context, R.layout.view_question_slider, this)
 
         slider = findViewById(R.id.slider)
+        slider.addOnChangeListener { _, value, fromUser ->
+            if(fromUser) {
+                question?.let {
+                    it.answer = value.coerceAtLeast(it.min)
+                    it.answered = true
+                }
+            }
+        }
     }
 
     fun update() {
