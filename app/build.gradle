@@ -45,7 +45,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Kotlin
 
     implementation 'androidx.core:core-ktx:1.3.2' // AndroidX core
-    implementation 'androidx.appcompat:appcompat:1.2.0' // AppCompat components
+    implementation 'androidx.appcompat:appcompat:1.3.0' // AppCompat components
     implementation "androidx.constraintlayout:constraintlayout:2.0.4" // ConstraintLayout
     implementation 'androidx.preference:preference-ktx:1.1.1' // AndroidX implementation of preferences
 
