@@ -14,6 +14,7 @@ class UserProfile @JvmOverloads constructor(
     private val placeOfBirthKey = context.getString(R.string.pref_place_of_birth)
     private val emailKey = context.getString(R.string.pref_email)
     private val identifierKey = context.getString(R.string.pref_identifier)
+    private val uuidKey = context.getString(R.string.pref_uuid)
 
     var name: String?
         get() = pref.getString(nameKey, null)
@@ -35,8 +36,13 @@ class UserProfile @JvmOverloads constructor(
         get() = pref.getString(identifierKey, null)
         set(value) = pref.edit().putString(identifierKey, value).apply()
 
-    fun isNameAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(context.getString(R.string.pref_name))
-    fun isEmailAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(context.getString(R.string.pref_email))
-    fun isIdentifierAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(context.getString(R.string.pref_identifier))
+    var uuid: String?
+        get() = pref.getString(uuidKey, null)
+        set(value) = pref.edit().putString(uuidKey, value).apply()
+
+    fun isNameAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(nameKey)
+    fun isEmailAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(emailKey)
+    fun isIdentifierAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(identifierKey)
+    fun isUuidAvailable(): Boolean = pref.containsNonNullAndNonBlankValue(uuidKey)
 
 }

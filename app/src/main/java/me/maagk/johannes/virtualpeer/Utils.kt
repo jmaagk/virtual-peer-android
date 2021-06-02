@@ -23,6 +23,9 @@ class Utils {
 
     companion object {
 
+        // TODO: store this in a better way
+        const val SERVER_URL = "http://vetwe16vp.vetmed.fu-berlin.de:443"
+
         fun log(message: String) {
             Log.d("Virtual Peer", message)
         }

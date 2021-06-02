@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import androidx.work.*
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.UserProfile
+import me.maagk.johannes.virtualpeer.tracking.RegistrationWorker
+import java.util.concurrent.TimeUnit
 
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -43,6 +46,17 @@ class SplashScreenActivity : AppCompatActivity() {
 
         // creating an instance of UserProfile to manage preferences
         val profile = UserProfile(this, pref)
+
+        val workManager = WorkManager.getInstance(this)
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        if(!profile.isUuidAvailable()) {
+            val workRequest = OneTimeWorkRequestBuilder<RegistrationWorker>()
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.MINUTES)
+                .build()
+
+            workManager.enqueueUniqueWork(RegistrationWorker.TAG, ExistingWorkPolicy.REPLACE, workRequest)
+        }
 
         // registration is required when no name has been entered
         registrationRequired = registrationRequired || !profile.isNameAvailable()
