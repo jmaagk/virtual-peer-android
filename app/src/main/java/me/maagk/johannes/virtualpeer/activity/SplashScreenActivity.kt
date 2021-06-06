@@ -10,7 +10,9 @@ import androidx.preference.PreferenceManager
 import androidx.work.*
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.UserProfile
+import me.maagk.johannes.virtualpeer.tracking.DataSyncWorker
 import me.maagk.johannes.virtualpeer.tracking.RegistrationWorker
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -49,7 +51,15 @@ class SplashScreenActivity : AppCompatActivity() {
 
         val workManager = WorkManager.getInstance(this)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        if(!profile.isUuidAvailable()) {
+        if(profile.isUuidAvailable()) {
+            val workRequest = PeriodicWorkRequestBuilder<DataSyncWorker>(Duration.ofDays(1))
+                .addTag(DataSyncWorker.TAG)
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.MINUTES)
+                .build()
+
+            workManager.enqueueUniquePeriodicWork(DataSyncWorker.TAG, ExistingPeriodicWorkPolicy.KEEP, workRequest)
+        } else {
             val workRequest = OneTimeWorkRequestBuilder<RegistrationWorker>()
                 .setConstraints(constraints)
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.MINUTES)

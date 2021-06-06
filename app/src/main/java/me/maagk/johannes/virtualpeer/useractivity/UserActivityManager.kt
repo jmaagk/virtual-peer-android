@@ -1,11 +1,12 @@
 package me.maagk.johannes.virtualpeer.useractivity
 
 import android.content.Context
+import java.time.Instant
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
-class UserActivityManager(private val context: Context) {
+class UserActivityManager(private val context: Context, private val storage: UserActivityStorage = UserActivityStorage(context)) {
 
-    private val storage = UserActivityStorage(context)
     val timeZone = storage.timeZone
 
     fun addActivity(activity: UserActivity) {
@@ -36,24 +37,50 @@ class UserActivityManager(private val context: Context) {
         return null
     }
 
-    fun getTodaysActivities(): ArrayList<UserActivity> {
-        val activities = arrayListOf<UserActivity>()
-        val startOfToday = ZonedDateTime.now(timeZone).toLocalDate().atStartOfDay()
+    fun getTodaysActivities(): List<UserActivity> {
+        val startOfToday = LocalDate.now().atStartOfDay(timeZone)
+        return getActivitiesStartingAtTime(startOfToday)
+    }
+
+    fun getActivitiesStartingAtTime(time: Long, correctStartTime: Boolean = true, cutEndTime: Boolean = false, includeCurrent: Boolean = true): List<UserActivity> {
+        val instant = if(time == -1L) Instant.EPOCH else Instant.ofEpochMilli(time)
+        val start = ZonedDateTime.ofInstant(instant, timeZone)
+        return getActivitiesStartingAtTime(start, correctStartTime, cutEndTime, includeCurrent)
+    }
+
+    fun getActivitiesStartingAtTime(start: ZonedDateTime,
+        correctStartTime: Boolean = true, cutEndTime: Boolean = false, includeCurrent: Boolean = true): List<UserActivity> {
+
+        val activities = mutableListOf<UserActivity>()
 
         for(activity in storage.userActivities) {
             var startTime = activity.startTime
-            val endTime = activity.endTime
+            var endTime = activity.endTime
+
+            // skipping the current activity if set to do so
+            if(!includeCurrent && endTime == null)
+                continue
 
             // only including activities that either started or ended today
-            if(startTime.toLocalDateTime().isBefore(startOfToday) && (endTime != null && endTime.toLocalDateTime().isBefore(startOfToday)))
+            if(startTime.isBefore(start) && (endTime != null && endTime.isBefore(start)))
                 continue
 
             // correcting the start time so it's only within the span of today
-            if(startTime.toLocalDateTime().isBefore(startOfToday))
-                startTime = startOfToday.atZone(timeZone)
+            if(correctStartTime && startTime.isBefore(start))
+                startTime = start
+
+            /*
+             * Cutting off the end here;
+             * this can only happen to the newest activity (the one that hasn't been finished yet).
+             *
+             * The time this gets executed at will then be the end time of this activity.
+             * This will NOT be made persistent and is only forwarded to the caller of this method
+             */
+            if(cutEndTime && endTime == null)
+                endTime = ZonedDateTime.now(timeZone)
 
             // creating a copy instead of passing the original object to keep the original time values
-            activities.add(activity.copy(startTime = startTime))
+            activities.add(activity.copy(startTime = startTime, endTime = endTime))
         }
 
         return activities

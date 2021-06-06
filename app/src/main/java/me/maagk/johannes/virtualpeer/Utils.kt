@@ -12,6 +12,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.AutoTransition
+import okhttp3.HttpUrl
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
@@ -24,7 +25,10 @@ class Utils {
     companion object {
 
         // TODO: store this in a better way
-        const val SERVER_URL = "http://vetwe16vp.vetmed.fu-berlin.de:443"
+        fun newServerUrlBuilder(): HttpUrl.Builder = HttpUrl.Builder()
+            .scheme("http") // TODO: change this
+            .host("vetwe16vp.vetmed.fu-berlin.de")
+            .port(443)
 
         fun log(message: String) {
             Log.d("Virtual Peer", message)

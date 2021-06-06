@@ -56,17 +56,23 @@ abstract class Storage<T>(protected val context: Context, refresh: Boolean = tru
 
     protected abstract fun refreshList(doc: Document)
 
-    fun save() {
+    fun getDocument(itemsToSave: List<T>): Document {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
         doc.xmlStandalone = true
 
         val root = getRootElement(doc)
         root.setAttribute("version", VERSION.toString())
 
-        for(item in items)
+        for(item in itemsToSave)
             root.appendChild(convertItemToXml(item, doc))
 
         doc.appendChild(root)
+
+        return doc
+    }
+
+    fun save() {
+        val doc = getDocument(items)
 
         val transformer = TransformerFactory.newInstance().newTransformer()
         // some options to make the resulting files more readable
@@ -79,7 +85,7 @@ abstract class Storage<T>(protected val context: Context, refresh: Boolean = tru
         transformer.transform(input, output)
     }
 
-    protected abstract fun getRootElement(doc: Document): Element
+    abstract fun getRootElement(doc: Document): Element
 
     abstract fun parseItem(tag: Node, version: Int): T
 

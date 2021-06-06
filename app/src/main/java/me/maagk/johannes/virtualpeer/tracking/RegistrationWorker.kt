@@ -20,28 +20,28 @@ class RegistrationWorker(context: Context, params: WorkerParameters) : Worker(co
 
         // registering the user on the app's server to get a UUID
         val client = OkHttpClient()
-        val request = Request.Builder().url(Utils.SERVER_URL + "/register").get().build()
+        val request = Request.Builder().url(Utils.newServerUrlBuilder().addPathSegment("register").build()).get().build()
         val call = client.newCall(request)
         val response = call.execute()
 
-        if(!response.isSuccessful || response.code != 200)
-            return Result.retry()
+        if(response.isSuccessful) {
+            response.use {
+                it.body?.let { body ->
+                    val jsonObject = JSONObject(body.string())
+                    val status = jsonObject.getInt("status")
+                    val uuid = jsonObject.getString("uuid")
 
-        response.use {
-            it.body?.let {
-                val jsonObject = JSONObject(it.string())
-                val status = jsonObject.getInt("status")
-                val uuid = jsonObject.getString("uuid")
-
-                if(status == 1) {
-                    val userProfile = UserProfile(context)
-                    userProfile.uuid = uuid
-                    return Result.success()
+                    if(status == 1) {
+                        val userProfile = UserProfile(context)
+                        userProfile.uuid = uuid
+                        return Result.success()
+                    }
                 }
             }
         }
 
-        return Result.retry()
+        // only retrying 3 times
+        return if(runAttemptCount > 3) Result.failure() else Result.retry()
     }
 
 }
