@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import me.maagk.johannes.virtualpeer.R
+import me.maagk.johannes.virtualpeer.Storage.Companion.transformToString
 import me.maagk.johannes.virtualpeer.UserProfile
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.useractivity.UserActivityManager
@@ -14,11 +15,8 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.io.StringWriter
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamResult
+import java.time.Instant
+import javax.xml.parsers.DocumentBuilderFactory
 
 class DataSyncWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
@@ -26,14 +24,23 @@ class DataSyncWorker(context: Context, params: WorkerParameters) : Worker(contex
         const val TAG = "dataSyncWorker"
     }
 
+    private lateinit var userProfile: UserProfile
+
     override fun doWork(): Result {
         val context = applicationContext
 
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val lastSyncTime = pref.getLong(context.getString(R.string.pref_last_sync_time), -1)
+        val lastSyncTime = pref.getLong(context.getString(R.string.pref_last_sync_time), Instant.EPOCH.toEpochMilli())
 
-        val userProfile = UserProfile(context)
+        // the document that will combine all data that will be sent into one thing
+        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        doc.xmlStandalone = true
+
+        // the root of this document
+        val root = doc.createElement("syncContent")
+
+        userProfile = UserProfile(context)
         val userActivityStorage = UserActivityStorage(context)
         val userActivityManager = UserActivityManager(context, userActivityStorage)
 
@@ -41,23 +48,38 @@ class DataSyncWorker(context: Context, params: WorkerParameters) : Worker(contex
         val activities = userActivityManager.getActivitiesStartingAtTime(lastSyncTime,
             correctStartTime = false, cutEndTime = false, includeCurrent = false)
 
-        if(activities.isEmpty())
+        // getting all app usage data that need to be sent
+        val trackingManager = TrackingManager(context, false)
+        trackingManager.update(lastSyncTime)
+        val apps = trackingManager.getApps()
+
+        if(activities.isEmpty() && apps.isEmpty())
             return Result.success()
 
-        // getting the document (the content of the request); this looks like activities.xml but
-        // with only the relevant activities being included
-        val doc = userActivityStorage.getDocument(activities)
+        if(activities.isNotEmpty()) {
+            // this looks like activities.xml but with only the relevant activities being included
+            val activitiesRoot = userActivityStorage.getFinishedRootElement(doc, activities)
+            root.appendChild(activitiesRoot)
+        }
 
-        val writer = StringWriter()
+        if(apps.isNotEmpty()) {
+            val appsRoot = doc.createElement("apps")
+            for(app in apps) {
+                val appTag = doc.createElement("app")
+                appTag.setAttribute("package", app.packageName)
+                appTag.setAttribute("timeUsed", app.timeUsed.toString())
 
-        val transformer = TransformerFactory.newInstance().newTransformer()
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes")
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
-        transformer.transform(DOMSource(doc), StreamResult(writer))
+                appsRoot.appendChild(appTag)
+            }
+
+            root.appendChild(appsRoot)
+        }
+
+        doc.appendChild(root)
 
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("file", "activities.xml", writer.toString().toRequestBody("application/xml".toMediaType()))
+            .addFormDataPart("file", "sync.xml", doc.transformToString().toRequestBody("application/xml".toMediaType()))
             .build()
 
         val client = OkHttpClient()

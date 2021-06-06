@@ -6,6 +6,7 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.io.File
+import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
@@ -13,6 +14,19 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
 abstract class Storage<T>(protected val context: Context, refresh: Boolean = true) {
+
+    companion object {
+        fun Document.transformToString(): String {
+            val writer = StringWriter()
+
+            val transformer = TransformerFactory.newInstance().newTransformer()
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
+            transformer.transform(DOMSource(this), StreamResult(writer))
+
+            return writer.toString()
+        }
+    }
 
     abstract val FILE_NAME: String
     abstract val VERSION: Int
@@ -56,23 +70,21 @@ abstract class Storage<T>(protected val context: Context, refresh: Boolean = tru
 
     protected abstract fun refreshList(doc: Document)
 
-    fun getDocument(itemsToSave: List<T>): Document {
-        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
-        doc.xmlStandalone = true
-
+    fun getFinishedRootElement(doc: Document, itemsToInclude: List<T>): Element {
         val root = getRootElement(doc)
         root.setAttribute("version", VERSION.toString())
 
-        for(item in itemsToSave)
+        for(item in itemsToInclude)
             root.appendChild(convertItemToXml(item, doc))
 
-        doc.appendChild(root)
-
-        return doc
+        return root
     }
 
     fun save() {
-        val doc = getDocument(items)
+        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+        doc.xmlStandalone = true
+
+        doc.appendChild(getFinishedRootElement(doc, items))
 
         val transformer = TransformerFactory.newInstance().newTransformer()
         // some options to make the resulting files more readable

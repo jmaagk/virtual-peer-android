@@ -10,7 +10,7 @@ import android.os.Process
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
 
-class TrackingManager(private val context: Context) {
+class TrackingManager(private val context: Context, update: Boolean = true) {
 
     class TrackedApp(var packageName: String, var timeUsed: Long)
 
@@ -18,32 +18,35 @@ class TrackingManager(private val context: Context) {
     lateinit var rawEventData: UsageEvents
     private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
+    private var from = -1L
+    private var to = -1L
+
     // this is saved because the raw stats are only accessible once (hasNextEvent())
     private var unlockCount = 0
 
     init {
-        update()
+        if(update)
+            update()
     }
 
-    fun update() {
-        val calendar = Calendar.getInstance()
-        val to = calendar.timeInMillis
-        calendar.add(Calendar.DAY_OF_YEAR, -1)
-        val from = calendar.timeInMillis
+    fun update() = update(from, to)
+
+    fun update(from: Long, to: Long = System.currentTimeMillis()) {
+        this.from = from
+        this.to = to
+
+        if(this.from == -1L) {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+            this.from = calendar.timeInMillis
+        }
 
         // getting the raw data from Android
-        rawUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, from, to)
-        rawEventData = usageStatsManager.queryEvents(from, to)
+        rawUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, this.from, this.to)
+        rawEventData = usageStatsManager.queryEvents(this.from, this.to)
     }
 
-    fun getScreenTime(): Long {
-        var total = 0L
-        for(appStats in rawUsageStats)
-            total += appStats.totalTimeInForeground
-        return total
-    }
-
-    fun getMostUsedApps(count: Int): List<TrackedApp> {
+    fun getApps(): List<TrackedApp> {
         val appList = arrayListOf<TrackedApp>()
 
         // grouping multiple entries of one app
@@ -71,10 +74,23 @@ class TrackingManager(private val context: Context) {
             }
         }
 
+        return appList
+    }
+
+    fun getMostUsedApps(count: Int): List<TrackedApp> {
+        val appList = getApps()
+
         // sorting the list by their amount of time on the screen
         val sortedAppList = appList.sortedByDescending { it.timeUsed }
 
         return sortedAppList.subList(0, count.coerceAtMost(sortedAppList.size))
+    }
+
+    fun getScreenTime(): Long {
+        var total = 0L
+        for(appStats in rawUsageStats)
+            total += appStats.totalTimeInForeground
+        return total
     }
 
     fun getUnlockCount(): Int {
