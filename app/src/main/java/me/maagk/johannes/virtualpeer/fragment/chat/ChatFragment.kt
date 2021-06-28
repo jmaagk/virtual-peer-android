@@ -15,9 +15,10 @@ import com.google.android.material.textfield.TextInputEditText
 import me.maagk.johannes.virtualpeer.R
 import me.maagk.johannes.virtualpeer.Utils
 import me.maagk.johannes.virtualpeer.exercise.ChatExercise
-import me.maagk.johannes.virtualpeer.exercise.PomodoroChatExercise
 import me.maagk.johannes.virtualpeer.fragment.FragmentActionBarTitle
 import me.maagk.johannes.virtualpeer.chat.*
+import me.maagk.johannes.virtualpeer.fragment.survey.SurveyFragment
+import me.maagk.johannes.virtualpeer.survey.SurveyStorage
 import me.maagk.johannes.virtualpeer.survey.question.*
 import me.maagk.johannes.virtualpeer.view.ChoosePictureQuestionView
 import me.maagk.johannes.virtualpeer.view.EmojiQuestionView
@@ -398,6 +399,18 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
                 "text", "textinput" -> {
                     val textInputQuestion = Question.getExampleTextInputQuestion(requireContext())
                     TextInputQuestionMessage(textInputQuestion)
+                }
+
+                "survey" -> {
+                    val fragment = SurveyFragment()
+
+                    val survey = SurveyStorage(requireContext()).survey
+                    val args = Bundle()
+                    args.putSerializable("survey", survey)
+                    fragment.arguments = args
+
+                    parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment, "survey").commit()
+                    Message(Message.INCOMING, "Starting debug survey")
                 }
 
                 else -> {
