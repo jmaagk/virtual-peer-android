@@ -169,6 +169,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             val emojiQuestionView: EmojiQuestionView = itemView.findViewById(R.id.emojiQuestionView)
 
             init {
+                emojiQuestionView.setDefaultListener = false
                 emojiQuestionView.emoji1.setOnClickListener {
                     onClick(this, it)
                 }
@@ -192,6 +193,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             val submitButton: Button = itemView.findViewById(R.id.submit)
 
             init {
+                sliderQuestionView.setDefaultListener = false
+
                 submitButton.setOnClickListener {
                     onClick(this, it)
                 }
@@ -215,6 +218,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
             val multipleChoiceQuestionView: MultipleChoiceQuestionView = itemView.findViewById(R.id.multipleChoiceQuestionView)
 
             init {
+                multipleChoiceQuestionView.setDefaultListener = false
+
                 multipleChoiceQuestionView.radioGroup.setOnCheckedChangeListener { group, id ->
                     onClick(this, group)
                 }
@@ -243,6 +248,10 @@ class ChatFragment : Fragment(R.layout.fragment_chat), FragmentActionBarTitle {
         class ChoosePictureQuestionMessageViewHolder(itemView: View, onClick: (QuestionMessageViewHolder, View) -> Unit) : QuestionMessageViewHolder(itemView, onClick) {
 
             val choosePictureQuestionView: ChoosePictureQuestionView = itemView.findViewById(R.id.choosePictureQuestionView)
+
+            init {
+                choosePictureQuestionView.setDefaultListener = false
+            }
 
             override fun bind(message: Message) {
                 super.bind(message)

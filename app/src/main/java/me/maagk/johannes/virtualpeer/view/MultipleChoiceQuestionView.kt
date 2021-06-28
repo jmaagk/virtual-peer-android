@@ -13,7 +13,9 @@ import me.maagk.johannes.virtualpeer.survey.question.MultipleChoiceQuestion
 class MultipleChoiceQuestionView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), DefaultListenerController {
+
+    override var setDefaultListener: Boolean = true
 
     var question: MultipleChoiceQuestion? = null
         set(value) {
@@ -41,12 +43,14 @@ class MultipleChoiceQuestionView @JvmOverloads constructor(
             radioGroup.addView(radioButton)
         }
 
-        radioGroup.setOnCheckedChangeListener { radioGroup, id ->
-            radioGroup.forEachIndexed { index, view ->
-                if(view.id == id) {
-                    question?.answer = index
-                    question?.answered = true
-                    return@setOnCheckedChangeListener
+        if(setDefaultListener) {
+            radioGroup.setOnCheckedChangeListener { radioGroup, id ->
+                radioGroup.forEachIndexed { index, view ->
+                    if(view.id == id) {
+                        question?.answer = index
+                        question?.answered = true
+                        return@setOnCheckedChangeListener
+                    }
                 }
             }
         }

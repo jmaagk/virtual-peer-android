@@ -11,7 +11,9 @@ import me.maagk.johannes.virtualpeer.survey.question.EmojiQuestion
 class EmojiQuestionView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : RelativeLayout(context, attrs, defStyleAttr), View.OnClickListener {
+        defStyleAttr: Int = 0) : RelativeLayout(context, attrs, defStyleAttr), View.OnClickListener, DefaultListenerController {
+
+    override var setDefaultListener: Boolean = true
 
     var question: EmojiQuestion? = null
         set(value) {
@@ -26,10 +28,12 @@ class EmojiQuestionView @JvmOverloads constructor(
         inflate(context, R.layout.view_question_emoji, this)
 
         emoji1 = findViewById(R.id.emoji1)
-        emoji1.setOnClickListener(this)
-
         emoji2 = findViewById(R.id.emoji2)
-        emoji2.setOnClickListener(this)
+
+        if(setDefaultListener) {
+            emoji1.setOnClickListener(this)
+            emoji2.setOnClickListener(this)
+        }
     }
 
     fun update() {

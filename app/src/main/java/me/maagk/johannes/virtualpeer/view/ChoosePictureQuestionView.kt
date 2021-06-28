@@ -12,7 +12,9 @@ import me.maagk.johannes.virtualpeer.survey.question.ChoosePictureQuestion
 class ChoosePictureQuestionView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+        defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), DefaultListenerController {
+
+    override var setDefaultListener: Boolean = true
 
     var question: ChoosePictureQuestion? = null
         set(value) {
@@ -39,10 +41,13 @@ class ChoosePictureQuestionView @JvmOverloads constructor(
 
             imageButton.setImageDrawable(image.getDrawable(context))
             imageButton.contentDescription = image.label
-            imageButton.setOnClickListener {
-                question?.let {
-                    it.answer = index
-                    it.answered = true
+
+            if(setDefaultListener) {
+                imageButton.setOnClickListener {
+                    question?.let {
+                        it.answer = index
+                        it.answered = true
+                    }
                 }
             }
 

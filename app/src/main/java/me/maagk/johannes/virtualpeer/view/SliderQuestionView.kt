@@ -10,7 +10,9 @@ import me.maagk.johannes.virtualpeer.survey.question.SliderQuestion
 class SliderQuestionView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
+        defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr), DefaultListenerController {
+
+    override var setDefaultListener: Boolean = true
 
     var question: SliderQuestion? = null
         set(value) {
@@ -26,17 +28,20 @@ class SliderQuestionView @JvmOverloads constructor(
         inflate(context, R.layout.view_question_slider, this)
 
         slider = findViewById(R.id.slider)
-        slider.addOnChangeListener { _, value, fromUser ->
-            if(fromUser) {
-                question?.let {
-                    it.answer = value.coerceAtLeast(it.min)
-                    it.answered = true
-                }
-            }
-        }
     }
 
     fun update() {
+        if(setDefaultListener) {
+            slider.addOnChangeListener { _, value, fromUser ->
+                if(fromUser) {
+                    question?.let {
+                        it.answer = value.coerceAtLeast(it.min)
+                        it.answered = true
+                    }
+                }
+            }
+        }
+
         question?.let {
             slider.valueFrom = it.min
             slider.valueTo = it.max
