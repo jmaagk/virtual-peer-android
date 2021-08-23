@@ -24,9 +24,8 @@ class Utils {
 
     companion object {
 
-        // TODO: store this in a better way
         fun newServerUrlBuilder(): HttpUrl.Builder = HttpUrl.Builder()
-            .scheme("http") // TODO: change this
+            .scheme("https")
             .host("vetwe16vp.vetmed.fu-berlin.de")
             .port(443)
 
