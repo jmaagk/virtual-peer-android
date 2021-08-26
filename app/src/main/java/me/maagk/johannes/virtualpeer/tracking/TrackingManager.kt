@@ -35,10 +35,16 @@ class TrackingManager(private val context: Context, update: Boolean = true) {
         this.from = from
         this.to = to
 
-        if(this.from == -1L) {
+        if(this.from == -1L || this.to == -1L) {
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -1)
-            this.from = calendar.timeInMillis
+
+            if(this.to == -1L)
+                this.to = calendar.timeInMillis
+
+            if(this.from == -1L) {
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                this.from = calendar.timeInMillis
+            }
         }
 
         // getting the raw data from Android
